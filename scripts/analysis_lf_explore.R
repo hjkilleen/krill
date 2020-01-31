@@ -25,7 +25,7 @@ gl <- group_split(gs)
 pl <- lapply(gl, plotHist)
 #plot histograms in a grid
 n <- length(pl)
-soCal2015 <- do.call("grid.arrange", c(pl, ncol=1, top = "2015 Point Conception Line"))
-ggsave("figures/crossShelfLines_hist/2015_420.pdf", soCal2015, device = "pdf")
+soCal2015 <- do.call("grid.arrange", c(pl, ncol=1, top = "2015 San Miguel Line"))
+ggsave("figures/crossShelfLines_hist/2015_sanMiguel.pdf", soCal2015, device = "pdf")
 
 #
