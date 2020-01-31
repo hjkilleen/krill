@@ -29,12 +29,12 @@ gl <- group_split(gs)
 pl <- lapply(gl, plotHist)
 #plot histograms in a grid
 n <- length(pl)
-soCal2015 <- do.call("grid.arrange", c(pl, ncol=1, top = "2015 San Miguel Line"))
-ggsave("figures/crossShelfLines_hist/2015_sanMiguel.pdf", soCal2015, device = "pdf")
+sm15p <- do.call("grid.arrange", c(pl, ncol=1, top = "2015 San Miguel Line"))
+ggsave("figures/crossShelfLines_hist/2015_sanMiguel.pdf", sm15p, device = "pdf")
 
-#2015 San Nicolas line only
-sn15 <- filter(lengths15, station %in% (411:414))
-gs <- sm15 %>% 
+#2015 Delgada line only
+d15 <- filter(lengths15, station %in% (471:474))
+gs <- d15 %>% 
   group_by(station) 
 gl <- group_split(gs)
 pl <- lapply(gl, plotHist)
