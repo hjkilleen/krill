@@ -41,7 +41,7 @@ pl <- lapply(gl, plotHist)
 #plot histograms in a grid
 n <- length(pl)
 d15p <- do.call("grid.arrange", c(pl, ncol=1, top = "2015 Delgada Line"))
-ggsave("figures/crossShelfLines_hist/2015_sanMiguel.pdf", d15p, device = "pdf")
+ggsave("figures/crossShelfLines_hist/2015_delgada.pdf", d15p, device = "pdf")
 
 #2015 Fort Ross line only
 fr15 <- filter(lengths15, station %in% (453:455))
@@ -52,4 +52,4 @@ pl <- lapply(gl, plotHist)
 #plot histograms in a grid
 n <- length(pl)
 fr15p <- do.call("grid.arrange", c(pl, ncol=1, top = "2015 Fort Ross Line"))
-ggsave("figures/crossShelfLines_hist/2015_sanMiguel.pdf", d15p, device = "pdf")
+ggsave("figures/crossShelfLines_hist/2015_fortRoss.pdf", fr15p, device = "pdf")
