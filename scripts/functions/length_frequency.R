@@ -2,7 +2,7 @@
 plotHist <- function(j) {
   ggplot(j, aes(x = length, color = sex)) + 
     geom_histogram(fill = "white", alpha = 0.5, position = "identity") +
-    ggtitle(print(j$station[1])) + 
+    ggtitle(paste(sm15$station[1], sm15$species[1], sep = " ")) + 
     xlim(5, 35) +
     theme(plot.title = element_text(hjust = 0.5))
 }
