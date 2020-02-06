@@ -7,16 +7,19 @@
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
+library(stringr)
+library(readxl)
+library(lubridate)
 source("scripts/functions/length_frequency.R")
 
 #LOAD DATA
 lengths <- read.csv("data/lengths.csv")
+vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by")
+names(lengths) <- vars
 #add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, length = pixels/scale)
 lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))
 save(lengths, file = "data/lengths.rda")
-n <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by", "length")
-names(lengths) <- n
 
 #2015 only
 lengths15 <- filter(lengths, year == 2015)
