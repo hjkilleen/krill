@@ -63,4 +63,26 @@ fr15p <- do.call("grid.arrange", c(pl, ncol=2, top = "2015 Fort Ross Line"))
 ggsave("figures/crossShelfLines_hist/2015_fortRoss.pdf", fr15p, device = "pdf")
 #==========
 
+#Create regional histograms 2015-2018 as available
+#=========
+#drop all species that are not Ep, Ts, and Nd
+topThree <- c("EP", "TS", "ND")
+lengthss <- filter(lengths, species %in% topThree)
+#drop all species&station combinations with less than 40 observations
+tally <- as.data.frame(group_by_at(lengthss, vars(station, species, year)) %>% tally())
+tally <- filter(tally, n>=40)
+tally <- mutate(tally, id = paste(station, species, year, sep = ""))
+lengthss <- mutate(lengthss, id = paste(station, species, year, sep = ""))
+lengthss <- filter(lengthss, id %in% tally$id)
+#Davenport line histograms
+Davenport <- c(124, 127)
+d <- filter(lengthss, station %in% Davenport)
+ds <- group_by_at(d, vars(station, species, year))
+dl <- group_split(ds)
+plotDavenport <- lapply(dl, plotHist)
 
+#=========
+
+n <- length(pl)
+sm15p <- do.call("grid.arrange", c(pl, ncol=3, top = "2015 San Miguel Line"))
+ggsave("figures/crossShelfLines_hist/2015_sanMiguel.pdf", sm15p, device = "pdf")
