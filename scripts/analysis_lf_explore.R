@@ -135,7 +135,15 @@ ggsave("figures/regions_hist/SouthernCA.pdf", x, device = "pdf")
 #subset full lengths dataset to the priority stations
 onshore <- filter(lengthss, station %in% regions$onshore)
 offshore <- filter(lengthss, station %in% regions$offshore)
+#create region and station list
+on <-select(regions, region, onshore)
+off <-select(regions, region, offshore)
+names(on) <- c("region", "station")
+names(off) <- c("region", "station")
+stations <- bind_rows(on, off)
 subLengths <- full_join(onshore, offshore)
+#add region variable
+test <- left_join(subLengths, stations, by = "station")
 
-#
+
 #======
