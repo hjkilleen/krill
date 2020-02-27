@@ -75,14 +75,7 @@ tally <- mutate(tally, id = paste(station, species, year, sep = ""))
 lengthss <- mutate(lengthss, id = paste(station, species, year, sep = ""))
 lengthss <- filter(lengthss, id %in% tally$id)
 #Davenport line histograms
-Davenport <- c(124, 127)
 d <- filter(lengthss, station %in% Davenport)
-ds <- group_by_at(d, vars(station, species, year))
-dl <- group_split(ds)
-plotDavenport <- lapply(dl, plotHist)
+histGrid(d, "Davenport")
 
 #=========
-
-n <- length(pl)
-sm15p <- do.call("grid.arrange", c(pl, ncol=3, top = "2015 San Miguel Line"))
-ggsave("figures/crossShelfLines_hist/2015_sanMiguel.pdf", sm15p, device = "pdf")
