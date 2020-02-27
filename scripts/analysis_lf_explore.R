@@ -147,6 +147,7 @@ subLengths <- full_join(onshore, offshore)
 subLengths <- left_join(subLengths, stations, by = "station")
 lfStats <- summarize(group_by_at(subLengths, vars(station, species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 lfStats <- left_join(lfStats, stations, by = "station")
+#look at the same data by species
 epStats <- filter(lfStats, species == "EP")
 tsStats <- filter(lfStats, species == "TS")
 ndStats <- filter(lfStats, species == "ND")
