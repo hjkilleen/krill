@@ -11,6 +11,7 @@ library(stringr)
 library(readxl)
 library(lubridate)
 source("scripts/functions/length_frequency.R")
+source("scripts/functions/regions.R")
 
 #LOAD DATA
 lengths <- read.csv("data/lengths.csv")
@@ -74,8 +75,58 @@ tally <- filter(tally, n>=40)
 tally <- mutate(tally, id = paste(station, species, year, sep = ""))
 lengthss <- mutate(lengthss, id = paste(station, species, year, sep = ""))
 lengthss <- filter(lengthss, id %in% tally$id)
+
+#Fort Ross line histograms
+d <- filter(lengthss, station %in% FortRoss)
+x <- histGrid(d, "Fort Ross")
+ggsave("figures/regions_hist/FortRoss.pdf", x, device = "pdf")
+#Point Reyes line histograms
+d <- filter(lengthss, station %in% PointReyes)
+x <- histGrid(d, "Point Reyes")
+ggsave("figures/regions_hist/PointReyes.pdf", x, device = "pdf")
+#Gulf of the Farallons line histograms
+d <- filter(lengthss, station %in% GulfFarallons)
+x <- histGrid(d, "Gulf of the Farallons")
+ggsave("figures/regions_hist/GoF.pdf", x, device = "pdf")
+#San Mateo line histograms
+d <- filter(lengthss, station %in% SanMateo)
+x <- histGrid(d, "San Mateo")
+ggsave("figures/regions_hist/SanMateo.pdf", x, device = "pdf")
 #Davenport line histograms
 d <- filter(lengthss, station %in% Davenport)
-histGrid(d, "Davenport")
-
+x <- histGrid(d, "Davenport")
+ggsave("figures/regions_hist/Davenport.pdf", x, device = "pdf")
+#Monterey Bay line histograms
+d <- filter(lengthss, station %in% MontereyBay)
+x <- histGrid(d, "Monterey Bay")
+ggsave("figures/regions_hist/MontereyBay.pdf", x, device = "pdf")
+#Point Sur line histograms
+d <- filter(lengthss, station %in% PointSur)
+x <- histGrid(d, "Point Sur")
+ggsave("figures/regions_hist/PointSur.pdf", x, device = "pdf")
+#Piedras Blancas line histograms
+d <- filter(lengthss, station %in% PiedrasBlancas)
+x <- histGrid(d, "Piedras Blancas")
+ggsave("figures/regions_hist/PiedrasBlancas.pdf", x, device = "pdf")
+#Morro Bay line histograms
+d <- filter(lengthss, station %in% MorroBay)
+x <- histGrid(d, "Morro Bay")
+ggsave("figures/regions_hist/MorroBay.pdf", x, device = "pdf")
+#Point Conception line histograms
+d <- filter(lengthss, station %in% PointConception)
+x <- histGrid(d, "Point Conception")
+ggsave("figures/regions_hist/PointConception.pdf", x, device = "pdf")
+#Santa Barbars line histograms
+d <- filter(lengthss, station %in% SantaBarbara)
+x <- histGrid(d, "Santa Barbara")
+ggsave("figures/regions_hist/SantaBarbara.pdf", x, device = "pdf")
+#Mid Channel Islands line histograms
+d <- filter(lengthss, station %in% MidChannelIslands)
+x <- histGrid(d, "Mid Channel Islands")
+ggsave("figures/regions_hist/MidChannelIslands.pdf", x, device = "pdf")
+#Southern CA line histograms
+d <- filter(lengthss, station %in% SouthernCA)
+x <- histGrid(d, "Southern CA")
+ggsave("figures/regions_hist/SouthernCA.pdf", x, device = "pdf")
 #=========
+
