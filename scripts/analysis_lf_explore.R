@@ -145,5 +145,9 @@ stations <- bind_rows(on, off)
 subLengths <- full_join(onshore, offshore)
 #add region variable to LF priority lengths dataset
 subLengths <- left_join(subLengths, stations, by = "station")
-lfstats <- summarize(group_by_at(subLengths, vars(station, species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+lfStats <- summarize(group_by_at(subLengths, vars(station, species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+lfStats <- left_join(lfStats, stations, by = "station")
+epStats <- filter(lfStats, species == "EP")
+tsStats <- filter(lfStats, species == "TS")
+ndStats <- filter(lfStats, species == "ND")
 #======
