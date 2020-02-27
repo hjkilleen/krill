@@ -10,6 +10,7 @@ library(gridExtra)
 library(stringr)
 library(readxl)
 library(lubridate)
+library(e1071)
 source("scripts/functions/length_frequency.R")
 source("scripts/functions/regions.R")
 
@@ -142,8 +143,7 @@ names(on) <- c("region", "station")
 names(off) <- c("region", "station")
 stations <- bind_rows(on, off)
 subLengths <- full_join(onshore, offshore)
-#add region variable
-test <- left_join(subLengths, stations, by = "station")
-
-
+#add region variable to LF priority lengths dataset
+subLengths <- left_join(subLengths, stations, by = "station")
+lfstats <- summarize(group_by_at(subLengths, vars(station, species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 #======
