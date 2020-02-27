@@ -21,6 +21,8 @@ lengths <- mutate(lengths, length = pixels/scale)
 lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))
 save(lengths, file = "data/lengths.rda")
 
+#Cross-shelf transects histograms for comparison
+#==========
 #2015 only
 lengths15 <- filter(lengths, year == 2015)
 #EP, TS, ND only
@@ -59,3 +61,6 @@ pl <- lapply(gl, plotHist)
 n <- length(pl)
 fr15p <- do.call("grid.arrange", c(pl, ncol=2, top = "2015 Fort Ross Line"))
 ggsave("figures/crossShelfLines_hist/2015_fortRoss.pdf", fr15p, device = "pdf")
+#==========
+
+
