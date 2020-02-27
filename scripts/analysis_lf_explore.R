@@ -130,3 +130,12 @@ x <- histGrid(d, "Southern CA")
 ggsave("figures/regions_hist/SouthernCA.pdf", x, device = "pdf")
 #=========
 
+#Create dataframe with histogram summary statistics 2015-2018 as available
+#======
+#subset full lengths dataset to the priority stations
+onshore <- filter(lengthss, station %in% regions$onshore)
+offshore <- filter(lengthss, station %in% regions$offshore)
+subLengths <- full_join(onshore, offshore)
+
+#
+#======
