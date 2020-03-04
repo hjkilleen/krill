@@ -23,6 +23,11 @@ lengths <- mutate(lengths, length = pixels/scale)
 lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))
 save(lengths, file = "data/lengths.rda")
 
+#Generate sample table
+#========
+
+#=======
+
 #Cross-shelf transects histograms for comparison
 #==========
 #2015 only
