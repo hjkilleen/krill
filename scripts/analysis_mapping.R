@@ -50,3 +50,24 @@ names(cts) <- names
 cts15 <- filter(cts, year == 2015)
 View(unique(cts15$station))
 
+#Map out northern CA stations to see whether or not it's worth adding a new line north of Fort Ross
+#get relevant stations
+rf <- read_xlsx("../../PhD/Research/Krill/RF_Survey_Data_EUPHAUSIDAE.xlsx")
+norCal <- c("False Cape", "Flint Rock Head", "Trinidad Head")
+nrf <- filter(rf, area %in% norCal)
+#get observations from 2015
+nrf$time <- as_datetime(nrf$time)
+nrf <- filter(nrf, time > as.POSIXct("2015-01-01"))
+
+#plot out station locations
+ggplot(data = world) +
+  geom_sf(color = "black", fill = "lightgreen") +
+  geom_sf(data = states, fill = NA) +
+  annotation_scale(location = "bl", width_hint = 0.5) +
+  geom_point(data = nrf, aes(x = station_longitude, y = station_latitude), size = 2, 
+             shape = 23, fill = "darkred") +
+  geom_text(data= nrf, aes(x = station_longitude, y = station_latitude, label = station),  hjust = 0.5, vjust = 0.5) +
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.2, "in"), pad_y = unit(0.3, "in"),
+                         style = north_arrow_fancy_orienteering) +
+  coord_sf(xlim = c(-125.5, -124.0), ylim = c(40.0, 42.30), expand = FALSE)
