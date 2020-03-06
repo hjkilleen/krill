@@ -14,3 +14,13 @@ histGrid <- function(i, j) {
   pd <- lapply(dl, plotHist)
   plots <- do.call("grid.arrange", c(pd, ncol = 2, top = print(j)))
 }
+
+#Determine number of individuals for a given station, species, and sex in all years
+numSamp <- function(i, data = lengths) {
+  s <- filter(lengths, station == i)
+  if(nrow(s) == 0) stop('no observations for this station')
+  st <- group_by_at(s, vars(year, species, sex))
+  result <- as.data.frame(summarize(st, n=n()))
+  result <- result[order(result$year, result$species, result$sex),]
+  result
+  }
