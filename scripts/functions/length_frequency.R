@@ -24,3 +24,17 @@ numSamp <- function(i, data = lengths) {
   result <- result[order(result$year, result$species, result$sex),]
   result
   }
+
+#Plot a map of CA with station locactions
+mapStations <- function(i) {
+  ggplot(data = world) +
+    geom_sf(color = "black", fill = "lightgreen") +
+    geom_sf(data = states, fill = NA) +
+    annotation_scale(location = "bl", width_hint = 0.5) +
+    geom_point(data = i, aes(x = lon, y = lat), size = 2, 
+               shape = 23, fill = "darkred") +
+    annotation_north_arrow(location = "bl", which_north = "true", 
+                           pad_x = unit(0.2, "in"), pad_y = unit(0.3, "in"),
+                           style = north_arrow_fancy_orienteering) +
+    coord_sf(xlim = c(-125.5, -116.75), ylim = c(32.0, 42.30), expand = FALSE)
+}

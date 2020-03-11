@@ -44,5 +44,5 @@ sites2018 <- data.frame(
   offshore = c(454, 170, 156, 134, 127, 110, 445, 495, 425, 413, 402),
   region = c("north", "north", "northCentral", "northCentral", "northCentral", "northCentral", "central", "central", "south", "south", "south")
 )
-allSites2017 <- c(sites2017$onshore, sites2017$offshore)
+allSites2018 <- c(sites2018$onshore, sites2018$offshore)
 
