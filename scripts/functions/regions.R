@@ -20,6 +20,7 @@ sites2015 <- data.frame(
   offshore = c(454, NA, 495, 425, 413, 402),
   region = c("north", "central", "central", "south", "south", "south")
 )
+allSites2015 <- c(sites2015$onshore, sites2015$offshore)
 
 sites2016 <- data.frame(
   site = c("FortRoss", "PointReyes", "GulfFarallons", "SanMateo", "Davenport", "MontereyBay", "PiedrasBlancas", "MorroBay", "SantaBarbara", "MidChannelIslands", "SouthernCA"),
@@ -27,6 +28,7 @@ sites2016 <- data.frame(
   offshore = c(454, 170, 152, 134, 127, 110, 445, 495, 425, 414, 402),
   region = c("north", "north", "northCentral", "northCentral", "northCentral", "northCentral", "central", "central", "south", "south", "south")
 )
+allSites2016 <- c(sites2016$onshore, sites2016$offshore)
 
 sites2017 <- data.frame(
   site = c("FortRoss", "PointReyes", "GulfFarallons", "SanMateo", "Davenport", "MontereyBay", "PiedrasBlancas", "MorroBay", "SantaBarbara", "MidChannelIslands", "SouthernCA"),
@@ -34,6 +36,7 @@ sites2017 <- data.frame(
   offshore = c(NA, 171, 156, 134, 127, 117, 445, 495, 425, NA, 402),
   region = c("north", "north", "northCentral", "northCentral", "northCentral", "northCentral", "central", "central", "south", "south", "south")
 )
+allSites2017 <- c(sites2017$onshore, sites2017$offshore)
 
 sites2018 <- data.frame(
   site = c("FortRoss", "PointReyes", "GulfFarallons", "SanMateo", "Davenport", "MontereyBay", "PiedrasBlancas", "MorroBay", "SantaBarbara", "MidChannelIslands", "SouthernCA"),
@@ -41,3 +44,5 @@ sites2018 <- data.frame(
   offshore = c(454, 170, 156, 134, 127, 110, 445, 495, 425, 413, 402),
   region = c("north", "north", "northCentral", "northCentral", "northCentral", "northCentral", "central", "central", "south", "south", "south")
 )
+allSites2017 <- c(sites2017$onshore, sites2017$offshore)
+
