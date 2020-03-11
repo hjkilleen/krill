@@ -15,16 +15,13 @@ states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
 ggplot(data = coast) +
   geom_sf()
 
-#Pull in station location information from rockfish survey master datajet and join with length frequency data. Then find list of unique values to create station location data frame for use in maps. 
+#Station maps for each year
+#read in RF dataset for Euphausia
 rf <- read_xlsx("../../PhD/Research/Krill/RF_Survey_Data_EUPHAUSIDAE.xlsx")
 rf$time <- as_datetime(rf$time)
-rf15 <- filter(rf, time > as.POSIXct("2015-01-01"))
-rf15 <- filter(rf15, time < as.POSIXct("2016-01-01"))
-lengths15 <- left_join(lengths15, rf15, by = "station")
-lengths15 <- select(lengths15, "station", "station_latitude", "station_longitude", "station_bottom_depth", "bottom_depth", "species", "sex", "dish", "length", "year", "measured_by", "incomplete")
-ll <- select(lengths15, "station", "station_latitude", "station_longitude")
-ll <- distinct(ll)
-ll <- filter(ll, station_latitude!="NA")
+#Pull out position information for relevant stations
+rf15 <- filter(rf, station %in% allSites2015)
+summarize(group_by(rf15, station), lat = mean(latitude), lon = mean(longitude))
 
 #Plot map of the CCE with stations we looked at for length frequency in 2015
 ggplot(data = world) +
@@ -50,6 +47,7 @@ names(cts) <- names
 cts15 <- filter(cts, year == 2015)
 View(unique(cts15$station))
 
+#SUPER NORTH
 #Map out northern CA stations to see whether or not it's worth adding a new line north of Fort Ross
 #get relevant stations
 rf <- read_xlsx("../../PhD/Research/Krill/RF_Survey_Data_EUPHAUSIDAE.xlsx")
