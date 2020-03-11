@@ -5,15 +5,23 @@ GulfFarallons <- c(138, 139, 152, 156)
 SanMateo <- c(131, 132, 134)
 Davenport <- c(124, 127)
 MontereyBay <- c(114, 112, 110, 117)
-PointSur <- c(102, 105)
 PiedrasBlancas <- c(442, 445)
 MorroBay <- c(492, 493, 495)
-PointConception <- c(433, 435)
 SantaBarbara <- c(422, 425)
 MidChannelIslands <- c(411, 412, 413, 414)
 SouthernCA <- c(481, 482, 402)
 
-#As a dataframe 
+#All sites
+allSites <- c(FortRoss, PointReyes, GulfFarallons, SanMateo, Davenport, MontereyBay, PiedrasBlancas, MorroBay, SantaBarbara, MidChannelIslands, SouthernCA)
+
+#As a dataframe
+regions <- data.frame(
+  stations = allSites,
+  sites = c("FortRoss", "FortRoss", "FortRoss", "FortRoss", "PointReyes", "PointReyes", "PointReyes", "GulfFarallons", "GulfFarallons", "GulfFarallons", "GulfFarallons", "SanMateo", "SanMateo", "SanMateo", "Davenport", "Davenport", "MontereyBay", "MontereyBay", "MontereyBay", "MontereyBay", "PiedrasBlancas", "PiedrasBlancas", "MorroBay", "MorroBay", "MorroBay", "SantaBarbara", "SantaBarbara", "MidChannelIslands", "MidChannelIslands", "MidChannelIslands", "MidChannelIslands", "SouthernCA", "SouthernCA", "SouthernCA"),
+  regions = c("north", "north", "north", "north", "north", "north", "north", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "central", "central", "central", "central", "central", "south", "south", "south", "south", "south", "south", "south", "south", "south")
+)
+
+#For each year 
 sites2015 <- data.frame(
   site = c("FortRoss", "PiedrasBlancas", "MorroBay", "SantaBarbara", "MidChannelIslands", "SouthernCA"),
   onshore = c(453, 442, NA, 422, 411, 481),
