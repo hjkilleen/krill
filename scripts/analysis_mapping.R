@@ -6,6 +6,7 @@ library(ggspatial)
 library(maps)
 library(readxl)
 library(lubridate)
+source("scripts/functions/regions.R")
 
 world <- ne_countries(scale = "medium", returnclass = "sf")
 class(world)
@@ -20,15 +21,52 @@ ggplot(data = coast) +
 rf <- read_xlsx("../../PhD/Research/Krill/RF_Survey_Data_EUPHAUSIDAE.xlsx")
 rf$time <- as_datetime(rf$time)
 #Pull out position information for relevant stations
-rf15 <- filter(rf, station %in% allSites2015)
-summarize(group_by(rf15, station), lat = mean(latitude), lon = mean(longitude))
+#for 2015
+rfYear <- filter(rf, station %in% allSites2015)
+jpeg("figures/stationMaps/2015.jpg")
+mapStations(summarize(
+  group_by(rfYear, station),
+  lat = mean(latitude),
+  lon = mean(longitude)
+))
+dev.off()
+
+#for 2016
+rfYear <- filter(rf, station %in% allSites2016)
+jpeg("figures/stationMaps/2016.jpg")
+mapStations(summarize(
+  group_by(rfYear, station),
+  lat = mean(latitude),
+  lon = mean(longitude)
+))
+dev.off()
+
+#for 2017
+rfYear <- filter(rf, station %in% allSites2017)
+jpeg("figures/stationMaps/2017.jpg")
+mapStations(summarize(
+  group_by(rfYear, station),
+  lat = mean(latitude),
+  lon = mean(longitude)
+))
+dev.off()
+
+#for 2018
+rfYear <- filter(rf, station %in% allSites2018)
+jpeg("figures/stationMaps/2018.jpg")
+mapStations(summarize(
+  group_by(rfYear, station),
+  lat = mean(latitude),
+  lon = mean(longitude)
+))
+dev.off()
 
 #Plot map of the CCE with stations we looked at for length frequency in 2015
 ggplot(data = world) +
   geom_sf(color = "black", fill = "lightgreen") +
   geom_sf(data = states, fill = NA) +
   annotation_scale(location = "bl", width_hint = 0.5) +
-  geom_point(data = ll, aes(x = station_longitude, y = station_latitude), size = 2, 
+  geom_point(data = t, aes(x = lon, y = lat), size = 2, 
              shape = 23, fill = "darkred") +
   annotation_north_arrow(location = "bl", which_north = "true", 
                          pad_x = unit(0.2, "in"), pad_y = unit(0.3, "in"),
