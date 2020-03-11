@@ -1,8 +1,8 @@
 #Plot histograms from length frequency data
-plotHist <- function(j) {
+plotHist <- function(j, i = paste(j$station[1], j$species[1], j$year, sep = " ")) {
   ggplot(j, aes(x = length, color = sex)) + 
     geom_histogram(fill = "white", alpha = 0.5, position = "identity") +
-    ggtitle(paste(j$station[1], j$species[1], j$year, sep = " ")) + 
+    ggtitle(i) + 
     xlim(5, 35) +
     theme(plot.title = element_text(hjust = 0.5))
 }
