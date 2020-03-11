@@ -10,7 +10,7 @@ library(gridExtra)
 library(stringr)
 library(readxl)
 library(lubridate)
-library(e1071)
+library(e1071) #for histogram stats
 source("scripts/functions/length_frequency.R")
 source("scripts/functions/regions.R")
 
@@ -151,4 +151,25 @@ lfStats <- left_join(lfStats, stations, by = "station")
 epStats <- filter(lfStats, species == "EP")
 tsStats <- filter(lfStats, species == "TS")
 ndStats <- filter(lfStats, species == "ND")
+#======
+
+#Create plots for body size across years, regions, and species
+#======
+#All species, all time, all regions
+
+#All species, all time, by region
+#All species, by time, all regions
+#All species, by time by region
+#EP, all time, all regions
+#EP, all time, by region
+#EP, by time, all regions
+#EP, by time by region
+#TS, all time, all regions
+#TS, all time, by region
+#TS, by time, all regions
+#TS, by time by region
+#ND, all time, all regions
+#ND, all time, by region
+#ND, by time, all regions
+#ND, by time by region
 #======
