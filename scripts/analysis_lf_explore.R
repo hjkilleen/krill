@@ -21,6 +21,9 @@ names(lengths) <- vars
 #add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, length = pixels/scale)
 lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))
+#filter to only the stations we are including in the analysis
+lengths <- filter(lengths, station %in% allSites)
+test <- left_join(lengths, regions, by = "station")
 save(lengths, file = "data/lengths.rda")
 
 #Cross-shelf transects histograms for comparison
@@ -156,8 +159,14 @@ ndStats <- filter(lfStats, species == "ND")
 #Create plots for body size across years, regions, and species
 #======
 #All species, all time, all regions
-
+jpeg("figures/bodySize/allSppAllYrsAllReg.jpg")
+plotHist(lengths, "All species, all years, all regions")
+dev.off()
 #All species, all time, by region
+jpeg("figures/bodySize/allSppAllYrsByReg.jpg")
+par(mfrow=c(4,1))
+plotHist()
+dev.off()
 #All species, by time, all regions
 #All species, by time by region
 #EP, all time, all regions

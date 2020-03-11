@@ -16,9 +16,9 @@ allSites <- c(FortRoss, PointReyes, GulfFarallons, SanMateo, Davenport, Monterey
 
 #As a dataframe
 regions <- data.frame(
-  stations = allSites,
+  station = allSites,
   sites = c("FortRoss", "FortRoss", "FortRoss", "FortRoss", "PointReyes", "PointReyes", "PointReyes", "GulfFarallons", "GulfFarallons", "GulfFarallons", "GulfFarallons", "SanMateo", "SanMateo", "SanMateo", "Davenport", "Davenport", "MontereyBay", "MontereyBay", "MontereyBay", "MontereyBay", "PiedrasBlancas", "PiedrasBlancas", "MorroBay", "MorroBay", "MorroBay", "SantaBarbara", "SantaBarbara", "MidChannelIslands", "MidChannelIslands", "MidChannelIslands", "MidChannelIslands", "SouthernCA", "SouthernCA", "SouthernCA"),
-  regions = c("north", "north", "north", "north", "north", "north", "north", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "central", "central", "central", "central", "central", "south", "south", "south", "south", "south", "south", "south", "south", "south")
+  region = c("north", "north", "north", "north", "north", "north", "north", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "central", "central", "central", "central", "central", "south", "south", "south", "south", "south", "south", "south", "south", "south")
 )
 
 #For each year 
