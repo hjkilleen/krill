@@ -30,9 +30,9 @@ save(lengths, file = "data/lengths.rda")
 #==========
 #2015 only
 lengths15 <- filter(lengths, year == 2015)
-#TS, TS, ND only
+#EP, TS, ND only
 lengths15$species<-as.character(lengths15$species)
-lengths15 <- filter(lengths15, species %in% c('TS', 'TS', 'ND'))
+lengths15 <- filter(lengths15, species %in% c('EP', 'TS', 'ND'))
 lengths15$species<-as.factor(lengths15$species)
 #2015 San Miguel line only
 sm15 <- filter(lengths15, station %in% (421:425))
@@ -71,13 +71,13 @@ ggsave("figures/crossShelfLines_hist/2015_fortRoss.pdf", fr15p, device = "pdf")
 #Create regional histograms 2015-2018 as available
 #=========
 #drop all species that are not TS, Ts, and Nd
-topThree <- c("TS", "TS", "ND")
+topThree <- c("EP", "TS", "ND")
 lengthss <- filter(lengths, species %in% topThree)
 #drop all species&station combinations with less than 40 observations
 tally <- as.data.frame(group_by_at(lengthss, vars(station, species, year)) %>% tally())
 tally <- filter(tally, n>=40)
-tally <- mutate(tally, id = paste(station, species, year, sTS = ""))
-lengthss <- mutate(lengthss, id = paste(station, species, year, sTS = ""))
+tally <- mutate(tally, id = paste(station, species, year, sep = ""))
+lengthss <- mutate(lengthss, id = paste(station, species, year, sep = ""))
 lengthss <- filter(lengthss, id %in% tally$id)
 
 #Fort Ross line histograms
@@ -118,8 +118,8 @@ x <- histGrid(d, "Morro Bay")
 ggsave("figures/regions_hist/MorroBay.pdf", x, device = "pdf")
 #Point ConcTStion line histograms
 d <- filter(lengthss, station %in% PointConcTStion)
-x <- histGrid(d, "Point ConcTStion")
-ggsave("figures/regions_hist/PointConcTStion.pdf", x, device = "pdf")
+x <- histGrid(d, "Point Conception")
+ggsave("figures/regions_hist/PointConception.pdf", x, device = "pdf")
 #Santa Barbars line histograms
 d <- filter(lengthss, station %in% SantaBarbara)
 x <- histGrid(d, "Santa Barbara")
@@ -151,7 +151,7 @@ subLengths <- left_join(subLengths, stations, by = "station")
 lfStats <- summarize(group_by_at(subLengths, vars(station, species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 lfStats <- left_join(lfStats, stations, by = "station")
 #look at the same data by species
-TSStats <- filter(lfStats, species == "TS")
+epStats <- filter(lfStats, species == "EP")
 tsStats <- filter(lfStats, species == "TS")
 ndStats <- filter(lfStats, species == "ND")
 #======
