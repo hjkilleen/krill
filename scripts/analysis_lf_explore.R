@@ -20,19 +20,19 @@ vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes",
 names(lengths) <- vars
 #add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, length = pixels/scale)
-lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))
+lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sTS = "")))
 #filter to only the stations we are including in the analysis
 lengths <- filter(lengths, station %in% allSites)
-test <- left_join(lengths, regions, by = "station")
+lengths <- left_join(lengths, regions, by = "station")
 save(lengths, file = "data/lengths.rda")
 
 #Cross-shelf transects histograms for comparison
 #==========
 #2015 only
 lengths15 <- filter(lengths, year == 2015)
-#EP, TS, ND only
+#TS, TS, ND only
 lengths15$species<-as.character(lengths15$species)
-lengths15 <- filter(lengths15, species %in% c('EP', 'TS', 'ND'))
+lengths15 <- filter(lengths15, species %in% c('TS', 'TS', 'ND'))
 lengths15$species<-as.factor(lengths15$species)
 #2015 San Miguel line only
 sm15 <- filter(lengths15, station %in% (421:425))
@@ -70,14 +70,14 @@ ggsave("figures/crossShelfLines_hist/2015_fortRoss.pdf", fr15p, device = "pdf")
 
 #Create regional histograms 2015-2018 as available
 #=========
-#drop all species that are not Ep, Ts, and Nd
-topThree <- c("EP", "TS", "ND")
+#drop all species that are not TS, Ts, and Nd
+topThree <- c("TS", "TS", "ND")
 lengthss <- filter(lengths, species %in% topThree)
 #drop all species&station combinations with less than 40 observations
 tally <- as.data.frame(group_by_at(lengthss, vars(station, species, year)) %>% tally())
 tally <- filter(tally, n>=40)
-tally <- mutate(tally, id = paste(station, species, year, sep = ""))
-lengthss <- mutate(lengthss, id = paste(station, species, year, sep = ""))
+tally <- mutate(tally, id = paste(station, species, year, sTS = ""))
+lengthss <- mutate(lengthss, id = paste(station, species, year, sTS = ""))
 lengthss <- filter(lengthss, id %in% tally$id)
 
 #Fort Ross line histograms
@@ -116,10 +116,10 @@ ggsave("figures/regions_hist/PiedrasBlancas.pdf", x, device = "pdf")
 d <- filter(lengthss, station %in% MorroBay)
 x <- histGrid(d, "Morro Bay")
 ggsave("figures/regions_hist/MorroBay.pdf", x, device = "pdf")
-#Point Conception line histograms
-d <- filter(lengthss, station %in% PointConception)
-x <- histGrid(d, "Point Conception")
-ggsave("figures/regions_hist/PointConception.pdf", x, device = "pdf")
+#Point ConcTStion line histograms
+d <- filter(lengthss, station %in% PointConcTStion)
+x <- histGrid(d, "Point ConcTStion")
+ggsave("figures/regions_hist/PointConcTStion.pdf", x, device = "pdf")
 #Santa Barbars line histograms
 d <- filter(lengthss, station %in% SantaBarbara)
 x <- histGrid(d, "Santa Barbara")
@@ -151,7 +151,7 @@ subLengths <- left_join(subLengths, stations, by = "station")
 lfStats <- summarize(group_by_at(subLengths, vars(station, species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 lfStats <- left_join(lfStats, stations, by = "station")
 #look at the same data by species
-epStats <- filter(lfStats, species == "EP")
+TSStats <- filter(lfStats, species == "TS")
 tsStats <- filter(lfStats, species == "TS")
 ndStats <- filter(lfStats, species == "ND")
 #======
@@ -163,22 +163,220 @@ jpeg("figures/bodySize/allSppAllYrsAllReg.jpg")
 plotHist(lengths, "All species, all years, all regions")
 dev.off()
 #All species, all time, by region
+p1 <-plotHist(filter(lengths, region == "north"), "North Region")
+p2 <-plotHist(filter(lengths, region == "north_central"), "North-Central Region")
+p3 <-plotHist(filter(lengths, region == "central"), "Central Region")
+p4 <-plotHist(filter(lengths, region == "south"), "South Region")
 jpeg("figures/bodySize/allSppAllYrsByReg.jpg")
-par(mfrow=c(4,1))
-plotHist()
+grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
 #All species, by time, all regions
+p1 <-plotHist(filter(lengths, year == 2015), "2015")
+p2 <-plotHist(filter(lengths, year == 2016), "2016")
+p3 <-plotHist(filter(lengths, year == 2017), "2017")
+p4 <-plotHist(filter(lengths, year == 2018), "2018")
+jpeg("figures/bodySize/allSppByYrsAllReg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #All species, by time by region
+#North
+p1 <-plotHist(filter(lengths, region == "north", year == 2015), "North Region 2015")
+p2 <-plotHist(filter(lengths, region == "north", year == 2016), "North Region 2016")
+p3 <-plotHist(filter(lengths, region == "north", year == 2017), "North Region 2017")
+p4 <-plotHist(filter(lengths, region == "north", year == 2018), "North Region 2018")
+jpeg("figures/bodySize/allSppByYrsNorth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#North Central
+p1 <-plotHist(filter(lengths, region == "north_central", year == 2015), "North-Central Region")
+p2 <-plotHist(filter(lengths, region == "north_central", year == 2016), "North-Central Region 2016")
+p3 <-plotHist(filter(lengths, region == "north_central", year == 2017), "North-Central Region 2017")
+p4 <-plotHist(filter(lengths, region == "north_central", year == 2018), "North-Central Region 2018")
+jpeg("figures/bodySize/allSppByYrsNorthCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#Central
+p1 <-plotHist(filter(lengths, region == "central", year == 2015), "Central Region 2015")
+p2 <-plotHist(filter(lengths, region == "central", year == 2016), "Central Region 2016")
+p3 <-plotHist(filter(lengths, region == "central", year == 2017), "Central Region 2017")
+p4 <-plotHist(filter(lengths, region == "central", year == 2018), "Central Region 2018")
+jpeg("figures/bodySize/allSppByYrsCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#South
+p1 <-plotHist(filter(lengths, region == "south", year == 2015), "South Region 2015")
+p2 <-plotHist(filter(lengths, region == "south", year == 2016), "South Region 2016")
+p3 <-plotHist(filter(lengths, region == "south", year == 2017), "South Region 2017")
+p4 <-plotHist(filter(lengths, region == "south", year == 2018), "South Region 2018")
+jpeg("figures/bodySize/allSppByYrsSouth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+
+#filter to EP only
+ep <- filter(lengths, species == "EP")
 #EP, all time, all regions
+jpeg("figures/bodySize/EP/EPAllYrsAllReg.jpg")
+plotHist(ep, "E. pacifica, all years, all regions")
+dev.off()
 #EP, all time, by region
+p1 <-plotHist(filter(ep, region == "north"), "EP North Region")
+p2 <-plotHist(filter(ep, region == "north_central"), "EP North-Central Region")
+p3 <-plotHist(filter(ep, region == "central"), "EP Central Region")
+p4 <-plotHist(filter(ep, region == "south"), "EP South Region")
+jpeg("figures/bodySize/EP/EPAllYrsByReg.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #EP, by time, all regions
+p1 <-plotHist(filter(ep, year == 2015), "EP 2015")
+p2 <-plotHist(filter(ep, year == 2016), "EP 2016")
+p3 <-plotHist(filter(ep, year == 2017), "EP 2017")
+p4 <-plotHist(filter(ep, year == 2018), "EP 2018")
+jpeg("figures/bodySize/EP/EPByYrsAllReg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #EP, by time by region
+#North
+p1 <-plotHist(filter(ep, region == "north", year == 2015), "EP North Region 2015")
+p2 <-plotHist(filter(ep, region == "north", year == 2016), "EP North Region 2016")
+p3 <-plotHist(filter(ep, region == "north", year == 2017), "EP North Region 2017")
+p4 <-plotHist(filter(ep, region == "north", year == 2018), "EP North Region 2018")
+jpeg("figures/bodySize/EP/EPByYrsNorth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#North Central
+p1 <-plotHist(filter(ep, region == "north_central", year == 2015), "EP North-Central Region")
+p2 <-plotHist(filter(ep, region == "north_central", year == 2016), "EP North-Central Region 2016")
+p3 <-plotHist(filter(ep, region == "north_central", year == 2017), "EP North-Central Region 2017")
+p4 <-plotHist(filter(ep, region == "north_central", year == 2018), "EP North-Central Region 2018")
+jpeg("figures/bodySize/EP/EPByYrsNorthCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#Central
+p1 <-plotHist(filter(ep, region == "central", year == 2015), "EP Central Region 2015")
+p2 <-plotHist(filter(ep, region == "central", year == 2016), "EP Central Region 2016")
+p3 <-plotHist(filter(ep, region == "central", year == 2017), "EP Central Region 2017")
+p4 <-plotHist(filter(ep, region == "central", year == 2018), "EP Central Region 2018")
+jpeg("figures/bodySize/EP/EPByYrsCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#South
+p1 <-plotHist(filter(ep, region == "south", year == 2015), "EP South Region 2015")
+p2 <-plotHist(filter(ep, region == "south", year == 2016), "EP South Region 2016")
+p3 <-plotHist(filter(ep, region == "south", year == 2017), "EP South Region 2017")
+p4 <-plotHist(filter(ep, region == "south", year == 2018), "EP South Region 2018")
+jpeg("figures/bodySize/EP/EPByYrsSouth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+
+#filter to TS only
+ts <- filter(lengths, species =="TS")
 #TS, all time, all regions
+jpeg("figures/bodySize/TS/tsAllYrsAllReg.jpg")
+plotHist(ts, "T. spinifera, all years, all regions")
+dev.off()
 #TS, all time, by region
+p1 <-plotHist(filter(ts, region == "north"), "TS North Region")
+p2 <-plotHist(filter(ts, region == "north_central"), "TS North-Central Region")
+p3 <-plotHist(filter(ts, region == "central"), "TS Central Region")
+p4 <-plotHist(filter(ts, region == "south"), "TS South Region")
+jpeg("figures/bodySize/TS/tsAllYrsByReg.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #TS, by time, all regions
+p1 <-plotHist(filter(ts, year == 2015), "TS 2015")
+p2 <-plotHist(filter(ts, year == 2016), "TS 2016")
+p3 <-plotHist(filter(ts, year == 2017), "TS 2017")
+p4 <-plotHist(filter(ts, year == 2018), "TS 2018")
+jpeg("figures/bodySize/TS/tsByYrsAllReg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #TS, by time by region
+#North
+p1 <-plotHist(filter(ts, region == "north", year == 2015), "TS North Region 2015")
+p2 <-plotHist(filter(ts, region == "north", year == 2016), "TS North Region 2016")
+p3 <-plotHist(filter(ts, region == "north", year == 2017), "TS North Region 2017")
+p4 <-plotHist(filter(ts, region == "north", year == 2018), "TS North Region 2018")
+jpeg("figures/bodySize/TS/tsByYrsNorth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#North Central
+p1 <-plotHist(filter(ts, region == "north_central", year == 2015), "TS North-Central Region")
+p2 <-plotHist(filter(ts, region == "north_central", year == 2016), "TS North-Central Region 2016")
+p3 <-plotHist(filter(ts, region == "north_central", year == 2017), "TS North-Central Region 2017")
+p4 <-plotHist(filter(ts, region == "north_central", year == 2018), "TS North-Central Region 2018")
+jpeg("figures/bodySize/TS/tsByYrsNorthCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#Central
+p1 <-plotHist(filter(ts, region == "central", year == 2015), "TS Central Region 2015")
+p2 <-plotHist(filter(ts, region == "central", year == 2016), "TS Central Region 2016")
+p3 <-plotHist(filter(ts, region == "central", year == 2017), "TS Central Region 2017")
+p4 <-plotHist(filter(ts, region == "central", year == 2018), "TS Central Region 2018")
+jpeg("figures/bodySize/TS/tsByYrsCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#South
+p1 <-plotHist(filter(ts, region == "south", year == 2015), "TS South Region 2015")
+p2 <-plotHist(filter(ts, region == "south", year == 2016), "TS South Region 2016")
+p3 <-plotHist(filter(ts, region == "south", year == 2017), "TS South Region 2017")
+p4 <-plotHist(filter(ts, region == "south", year == 2018), "TS South Region 2018")
+jpeg("figures/bodySize/TS/tsByYrsSouth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+
+#filter to ND only
+nd <- filter(lengths, species =="ND")
 #ND, all time, all regions
+jpeg("figures/bodySize/ND/NDAllYrsAllReg.jpg")
+plotHist(ND, "N.difficilis, all years, all regions")
+dev.off()
 #ND, all time, by region
+p1 <-plotHist(filter(nd, region == "north"), "ND North Region")
+p2 <-plotHist(filter(nd, region == "north_central"), "ND North-Central Region")
+p3 <-plotHist(filter(nd, region == "central"), "ND Central Region")
+p4 <-plotHist(filter(nd, region == "south"), "ND South Region")
+jpeg("figures/bodySize/ND/ndAllYrsByReg.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #ND, by time, all regions
+p1 <-plotHist(filter(nd, year == 2015), "ND 2015")
+p2 <-plotHist(filter(nd, year == 2016), "ND 2016")
+p3 <-plotHist(filter(nd, year == 2017), "ND 2017")
+p4 <-plotHist(filter(nd, year == 2018), "ND 2018")
+jpeg("figures/bodySize/ND/ndByYrsAllReg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #ND, by time by region
+#North
+p1 <-plotHist(filter(nd, region == "north", year == 2015), "ND North Region 2015")
+p2 <-plotHist(filter(nd, region == "north", year == 2016), "ND North Region 2016")
+p3 <-plotHist(filter(nd, region == "north", year == 2017), "ND North Region 2017")
+p4 <-plotHist(filter(nd, region == "north", year == 2018), "ND North Region 2018")
+jpeg("figures/bodySize/ND/ndByYrsNorth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#North Central
+p1 <-plotHist(filter(nd, region == "north_central", year == 2015), "ND North-Central Region")
+p2 <-plotHist(filter(nd, region == "north_central", year == 2016), "ND North-Central Region 2016")
+p3 <-plotHist(filter(nd, region == "north_central", year == 2017), "ND North-Central Region 2017")
+p4 <-plotHist(filter(nd, region == "north_central", year == 2018), "ND North-Central Region 2018")
+jpeg("figures/bodySize/ND/ndByYrsNorthCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#Central
+p1 <-plotHist(filter(nd, region == "central", year == 2015), "ND Central Region 2015")
+p2 <-plotHist(filter(nd, region == "central", year == 2016), "ND Central Region 2016")
+p3 <-plotHist(filter(nd, region == "central", year == 2017), "ND Central Region 2017")
+p4 <-plotHist(filter(nd, region == "central", year == 2018), "ND Central Region 2018")
+jpeg("figures/bodySize/ND/ndByYrsCentral.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#South
+p1 <-plotHist(filter(nd, region == "south", year == 2015), "ND South Region 2015")
+p2 <-plotHist(filter(nd, region == "south", year == 2016), "ND South Region 2016")
+p3 <-plotHist(filter(nd, region == "south", year == 2017), "ND South Region 2017")
+p4 <-plotHist(filter(nd, region == "south", year == 2018), "ND South Region 2018")
+jpeg("figures/bodySize/ND/ndByYrsSouth.jpg")
+grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
 #======
