@@ -170,13 +170,21 @@ p4 <-plotHist(filter(lengths, region == "south"), "South Region")
 jpeg("figures/bodySize/allSppAllYrsByReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/allSppAllYrsByReg_boxplot.jpg")
+boxplot(length~region, lengths)
+dev.off()
 #All species, by time, all regions
 p1 <-plotHist(filter(lengths, year == 2015), "2015")
 p2 <-plotHist(filter(lengths, year == 2016), "2016")
 p3 <-plotHist(filter(lengths, year == 2017), "2017")
 p4 <-plotHist(filter(lengths, year == 2018), "2018")
-jpeg("figures/bodySize/allSppByYrsAllReg")
+jpeg("figures/bodySize/allSppByYrsAllReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/allSppByYrsAllReg_boxplot.jpg")
+boxplot(length~year, lengths)
 dev.off()
 #All species, by time by region
 #North
@@ -187,6 +195,10 @@ p4 <-plotHist(filter(lengths, region == "north", year == 2018), "North Region 20
 jpeg("figures/bodySize/allSppByYrsNorth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/allSppByYrsNorth_boxplot.jpg")
+boxplot(length~year, filter(lengths, region == "north"))
+dev.off()
 #North Central
 p1 <-plotHist(filter(lengths, region == "north_central", year == 2015), "North-Central Region")
 p2 <-plotHist(filter(lengths, region == "north_central", year == 2016), "North-Central Region 2016")
@@ -194,6 +206,10 @@ p3 <-plotHist(filter(lengths, region == "north_central", year == 2017), "North-C
 p4 <-plotHist(filter(lengths, region == "north_central", year == 2018), "North-Central Region 2018")
 jpeg("figures/bodySize/allSppByYrsNorthCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/allSppByYrsNorthCentral_boxplot.jpg")
+boxplot(length~year, filter(lengths, region == "north_central"))
 dev.off()
 #Central
 p1 <-plotHist(filter(lengths, region == "central", year == 2015), "Central Region 2015")
@@ -203,6 +219,10 @@ p4 <-plotHist(filter(lengths, region == "central", year == 2018), "Central Regio
 jpeg("figures/bodySize/allSppByYrsCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/allSppByYrsCentral_boxplot.jpg")
+boxplot(length~year, filter(lengths, region == "central"))
+dev.off()
 #South
 p1 <-plotHist(filter(lengths, region == "south", year == 2015), "South Region 2015")
 p2 <-plotHist(filter(lengths, region == "south", year == 2016), "South Region 2016")
@@ -210,6 +230,10 @@ p3 <-plotHist(filter(lengths, region == "south", year == 2017), "South Region 20
 p4 <-plotHist(filter(lengths, region == "south", year == 2018), "South Region 2018")
 jpeg("figures/bodySize/allSppByYrsSouth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/allSppByYrsSouth_boxplot.jpg")
+boxplot(length~year, filter(lengths, region == "south"))
 dev.off()
 
 #filter to EP only
@@ -226,13 +250,21 @@ p4 <-plotHist(filter(ep, region == "south"), "EP South Region")
 jpeg("figures/bodySize/EP/EPAllYrsByReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/EP/EPAllYrsByReg_boxplot.jpg")
+boxplot(length~region, ep)
+dev.off()
 #EP, by time, all regions
 p1 <-plotHist(filter(ep, year == 2015), "EP 2015")
 p2 <-plotHist(filter(ep, year == 2016), "EP 2016")
 p3 <-plotHist(filter(ep, year == 2017), "EP 2017")
 p4 <-plotHist(filter(ep, year == 2018), "EP 2018")
-jpeg("figures/bodySize/EP/EPByYrsAllReg")
+jpeg("figures/bodySize/EP/EPByYrsAllReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/EP/EPByYrsAllReg_boxplot.jpg")
+boxplot(length~year, ep)
 dev.off()
 #EP, by time by region
 #North
@@ -243,6 +275,10 @@ p4 <-plotHist(filter(ep, region == "north", year == 2018), "EP North Region 2018
 jpeg("figures/bodySize/EP/EPByYrsNorth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/EP/EPByYrsNorth_boxplot.jpg")
+boxplot(length~year, filter(ep, region == "north"))
+dev.off()
 #North Central
 p1 <-plotHist(filter(ep, region == "north_central", year == 2015), "EP North-Central Region")
 p2 <-plotHist(filter(ep, region == "north_central", year == 2016), "EP North-Central Region 2016")
@@ -250,6 +286,10 @@ p3 <-plotHist(filter(ep, region == "north_central", year == 2017), "EP North-Cen
 p4 <-plotHist(filter(ep, region == "north_central", year == 2018), "EP North-Central Region 2018")
 jpeg("figures/bodySize/EP/EPByYrsNorthCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/EP/EPByYrsNorthCentral_boxplot.jpg")
+boxplot(length~year, filter(ep, region == "north_central"))
 dev.off()
 #Central
 p1 <-plotHist(filter(ep, region == "central", year == 2015), "EP Central Region 2015")
@@ -259,6 +299,10 @@ p4 <-plotHist(filter(ep, region == "central", year == 2018), "EP Central Region 
 jpeg("figures/bodySize/EP/EPByYrsCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/EP/EPByYrsCentral_boxplot.jpg")
+boxplot(length~year, filter(ep, region == "central"))
+dev.off()
 #South
 p1 <-plotHist(filter(ep, region == "south", year == 2015), "EP South Region 2015")
 p2 <-plotHist(filter(ep, region == "south", year == 2016), "EP South Region 2016")
@@ -266,6 +310,10 @@ p3 <-plotHist(filter(ep, region == "south", year == 2017), "EP South Region 2017
 p4 <-plotHist(filter(ep, region == "south", year == 2018), "EP South Region 2018")
 jpeg("figures/bodySize/EP/EPByYrsSouth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/EP/EPByYrsSouth_boxplot.jpg")
+boxplot(length~year, filter(ep, region == "south"))
 dev.off()
 
 #filter to TS only
@@ -282,13 +330,21 @@ p4 <-plotHist(filter(ts, region == "south"), "TS South Region")
 jpeg("figures/bodySize/TS/tsAllYrsByReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/TS/tsAllYrsByReg_boxplot.jpg")
+boxplot(length~region, ts)
+dev.off()
 #TS, by time, all regions
 p1 <-plotHist(filter(ts, year == 2015), "TS 2015")
 p2 <-plotHist(filter(ts, year == 2016), "TS 2016")
 p3 <-plotHist(filter(ts, year == 2017), "TS 2017")
 p4 <-plotHist(filter(ts, year == 2018), "TS 2018")
-jpeg("figures/bodySize/TS/tsByYrsAllReg")
+jpeg("figures/bodySize/TS/tsByYrsAllReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/TS/tsByYrsAllReg_boxplot.jpg")
+boxplot(length~year, ts)
 dev.off()
 #TS, by time by region
 #North
@@ -299,6 +355,10 @@ p4 <-plotHist(filter(ts, region == "north", year == 2018), "TS North Region 2018
 jpeg("figures/bodySize/TS/tsByYrsNorth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/TS/tsByYrsNorth_boxplot.jpg")
+boxplot(length~year, filter(ts, region == "north"))
+dev.off()
 #North Central
 p1 <-plotHist(filter(ts, region == "north_central", year == 2015), "TS North-Central Region")
 p2 <-plotHist(filter(ts, region == "north_central", year == 2016), "TS North-Central Region 2016")
@@ -306,6 +366,10 @@ p3 <-plotHist(filter(ts, region == "north_central", year == 2017), "TS North-Cen
 p4 <-plotHist(filter(ts, region == "north_central", year == 2018), "TS North-Central Region 2018")
 jpeg("figures/bodySize/TS/tsByYrsNorthCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/TS/tsByYrsNorthCentral_boxplot.jpg")
+boxplot(length~year, filter(ts, region == "north_central"))
 dev.off()
 #Central
 p1 <-plotHist(filter(ts, region == "central", year == 2015), "TS Central Region 2015")
@@ -315,6 +379,10 @@ p4 <-plotHist(filter(ts, region == "central", year == 2018), "TS Central Region 
 jpeg("figures/bodySize/TS/tsByYrsCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/TS/tsByYrsCentral_boxplot.jpg")
+boxplot(length~year, filter(ts, region == "central"))
+dev.off()
 #South
 p1 <-plotHist(filter(ts, region == "south", year == 2015), "TS South Region 2015")
 p2 <-plotHist(filter(ts, region == "south", year == 2016), "TS South Region 2016")
@@ -322,6 +390,10 @@ p3 <-plotHist(filter(ts, region == "south", year == 2017), "TS South Region 2017
 p4 <-plotHist(filter(ts, region == "south", year == 2018), "TS South Region 2018")
 jpeg("figures/bodySize/TS/tsByYrsSouth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/TS/tsByYrsSouth_boxplot.jpg")
+boxplot(length~year, filter(ts, region == "south"))
 dev.off()
 
 #filter to ND only
@@ -338,13 +410,21 @@ p4 <-plotHist(filter(nd, region == "south"), "ND South Region")
 jpeg("figures/bodySize/ND/ndAllYrsByReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/ND/ndAllYrsByReg_boxplot.jpg")
+boxplot(length~region, nd)
+dev.off()
 #ND, by time, all regions
 p1 <-plotHist(filter(nd, year == 2015), "ND 2015")
 p2 <-plotHist(filter(nd, year == 2016), "ND 2016")
 p3 <-plotHist(filter(nd, year == 2017), "ND 2017")
 p4 <-plotHist(filter(nd, year == 2018), "ND 2018")
-jpeg("figures/bodySize/ND/ndByYrsAllReg")
+jpeg("figures/bodySize/ND/ndByYrsAllReg.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/ND/ndByYrsAllReg_boxplot.jpg")
+boxplot(length~year, nd)
 dev.off()
 #ND, by time by region
 #North
@@ -355,6 +435,10 @@ p4 <-plotHist(filter(nd, region == "north", year == 2018), "ND North Region 2018
 jpeg("figures/bodySize/ND/ndByYrsNorth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/ND/ndByYrsNorth_boxplot.jpg")
+boxplot(length~year, filter(nd, region == "north"))
+dev.off()
 #North Central
 p1 <-plotHist(filter(nd, region == "north_central", year == 2015), "ND North-Central Region")
 p2 <-plotHist(filter(nd, region == "north_central", year == 2016), "ND North-Central Region 2016")
@@ -362,6 +446,10 @@ p3 <-plotHist(filter(nd, region == "north_central", year == 2017), "ND North-Cen
 p4 <-plotHist(filter(nd, region == "north_central", year == 2018), "ND North-Central Region 2018")
 jpeg("figures/bodySize/ND/ndByYrsNorthCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/ND/ndByYrsNorthCentral_boxplot.jpg")
+boxplot(length~year, filter(nd, region == "north_central"))
 dev.off()
 #Central
 p1 <-plotHist(filter(nd, region == "central", year == 2015), "ND Central Region 2015")
@@ -371,6 +459,10 @@ p4 <-plotHist(filter(nd, region == "central", year == 2018), "ND Central Region 
 jpeg("figures/bodySize/ND/ndByYrsCentral.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
 dev.off()
+#boxplot
+jpeg("figures/bodySize/ND/ndByYrsCentral_boxplot.jpg")
+boxplot(length~year, filter(nd, region == "central"))
+dev.off()
 #South
 p1 <-plotHist(filter(nd, region == "south", year == 2015), "ND South Region 2015")
 p2 <-plotHist(filter(nd, region == "south", year == 2016), "ND South Region 2016")
@@ -378,5 +470,9 @@ p3 <-plotHist(filter(nd, region == "south", year == 2017), "ND South Region 2017
 p4 <-plotHist(filter(nd, region == "south", year == 2018), "ND South Region 2018")
 jpeg("figures/bodySize/ND/ndByYrsSouth.jpg")
 grid.arrange(p1, p2, p3, p4, nrow = 4)
+dev.off()
+#boxplot
+jpeg("figures/bodySize/ND/ndByYrsSouth_boxplot.jpg")
+boxplot(length~year, filter(nd, region == "south"))
 dev.off()
 #======
