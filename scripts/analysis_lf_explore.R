@@ -485,3 +485,10 @@ ggplot(ep16, aes(x = length, y = latitude, group = latitude)) +
   geom_density_ridges()
 ggsave("figures/bodySize/ridges/2016_ep.jpeg")
 #========
+#Waterfall plots for all years and all species
+five <- filter(lengths, year == 2015)
+six <- filter(lengths, year == 2016)
+seven <- filter(lengths, year == 2017)
+eight <- filter(lengths, year == 2018)
+ggplot(eight, aes(x = length, y = latitude, group = latitude)) +
+  geom_density_ridges()
