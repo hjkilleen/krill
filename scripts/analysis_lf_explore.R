@@ -20,7 +20,7 @@ vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes",
 names(lengths) <- vars
 #add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, length = pixels/scale)
-lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sTS = "")))
+lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))
 #filter to only the stations we are including in the analysis
 lengths <- filter(lengths, station %in% allSites)
 lengths <- left_join(lengths, regions, by = "station")
