@@ -14,11 +14,12 @@ SouthernCA <- c(481, 482, 402)
 #All sites
 allSites <- c(FortRoss, PointReyes, GulfFarallons, SanMateo, Davenport, MontereyBay, PiedrasBlancas, MorroBay, SantaBarbara, MidChannelIslands, SouthernCA)
 
-#As a dataframe
+#As a dataframe (lats are from mean latitude of corresponding "area" in MWT dataset, except for San Mateo, which I estimated on google maps, and Monterey, which is an average value of all the MWT Monterey sites)
 regions <- data.frame(
   station = allSites,
   sites = c("FortRoss", "FortRoss", "FortRoss", "FortRoss", "PointReyes", "PointReyes", "PointReyes", "GulfFarallons", "GulfFarallons", "GulfFarallons", "GulfFarallons", "SanMateo", "SanMateo", "SanMateo", "Davenport", "Davenport", "MontereyBay", "MontereyBay", "MontereyBay", "MontereyBay", "PiedrasBlancas", "PiedrasBlancas", "MorroBay", "MorroBay", "MorroBay", "SantaBarbara", "SantaBarbara", "MidChannelIslands", "MidChannelIslands", "MidChannelIslands", "MidChannelIslands", "SouthernCA", "SouthernCA", "SouthernCA"),
-  region = c("north", "north", "north", "north", "north", "north", "north", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "central", "central", "central", "central", "central", "south", "south", "south", "south", "south", "south", "south", "south", "south")
+  region = c("north", "north", "north", "north", "north", "north", "north", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "central", "central", "central", "central", "central", "south", "south", "south", "south", "south", "south", "south", "south", "south"),
+  latitude = c(38.4667, 38.4667, 38.4667, 38.4667, 38.1667, 38.1667, 38.1667, 37.7061277456647, 37.7061277456647, 37.7061277456647, 37.7061277456647, 37.5137, 37.5137, 37.5137, 36.9833, 36.9833, 36.65131, 36.65131, 36.65131, 36.65131, 35.7033, 35.7033, 35, 35, 35, 34.15, 34.15, 33.54717, 33.54717, 33.54717, 33.54717, 32.87108, 32.87108, 32.87108)
 )
 
 #For each year 
