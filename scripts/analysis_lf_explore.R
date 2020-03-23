@@ -12,6 +12,7 @@ library(readxl)
 library(lubridate)
 library(e1071) #for histogram stats
 library(ggridges)
+library(formattable)
 source("scripts/functions/length_frequency.R")
 source("scripts/functions/regions.R")
 
@@ -137,20 +138,8 @@ ggsave("figures/regions_hist/SouthernCA.pdf", x, device = "pdf")
 
 #Create dataframe with histogram summary statistics 2015-2018 as available
 #======
-#subset full lengths dataset to the priority stations
-onshore <- filter(lengthss, station %in% regions$onshore)
-offshore <- filter(lengthss, station %in% regions$offshore)
-#create region and station list
-on <-select(regions, region, onshore)
-off <-select(regions, region, offshore)
-names(on) <- c("region", "station")
-names(off) <- c("region", "station")
-stations <- bind_rows(on, off)
-subLengths <- full_join(onshore, offshore)
-#add region variable to LF priority lengths dataset
-subLengths <- left_join(subLengths, stations, by = "station")
-lfStats <- summarize(group_by_at(subLengths, vars(station, species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
-lfStats <- left_join(lfStats, stations, by = "station")
+lfStats <- summarize(group_by_at(lengths, vars(species, year)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+formattable(lfStats)
 #look at the same data by species
 epStats <- filter(lfStats, species == "EP")
 tsStats <- filter(lfStats, species == "TS")
