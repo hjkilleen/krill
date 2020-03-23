@@ -11,6 +11,7 @@ library(stringr)
 library(readxl)
 library(lubridate)
 library(e1071) #for histogram stats
+library(ggridges)
 source("scripts/functions/length_frequency.R")
 source("scripts/functions/regions.R")
 
@@ -476,3 +477,11 @@ jpeg("figures/bodySize/ND/ndByYrsSouth_boxplot.jpg")
 boxplot(length~year, filter(nd, region == "south"))
 dev.off()
 #======
+
+#Create waterfall plot for 2016 EP across all latitudes
+#========
+ep16 <- filter(lengths, year == 2016, species == "EP")
+ggplot(ep16, aes(x = length, y = latitude, group = latitude)) +
+  geom_density_ridges()
+ggsave("figures/bodySize/ridges/2016_ep.jpeg")
+#========
