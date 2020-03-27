@@ -481,3 +481,38 @@ seven <- filter(lengths, year == 2017)
 eight <- filter(lengths, year == 2018)
 ggplot(eight, aes(x = length, y = latitude, group = latitude)) +
   geom_density_ridges()
+
+#Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
+#=========
+#load data
+lengthsBaldo <- read.csv("data/lengthsBaldo.csv")
+vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by")
+names(lengthsBaldo) <- vars
+#add lengths variable multiplying pixels by scale measure
+lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)
+lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))
+#get locational information
+lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
+#merge with 2015-2018 dataset
+allLengths <- rbind(lengths, lengthsBaldo)
+
+#summary statistics
+stats <- summarize(group_by_at(filter(allLengths, region == "north_central"), vars(species, year, region)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+formattable(stats)
+
+#boxplots
+boxplot(length~year, filter(allLengths, region == "north_central"))
+ggsave("figures/bodySize/earlyYearsNorthCentral.jpg")
+
+#Epac only
+boxplot(length~year, filter(allLengths, region == "north_central", species == "EP"))
+ggsave("figures/bodySize/earlyYearsNorthCentralEP.jpg")
+
+#Tspin only
+boxplot(length~year, filter(allLengths, region == "north_central", species == "TS"))
+ggsave("figures/bodySize/earlyYearsNorthCentralTS.jpg")
+
+#Ndiff only
+boxplot(length~year, filter(allLengths, region == "north_central", species == "ND"))
+ggsave("figures/bodySize/earlyYearsNorthCentralND.jpg")
+#=========
