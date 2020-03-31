@@ -476,12 +476,24 @@ ggsave("figures/bodySize/ridges/2016_ep.jpeg")
 #========
 #Waterfall plots for all years and all species
 five <- filter(lengths, year == 2015)
-six <- filter(lengths, year == 2016)
-seven <- filter(lengths, year == 2017)
+six <- filter(lengths, year == 2016, species == "EP")
+seven <- filter(lengths, year == 2017, species == "EP")
 eight <- filter(lengths, year == 2018)
-ggplot(eight, aes(x = length, y = latitude, group = latitude)) +
-  geom_density_ridges()
 
+#2016 and 2017 side by side
+a <- rbind(six, seven)
+ggplot(a, aes(y = latitude)) + 
+  geom_density_ridges(aes(x = length, fill = paste(latitude, year), alpha = 0.8, scale = 0.8)) +
+  scale_fill_cyclical(values = c("red", "royalblue"))
+ggsave("figures/bodySize/ridges/EP_CA_16.17.jpg")
+
+#SoCal 2015-2017 stacked
+c <- rbind(five, six, seven)
+c <- filter(c, latitude < 36)
+ggplot(c, aes(y = latitude)) + 
+  geom_density_ridges(aes(x = length, fill = paste(latitude, year), alpha = 0.8, scale = 0.8)) +
+  scale_fill_cyclical(values = c("green3", "red", "royalblue"))
+ggsave("figures/bodySize/ridges/EP_So_15.16.17.jpg")
 #Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
 #=========
 #load data
