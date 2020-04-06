@@ -493,7 +493,7 @@ ggplot(a, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year
   scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80"), labels = c("2015", "2016", "2017")) +
   labs(x = "Length (mm)", y = "Latitude", title = "Eupahusia pacifica Body Length by Latitude and Year") + 
   geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
-  ggsave("figures/bodySize/ridges/EP_CA_15.16.17.jpg", width = 6, height = 10)
+  ggsave("figures/bodySize/latitude/EP_CA_15.16.17.jpg", width = 6, height = 10)
 
 #Companion table for median, mean, and mode
 epTab15 <- summarize(group_by(filter(a, year == 2015), lat.fac), median15 = median(length))
@@ -517,7 +517,7 @@ ggplot(b, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year
   scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80"), labels = c("2015", "2016", "2017")) +
   labs(x = "Length (mm)", y = "Latitude", title = "Thysanoessa spinifera Body Length by Latitude and Year") + 
   geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
-  ggsave("figures/bodySize/ridges/TS_CA_15.16.17.jpg", width = 6, height = 10)
+  ggsave("figures/bodySize/latitude/TS_CA_15.16.17.jpg", width = 6, height = 10)
 
 #SoCal 2015-2017 stacked
 c <- rbind(five, six, seven)
@@ -526,7 +526,7 @@ ggplot(c, aes(y = latitude)) +
   geom_density_ridges(aes(x = length, fill = paste(latitude, year)), scale = 0.8, rel_min_height = .01) +
   scale_fill_cyclical(values = c("#ff000080", "#00ff0080", "#0000ff80"), name = "Year", guide = "legend", labels = c("2015", "2016", "2017")) +
   labs(x = "Length (mm)" , y = "Latitude", title = "Nematocelis difficilis body lengths") + 
-  ggsave("figures/bodySize/ridges/ND_So_15.16.17.jpg")
+  ggsave("figures/bodySize/latitude/ND_So_15.16.17.jpg")
 
 #Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
 #=========
@@ -547,18 +547,25 @@ stats <- summarize(group_by_at(filter(allLengths, region == "north_central"), va
 formattable(stats)
 
 #boxplots
+#All species
 boxplot(length~year, filter(allLengths, region == "north_central"))
-ggsave("figures/bodySize/earlyYearsNorthCentral.jpg")
+ggsave("figures/bodySize/time/NorthCentral.jpg")
 
-#Epac only
+#EP only
 boxplot(length~year, filter(allLengths, region == "north_central", species == "EP"))
 ggsave("figures/bodySize/earlyYearsNorthCentralEP.jpg")
+boxplot(length~year, filter(allLengths, region == "north", species == "EP"))
+ggsave("figures/bodySize/time/NorthEP.jpg")
 
-#Tspin only
+#TS only
 boxplot(length~year, filter(allLengths, region == "north_central", species == "TS"))
-ggsave("figures/bodySize/earlyYearsNorthCentralTS.jpg")
+ggsave("figures/bodySize/time/NorthCentralTS.jpg")
+boxplot(length~year, filter(allLengths, region == "north", species == "TS"))
+ggsave("figures/bodySize/time/NorthTS.jpg")
 
-#Ndiff only
+#ND only
 boxplot(length~year, filter(allLengths, region == "north_central", species == "ND"))
-ggsave("figures/bodySize/earlyYearsNorthCentralND.jpg")
+ggsave("figures/bodySize/time/NorthCentralND.jpg")
+boxplot(length~year, filter(allLengths, region == "north", species == "ND"))
+ggsave("figures/bodySize/time/NorthNS.jpg")
 #=========
