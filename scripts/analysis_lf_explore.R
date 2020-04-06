@@ -552,20 +552,26 @@ boxplot(length~year, filter(allLengths, region == "north_central"))
 ggsave("figures/bodySize/time/NorthCentral.jpg")
 
 #EP only
+jpeg("figures/bodySize/time/NorthCentralEP.jpg")
 boxplot(length~year, filter(allLengths, region == "north_central", species == "EP"))
-ggsave("figures/bodySize/earlyYearsNorthCentralEP.jpg")
+dev.off()
+jpeg("figures/bodySize/time/NorthEP.jpg")
 boxplot(length~year, filter(allLengths, region == "north", species == "EP"))
-ggsave("figures/bodySize/time/NorthEP.jpg")
+dev.off()
 
 #TS only
+jpeg("figures/bodySize/time/NorthCentralTS.jpg")
 boxplot(length~year, filter(allLengths, region == "north_central", species == "TS"))
-ggsave("figures/bodySize/time/NorthCentralTS.jpg")
+dev.off()
+jpeg("figures/bodySize/time/NorthTS.jpg")
 boxplot(length~year, filter(allLengths, region == "north", species == "TS"))
-ggsave("figures/bodySize/time/NorthTS.jpg")
+dev.off()
 
 #ND only
+jpeg("figures/bodySize/time/NorthCentralND.jpg")
 boxplot(length~year, filter(allLengths, region == "north_central", species == "ND"))
-ggsave("figures/bodySize/time/NorthCentralND.jpg")
+dev.off()
+jpeg("figures/bodySize/time/NorthNS.jpg")
 boxplot(length~year, filter(allLengths, region == "north", species == "ND"))
-ggsave("figures/bodySize/time/NorthNS.jpg")
+dev.off()
 #=========
