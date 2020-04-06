@@ -476,24 +476,58 @@ ggsave("figures/bodySize/ridges/2016_ep.jpeg")
 #========
 #Waterfall plots for all years and all species
 five <- filter(lengths, year == 2015)
-six <- filter(lengths, year == 2016, species == "EP")
-seven <- filter(lengths, year == 2017, species == "EP")
+six <- filter(lengths, year == 2016)
+seven <- filter(lengths, year == 2017)
 eight <- filter(lengths, year == 2018)
 
-#2016 and 2017 side by side
-a <- rbind(six, seven)
-ggplot(a, aes(y = latitude)) + 
-  geom_density_ridges(aes(x = length, fill = paste(latitude, year), alpha = 0.8, scale = 0.8)) +
-  scale_fill_cyclical(values = c("red", "royalblue"))
-ggsave("figures/bodySize/ridges/EP_CA_16.17.jpg")
+#EP 2015-2017 whole coast 
+a <- rbind(five, six, seven)
+a <- filter(a, species == "EP")
+a$lat.round <- round(a$latitude, 1)
+a$lat.fac <- as.factor(a$lat.round)
+a$year <- as.factor(a$year)
+
+ggplot(a, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year, point_color = year)) + 
+  geom_density_ridges(scale = 0.9, rel_min_height = .01) + 
+  xlim(10, 30) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80"), labels = c("2015", "2016", "2017")) +
+  labs(x = "Length (mm)", y = "Latitude", title = "Eupahusia pacifica Body Length by Latitude and Year") + 
+  geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
+  ggsave("figures/bodySize/ridges/EP_CA_15.16.17.jpg", width = 6, height = 10)
+
+#Companion table for median, mean, and mode
+epTab15 <- summarize(group_by(filter(a, year == 2015), lat.fac), median15 = median(length))
+epTab15 <- distinct(left_join(epTab15, select(a, lat.fac, sites)))
+epTab16 <- summarize(group_by(filter(a, year == 2016), lat.fac), median16 = median(length))
+epTab16 <- distinct(left_join(epTab16, select(a, lat.fac, sites)))
+epTab17 <- summarize(group_by(filter(a, year == 2017), lat.fac), median17 = median(length))
+epTab17 <- distinct(left_join(epTab17, select(a, lat.fac, sites)))
+merge(epTab15, epTab16, by = sites)
+formattable(epTab)
+
+#TS 2015-2016 whole coast
+b <- rbind(five, six, seven)
+b <- filter(b, species == "TS")
+b$lat.round <- round(b$latitude, 1)
+b$lat.fac <- as.factor(b$lat.round)
+b$year <- as.factor(b$year)
+
+ggplot(b, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year, point_color = year)) + 
+  geom_density_ridges(scale = 0.9, rel_min_height = .01) + 
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80"), labels = c("2015", "2016", "2017")) +
+  labs(x = "Length (mm)", y = "Latitude", title = "Thysanoessa spinifera Body Length by Latitude and Year") + 
+  geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
+  ggsave("figures/bodySize/ridges/TS_CA_15.16.17.jpg", width = 6, height = 10)
 
 #SoCal 2015-2017 stacked
 c <- rbind(five, six, seven)
-c <- filter(c, latitude < 36)
+c <- filter(c, latitude < 36, species == "ND")
 ggplot(c, aes(y = latitude)) + 
-  geom_density_ridges(aes(x = length, fill = paste(latitude, year), alpha = 0.8, scale = 0.8)) +
-  scale_fill_cyclical(values = c("green3", "red", "royalblue"))
-ggsave("figures/bodySize/ridges/EP_So_15.16.17.jpg")
+  geom_density_ridges(aes(x = length, fill = paste(latitude, year)), scale = 0.8, rel_min_height = .01) +
+  scale_fill_cyclical(values = c("#ff000080", "#00ff0080", "#0000ff80"), name = "Year", guide = "legend", labels = c("2015", "2016", "2017")) +
+  labs(x = "Length (mm)" , y = "Latitude", title = "Nematocelis difficilis body lengths") + 
+  ggsave("figures/bodySize/ridges/ND_So_15.16.17.jpg")
+
 #Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
 #=========
 #load data
