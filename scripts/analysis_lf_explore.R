@@ -548,9 +548,9 @@ formattable(stats)
 
 #boxplots
 #All species
+jpeg("figures/bodySize/time/NorthCentral.jpg")
 boxplot(length~year, filter(allLengths, region == "north_central"))
-ggsave("figures/bodySize/time/NorthCentral.jpg")
-
+dev.off()
 #EP only
 jpeg("figures/bodySize/time/NorthCentralEP.jpg")
 boxplot(length~year, filter(allLengths, region == "north_central", species == "EP"))
