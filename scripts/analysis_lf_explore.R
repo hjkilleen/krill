@@ -571,7 +571,7 @@ dev.off()
 jpeg("figures/bodySize/time/NorthCentralND.jpg")
 boxplot(length~year, filter(allLengths, region == "north_central", species == "ND"))
 dev.off()
-jpeg("figures/bodySize/time/NorthNS.jpg")
+jpeg("figures/bodySize/time/NorthND.jpg")
 boxplot(length~year, filter(allLengths, region == "north", species == "ND"))
 dev.off()
 #=========
