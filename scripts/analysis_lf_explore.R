@@ -496,14 +496,7 @@ ggplot(a, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year
   ggsave("figures/bodySize/latitude/EP_CA_15.16.17.jpg", width = 6, height = 10)
 
 #Companion table for median, mean, and mode
-epTab15 <- summarize(group_by(filter(a, year == 2015), lat.fac), median15 = median(length))
-epTab15 <- distinct(left_join(epTab15, select(a, lat.fac, sites)))
-epTab16 <- summarize(group_by(filter(a, year == 2016), lat.fac), median16 = median(length))
-epTab16 <- distinct(left_join(epTab16, select(a, lat.fac, sites)))
-epTab17 <- summarize(group_by(filter(a, year == 2017), lat.fac), median17 = median(length))
-epTab17 <- distinct(left_join(epTab17, select(a, lat.fac, sites)))
-merge(epTab15, epTab16, by = sites)
-formattable(epTab)
+
 
 #TS 2015-2016 whole coast
 b <- rbind(five, six, seven)
@@ -539,8 +532,9 @@ lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)
 lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))
 #get locational information
 lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
-#merge with 2015-2018 dataset
+#merge with 2015-2018 dataset and omit na
 allLengths <- rbind(lengths, lengthsBaldo)
+allLengths <- na.omit(allLengths)
 
 #summary statistics
 stats <- summarize(group_by_at(filter(allLengths, region == "north_central"), vars(species, year, region)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
