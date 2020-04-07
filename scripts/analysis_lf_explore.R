@@ -479,7 +479,9 @@ ggplot(filter(lengths, species == "EP"), aes(x = year, y = length, fill = year))
   geom_boxplot(width = 0.1) +
   scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
   facet_grid(rows = vars(region)) +
-  labs(x = "Year", y = "Length (mm)", title = "")
+  labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by region and year") + 
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/latitude/epRegPoolingViolin.jpg")
 
 #Break data into yearly subsets
 five <- filter(lengths, year == 2015)
