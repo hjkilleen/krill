@@ -500,7 +500,7 @@ levels(a$region) <-c("north", "north_central", "central", "south")
 ep <- summarize(group_by_at(a, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ep <- ep[order(ep$region, ep$year),]
 formattable(ep)
-ggsave("output/timeEP.jpg")
+write.csv(ep, "output/timeEP.csv")
 
 #TS 2015-2016 whole coast
 b <- rbind(five, six, seven)
@@ -521,7 +521,7 @@ levels(b$region) <-c("north", "north_central", "central", "south")
 ts <- summarize(group_by_at(b, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ts <- ts[order(ts$region, ts$year),]
 formattable(ts)
-ggsave("output/timeTS.jpg")
+write.csv(ts, "output/timeTS.csv")
 
 #SoCal 2015-2017 stacked
 c <- rbind(five, six, seven)
@@ -536,7 +536,7 @@ ggplot(c, aes(y = latitude)) +
 nd <- summarize(group_by_at(c, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 nd <- nd[order(nd$region, nd$year),]
 formattable(nd)
-ggsave("output/timeND.jpg")
+write.csv(nd, "output/timeND.csv")
 #========
 
 #Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
