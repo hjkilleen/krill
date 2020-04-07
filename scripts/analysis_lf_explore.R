@@ -467,11 +467,10 @@ boxplot(length~year, filter(nd, region == "south"))
 dev.off()
 #======
 
-#Create 
+#LATITUDINAL ANALYSIS 
 
-#Create waterfall plot across all latitudes
-#========
 #Violin plot with pooling within regions
+#=============
 lengths$year <- as.factor(lengths$year)
 #EP
 ggplot(filter(lengths, species == "EP"), aes(x = year, y = length, fill = year)) +
@@ -481,8 +480,42 @@ ggplot(filter(lengths, species == "EP"), aes(x = year, y = length, fill = year))
   facet_grid(rows = vars(region)) +
   labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by region and year") + 
   theme(text = element_text(size = 14)) +
-  ggsave("figures/bodySize/latitude/epRegPoolingViolin.jpg")
+  ggsave("figures/bodySize/latitude/epRegPoolingViolin.jpg", width = 5, height = 9)
+#companion summary stats
+ep <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+ep <- ep[order(ep$region, ep$year),]
+formattable(ep)
 
+#TS
+ggplot(filter(lengths, species == "TS"), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
+  facet_grid(rows = vars(region)) +
+  labs(x = "Year", y = "Length (mm)", title = "T. spinifera lengths by region and year") + 
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/latitude/tsRegPoolingViolin.jpg", width = 5, height = 9)
+#companion summary stats
+ts <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+ts <- ts[order(ep$region, ep$year),]
+formattable(ts)
+
+#ND
+ggplot(filter(lengths, species == "ND"), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080"===, "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
+  facet_grid(rows = vars(region)) +
+  labs(x = "Year", y = "Length (mm)", title = "N. difficilis lengths by region and year") + 
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/latitude/ndRegPoolingViolin.jpg", width = 5, height = 9)
+#companion summary stats
+nd <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+nd <- nd[order(ep$region, ep$year),]
+formattable(nd)
+#=============
+#Waterfall plots for regional variation
+#=============
 #Break data into yearly subsets
 five <- filter(lengths, year == 2015)
 six <- filter(lengths, year == 2016)
@@ -505,7 +538,6 @@ ggplot(a, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year
   ggsave("figures/bodySize/latitude/EP_CA_15.16.17.jpg", width = 6, height = 10)
 
 #Companion table of summary stats
-levels(a$region) <-c("north", "north_central", "central", "south")
 ep <- summarize(group_by_at(a, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ep <- ep[order(ep$region, ep$year),]
 formattable(ep)
