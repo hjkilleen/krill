@@ -495,8 +495,12 @@ ggplot(a, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year
   geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
   ggsave("figures/bodySize/latitude/EP_CA_15.16.17.jpg", width = 6, height = 10)
 
-#Companion table for median, mean, and mode
-
+#Companion table of summary stats
+levels(a$region) <-c("north", "north_central", "central", "south")
+ep <- summarize(group_by_at(a, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+ep <- ep[order(ep$region, ep$year),]
+formattable(ep)
+ggsave("output/timeEP.jpg")
 
 #TS 2015-2016 whole coast
 b <- rbind(five, six, seven)
@@ -512,6 +516,13 @@ ggplot(b, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year
   geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
   ggsave("figures/bodySize/latitude/TS_CA_15.16.17.jpg", width = 6, height = 10)
 
+#Companion table of summary stats
+levels(b$region) <-c("north", "north_central", "central", "south")
+ts <- summarize(group_by_at(b, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+ts <- ts[order(ts$region, ts$year),]
+formattable(ts)
+ggsave("output/timeTS.jpg")
+
 #SoCal 2015-2017 stacked
 c <- rbind(five, six, seven)
 c <- filter(c, latitude < 36, species == "ND")
@@ -520,6 +531,13 @@ ggplot(c, aes(y = latitude)) +
   scale_fill_cyclical(values = c("#ff000080", "#00ff0080", "#0000ff80"), name = "Year", guide = "legend", labels = c("2015", "2016", "2017")) +
   labs(x = "Length (mm)" , y = "Latitude", title = "Nematocelis difficilis body lengths") + 
   ggsave("figures/bodySize/latitude/ND_So_15.16.17.jpg")
+
+#Companion table of summary stats
+nd <- summarize(group_by_at(c, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+nd <- nd[order(nd$region, nd$year),]
+formattable(nd)
+ggsave("output/timeND.jpg")
+#========
 
 #Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
 #=========
