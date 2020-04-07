@@ -467,14 +467,21 @@ boxplot(length~year, filter(nd, region == "south"))
 dev.off()
 #======
 
-#Create waterfall plot for 2016 EP across all latitudes
+#Create 
+
+#Create waterfall plot across all latitudes
 #========
-ep16 <- filter(lengths, year == 2016, species == "EP")
-ggplot(ep16, aes(x = length, y = latitude, group = latitude)) +
-  geom_density_ridges()
-ggsave("figures/bodySize/ridges/2016_ep.jpeg")
-#========
-#Waterfall plots for all years and all species
+#Violin plot with pooling within regions
+lengths$year <- as.factor(lengths$year)
+#EP
+ggplot(filter(lengths, species == "EP"), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
+  facet_grid(rows = vars(region)) +
+  labs(x = "Year", y = "Length (mm)", title = "")
+
+#Break data into yearly subsets
 five <- filter(lengths, year == 2015)
 six <- filter(lengths, year == 2016)
 seven <- filter(lengths, year == 2017)
