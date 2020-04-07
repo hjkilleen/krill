@@ -21,6 +21,7 @@ regions <- data.frame(
   region = c("north", "north", "north", "north", "north", "north", "north", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "north_central", "central", "central", "central", "central", "central", "south", "south", "south", "south", "south", "south", "south", "south", "south"),
   latitude = c(38.4667, 38.4667, 38.4667, 38.4667, 38.1667, 38.1667, 38.1667, 37.7061277456647, 37.7061277456647, 37.7061277456647, 37.7061277456647, 37.5137, 37.5137, 37.5137, 36.9833, 36.9833, 36.65131, 36.65131, 36.65131, 36.65131, 35.7033, 35.7033, 35, 35, 35, 34.15, 34.15, 33.54717, 33.54717, 33.54717, 33.54717, 32.87108, 32.87108, 32.87108)
 )
+regions$region <- factor(regions$region, levels = c("north", "north_central", "central", "south"))
 
 #For each year 
 sites2015 <- data.frame(
