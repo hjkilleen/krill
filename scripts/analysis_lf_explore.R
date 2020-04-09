@@ -484,7 +484,8 @@ ggplot(filter(lengths, species == "EP"), aes(x = year, y = length, fill = year))
 #companion summary stats
 ep <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ep <- ep[order(ep$region, ep$year),]
-formattable(ep)
+ep <- na.omit(ep)
+formattable(ep, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
 
 #TS
 ggplot(filter(lengths, species == "TS"), aes(x = year, y = length, fill = year)) +
@@ -498,7 +499,8 @@ ggplot(filter(lengths, species == "TS"), aes(x = year, y = length, fill = year))
 #companion summary stats
 ts <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ts <- ts[order(ep$region, ep$year),]
-formattable(ts)
+ts <- na.omit(ts)
+formattable(ts, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
 
 #ND
 ggplot(filter(lengths, species == "ND"), aes(x = year, y = length, fill = year)) +
@@ -512,8 +514,8 @@ ggplot(filter(lengths, species == "ND"), aes(x = year, y = length, fill = year))
 #companion summary stats
 nd <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 nd <- nd[order(ep$region, ep$year),]
-formattable(nd)
-#=============
+nd <- na.omit(nd)
+formattable(nd, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))#=============
 #Waterfall plots for regional variation
 #=============
 #Break data into yearly subsets
