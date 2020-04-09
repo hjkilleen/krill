@@ -482,7 +482,7 @@ ggplot(filter(lengths, species == "EP"), aes(x = year, y = length, fill = year))
   theme(text = element_text(size = 14)) +
   ggsave("figures/bodySize/latitude/epRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
-ep <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+ep <- summarize(group_by_at(filter(lengths, species == "EP"), vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ep <- ep[order(ep$region, ep$year),]
 ep <- na.omit(ep)
 formattable(ep, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
@@ -497,7 +497,7 @@ ggplot(filter(lengths, species == "TS"), aes(x = year, y = length, fill = year))
   theme(text = element_text(size = 14)) +
   ggsave("figures/bodySize/latitude/tsRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
-ts <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+ts <- summarize(group_by_at(filter(lengths, species == "TS"), vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ts <- ts[order(ts$region, ts$year),]
 ts <- na.omit(ts)
 formattable(ts, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
@@ -512,10 +512,11 @@ ggplot(filter(lengths, species == "ND"), aes(x = year, y = length, fill = year))
   theme(text = element_text(size = 14)) +
   ggsave("figures/bodySize/latitude/ndRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
-nd <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+nd <- summarize(group_by_at(filter(lengths, species == "ND"), vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 nd <- nd[order(nd$region, nd$year),]
 nd <- na.omit(nd)
-formattable(nd, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))#=============
+formattable(nd, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
+#=============
 #Waterfall plots for regional variation
 #=============
 #Break data into yearly subsets
