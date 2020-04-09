@@ -498,7 +498,7 @@ ggplot(filter(lengths, species == "TS"), aes(x = year, y = length, fill = year))
   ggsave("figures/bodySize/latitude/tsRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
 ts <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
-ts <- ts[order(ep$region, ep$year),]
+ts <- ts[order(ts$region, ts$year),]
 ts <- na.omit(ts)
 formattable(ts, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
 
@@ -506,14 +506,14 @@ formattable(ts, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA9
 ggplot(filter(lengths, species == "ND"), aes(x = year, y = length, fill = year)) +
   geom_violin() +
   geom_boxplot(width = 0.1) +
-  scale_fill_manual(values = c("#ff000080", "#00ff0080"===, "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
   facet_grid(rows = vars(region)) +
   labs(x = "Year", y = "Length (mm)", title = "N. difficilis lengths by region and year") + 
   theme(text = element_text(size = 14)) +
   ggsave("figures/bodySize/latitude/ndRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
 nd <- summarize(group_by_at(lengths, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
-nd <- nd[order(ep$region, ep$year),]
+nd <- nd[order(nd$region, nd$year),]
 nd <- na.omit(nd)
 formattable(nd, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))#=============
 #Waterfall plots for regional variation
