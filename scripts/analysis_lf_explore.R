@@ -552,62 +552,45 @@ ggplot(filter(lengths, species == "ND"), aes(x = region, y = length, fill = regi
 #=============
 #Waterfall plots for regional variation
 #=============
-#Break data into yearly subsets
-five <- filter(lengths, year == 2015)
-six <- filter(lengths, year == 2016)
-seven <- filter(lengths, year == 2017)
-eight <- filter(lengths, year == 2018)
+#EP whole coast 
+ep <- filter(lengths, species == "EP")
+ep$lat.round <- round(ep$latitude, 1)
+ep$lat.fac <- as.factor(ep$lat.round)
+ep$year <- as.factor(ep$year)
 
-#EP 2015-2017 whole coast 
-a <- rbind(five, six, seven)
-a <- filter(a, species == "EP")
-a$lat.round <- round(a$latitude, 1)
-a$lat.fac <- as.factor(a$lat.round)
-a$year <- as.factor(a$year)
-
-ggplot(a, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year, point_color = year)) + 
+ggplot(ep, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year, point_color = year)) + 
   geom_density_ridges(scale = 0.9, rel_min_height = .01) + 
   xlim(10, 30) +
-  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80"), labels = c("2015", "2016", "2017")) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
   labs(x = "Length (mm)", y = "Latitude", title = "Eupahusia pacifica Body Length by Latitude and Year") + 
   geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
-  ggsave("figures/bodySize/latitude/EP_CA_15.16.17.jpg", width = 6, height = 10)
-
-#Companion table of summary stats
-ep <- summarize(group_by_at(a, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
-ep <- ep[order(ep$region, ep$year),]
-formattable(ep)
-write.csv(ep, "output/timeEP.csv")
+  ggsave("figures/bodySize/latitude/epWaterfall.jpg", width = 6, height = 10)
 
 #TS 2015-2016 whole coast
-b <- rbind(five, six, seven)
-b <- filter(b, species == "TS")
-b$lat.round <- round(b$latitude, 1)
-b$lat.fac <- as.factor(b$lat.round)
-b$year <- as.factor(b$year)
+ts <- filter(lengths, species == "TS")
+ts$lat.round <- round(ts$latitude, 1)
+ts$lat.fac <- as.factor(ts$lat.round)
+ts$year <- as.factor(ts$year)
 
-ggplot(b, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year, point_color = year)) + 
+ggplot(ts, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year, point_color = year)) + 
   geom_density_ridges(scale = 0.9, rel_min_height = .01) + 
-  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80"), labels = c("2015", "2016", "2017")) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
   labs(x = "Length (mm)", y = "Latitude", title = "Thysanoessa spinifera Body Length by Latitude and Year") + 
   geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
-  ggsave("figures/bodySize/latitude/TS_CA_15.16.17.jpg", width = 6, height = 10)
-
-#Companion table of summary stats
-levels(b$region) <-c("north", "north_central", "central", "south")
-ts <- summarize(group_by_at(b, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
-ts <- ts[order(ts$region, ts$year),]
-formattable(ts)
-write.csv(ts, "output/timeTS.csv")
+  ggsave("figures/bodySize/latitude/tsWaterfall.jpg", width = 6, height = 10)
 
 #SoCal 2015-2017 stacked
-c <- rbind(five, six, seven)
-c <- filter(c, latitude < 36, species == "ND")
-ggplot(c, aes(y = latitude)) + 
-  geom_density_ridges(aes(x = length, fill = paste(latitude, year)), scale = 0.8, rel_min_height = .01) +
-  scale_fill_cyclical(values = c("#ff000080", "#00ff0080", "#0000ff80"), name = "Year", guide = "legend", labels = c("2015", "2016", "2017")) +
-  labs(x = "Length (mm)" , y = "Latitude", title = "Nematocelis difficilis body lengths") + 
-  ggsave("figures/bodySize/latitude/ND_So_15.16.17.jpg")
+nd <- filter(lengths, species == "ND")
+nd$lat.round <- round(nd$latitude, 1)
+nd$lat.fac <- as.factor(nd$lat.round)
+nd$year <- as.factor(nd$year)
+
+ggplot(nd, aes(x = length, y = lat.fac, group = paste(lat.fac, year), fill = year, point_color = year)) + 
+  geom_density_ridges(scale = 0.9, rel_min_height = .01) + 
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
+  labs(x = "Length (mm)", y = "Latitude", title = "Nematocelis difficilis Body Length by Latitude and Year") + 
+  geom_hline(yintercept = c(4, 6, 10), color = "black", alpha = .5) + 
+  ggsave("figures/bodySize/latitude/tsWaterfall.jpg", width = 6, height = 10)
 
 #Companion table of summary stats
 nd <- summarize(group_by_at(c, vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
@@ -628,11 +611,13 @@ lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(l
 #get locational information
 lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
 #merge with 2015-2018 dataset and omit na
+lengthsBaldo$year <- as.factor(lengthsBaldo$year)
 allLengths <- rbind(lengths, lengthsBaldo)
 allLengths <- na.omit(allLengths)
 
-#summary statistics
-stats <- summarize(group_by_at(filter(allLengths, region == "north_central"), vars(species, year, region)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
+#EP summary statistics
+ep <- filter(allLengths, species == "EP")
+epStats <- summarize(group_by_at(filter(ep, region == "north_central"), vars(species, year, region)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 formattable(stats)
 
 #boxplots
