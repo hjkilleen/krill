@@ -469,7 +469,7 @@ dev.off()
 
 #LATITUDINAL ANALYSIS 
 
-#Violin plot with pooling within regions
+#Violin plot, pooling within regions, lengths x years
 #=============
 lengths$year <- as.factor(lengths$year)
 #EP
@@ -480,12 +480,12 @@ ggplot(filter(lengths, species == "EP"), aes(x = year, y = length, fill = year))
   facet_grid(rows = vars(region)) +
   labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by region and year") + 
   theme(text = element_text(size = 14)) +
-  ggsave("figures/bodySize/latitude/epRegPoolingViolin.jpg", width = 5, height = 9)
+  ggsave("figures/bodySize/time/epRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
 ep <- summarize(group_by_at(filter(lengths, species == "EP"), vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ep <- ep[order(ep$region, ep$year),]
 ep <- na.omit(ep)
-formattable(ep, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
+formattable(ep, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97")))
 
 #TS
 ggplot(filter(lengths, species == "TS"), aes(x = year, y = length, fill = year)) +
@@ -495,12 +495,12 @@ ggplot(filter(lengths, species == "TS"), aes(x = year, y = length, fill = year))
   facet_grid(rows = vars(region)) +
   labs(x = "Year", y = "Length (mm)", title = "T. spinifera lengths by region and year") + 
   theme(text = element_text(size = 14)) +
-  ggsave("figures/bodySize/latitude/tsRegPoolingViolin.jpg", width = 5, height = 9)
+  ggsave("figures/bodySize/time/tsRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
 ts <- summarize(group_by_at(filter(lengths, species == "TS"), vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 ts <- ts[order(ts$region, ts$year),]
 ts <- na.omit(ts)
-formattable(ts, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
+formattable(ts, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97")))
 
 #ND
 ggplot(filter(lengths, species == "ND"), aes(x = year, y = length, fill = year)) +
@@ -510,12 +510,45 @@ ggplot(filter(lengths, species == "ND"), aes(x = year, y = length, fill = year))
   facet_grid(rows = vars(region)) +
   labs(x = "Year", y = "Length (mm)", title = "N. difficilis lengths by region and year") + 
   theme(text = element_text(size = 14)) +
-  ggsave("figures/bodySize/latitude/ndRegPoolingViolin.jpg", width = 5, height = 9)
+  ggsave("figures/bodySize/time/ndRegPoolingViolin.jpg", width = 5, height = 9)
 #companion summary stats
 nd <- summarize(group_by_at(filter(lengths, species == "ND"), vars(year, region)), mean = mean(length), median = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 nd <- nd[order(nd$region, nd$year),]
 nd <- na.omit(nd)
-formattable(nd, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97"), `kurtosis` = color_bar("#FA614B")))
+formattable(nd, list(`mean` = color_bar("#FA614B"), `median` = color_bar("#71CA97"), `sd` = color_bar("#FA614B"), `skew` = color_bar("#71CA97")))
+#=============
+#Violin plot, pooling within regions, length x regions
+#=============
+lengths$year <- as.factor(lengths$year)
+#EP
+ggplot(filter(lengths, species == "EP"), aes(x = region, y = length, fill = region)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#DAF7A680", "#FFC30080", "#FF573380", "#C7003980"), labels = c("north", "north_central", "central", "south")) +
+  facet_grid(rows = vars(year)) +
+  labs(x = "Region", y = "Length (mm)", title = "E. pacifica lengths by region and year") +
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/latitude/epRegPoolingViolin.jpg", width = 5, height = 9)
+#companion summary stats, use from time analysis violin plots, but change ordering
+#TS
+ggplot(filter(lengths, species == "TS"), aes(x = region, y = length, fill = region)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#DAF7A680", "#FFC30080", "#FF573380", "#C7003980"), labels = c("north", "north_central", "central", "south")) +
+  facet_grid(rows = vars(year)) +
+  labs(x = "Region", y = "Length (mm)", title = "T. spinifera lengths by region and year") +
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/latitude/tsRegPoolingViolin.jpg", width = 5, height = 9)
+#ND
+ggplot(filter(lengths, species == "ND"), aes(x = region, y = length, fill = region)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#DAF7A680", "#FFC30080", "#FF573380", "#C7003980"), labels = c("north", "north_central", "central", "south")) +
+  facet_grid(rows = vars(year)) +
+  labs(x = "Region", y = "Length (mm)", title = "E. pacifica lengths by region and year") +
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/latitude/ndRegPoolingViolin.jpg", width = 5, height = 9)
+#companion summary stats, use from time analysis violin plots, but change ordering
 #=============
 #Waterfall plots for regional variation
 #=============
