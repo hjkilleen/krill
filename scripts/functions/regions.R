@@ -1,5 +1,5 @@
 #List of sites and corresponding stations
-FortRoss <- c(183, 452, 453, 454)
+FortRoss <- c(183, 453, 454)
 PointReyes <- c(166, 167, 170, 171)
 GulfFarallons <- c(138, 139, 152, 156)
 SanMateo <- c(131, 132, 134)
