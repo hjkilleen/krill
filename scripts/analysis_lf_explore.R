@@ -18,7 +18,7 @@ source("scripts/functions/regions.R")
 
 #LOAD DATA
 lengths <- read.csv("data/lengths.csv")
-vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by")
+vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by", "issue")
 names(lengths) <- vars
 #add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, length = pixels/scale)
