@@ -599,6 +599,8 @@ formattable(nd)
 write.csv(nd, "output/timeND.csv")
 #========
 
+#TIME ANALYSIS
+
 #Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
 #=========
 #load data
