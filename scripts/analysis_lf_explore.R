@@ -18,7 +18,8 @@ source("scripts/functions/regions.R")
 
 #LOAD DATA
 lengths <- read.csv("data/lengths.csv")
-vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by", "issue")
+lengths <- lengths[,-11]
+vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by")
 names(lengths) <- vars
 #add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, length = pixels/scale)
@@ -622,18 +623,18 @@ ep <- filter(allLengths, species == "EP")
 epStats <- summarize(group_by_at(filter(ep, region == "north_central"), vars(species, year, region)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 formattable(stats)
 
-#boxplots
-#All species
-jpeg("figures/bodySize/time/NorthCentral.jpg")
-boxplot(length~year, filter(allLengths, region == "north_central"))
-dev.off()
-#EP only
-jpeg("figures/bodySize/time/NorthCentralEP.jpg")
-boxplot(length~year, filter(allLengths, region == "north_central", species == "EP"))
-dev.off()
-jpeg("figures/bodySize/time/NorthEP.jpg")
-boxplot(length~year, filter(allLengths, region == "north", species == "EP"))
-dev.off()
+#EP violin plot
+ggplot(filter(allLengths, species == "EP"), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("white", "grey", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2015", "2016", "2017", "2018")) +
+  facet_grid(rows = vars(region)) +
+  labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by region and year") + 
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/time/epRegPoolingViolin.jpg", width = 5, height = 9)
+#sd plot
+
+#skew plot
 
 #TS only
 jpeg("figures/bodySize/time/NorthCentralTS.jpg")
