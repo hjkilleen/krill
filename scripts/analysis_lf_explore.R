@@ -24,6 +24,8 @@ names(lengths) <- vars
 #add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, length = pixels/scale)
 lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))
+#add variable for number of observations for each station/year/species/sex
+add_tally(group_by_at(lengths, vars(year, station, species, sex)))
 #filter to only the stations we are including in the analysis
 lengths <- filter(lengths, station %in% allSites)
 lengths <- left_join(lengths, regions, by = "station")
@@ -620,8 +622,7 @@ allLengths <- na.omit(allLengths)
 
 #EP summary statistics
 ep <- filter(allLengths, species == "EP")
-epStats <- summarize(group_by_at(filter(ep, region == "north_central"), vars(species, year, region)), med = median(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
-formattable(stats)
+epStats <- summarize(group_by_at(ep, vars(species, year, region)), med = median(length), mean = mean(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 
 #EP violin plot
 ggplot(filter(allLengths, species == "EP"), aes(x = year, y = length, fill = year)) +
@@ -633,7 +634,9 @@ ggplot(filter(allLengths, species == "EP"), aes(x = year, y = length, fill = yea
   theme(text = element_text(size = 14)) +
   ggsave("figures/bodySize/time/epRegPoolingViolin.jpg", width = 5, height = 9)
 #sd plot
-
+ggplot(epStats, aes(year, sd, color = region)) + 
+  geom_point() +
+  geom_line(group = epStats$region)
 #skew plot
 
 #TS only
