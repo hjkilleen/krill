@@ -629,7 +629,8 @@ epStats <- summarize(group_by_at(ep, vars(species, year, region)), med = median(
 
 #EP violin plot
 #summary data
-summ <- summarize(group_by_at(filter(allLengths, species == "EP"), vars(year, region)), max = max(length), n=n())
+summ <- summarize(group_by_at(filter(allLengths, species == "EP"), vars(year, region)), max = max(length), n=n(), mean = round(mean(length), 1))
+#plot
 ggplot(filter(allLengths, species == "EP"), aes(x = year, y = length, fill = year)) +
   geom_violin() +
   geom_boxplot(width = 0.1) +
@@ -637,26 +638,42 @@ ggplot(filter(allLengths, species == "EP"), aes(x = year, y = length, fill = yea
   facet_grid(rows = vars(region)) +
   labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by region and year") + 
   geom_text(data = summ, aes(x = year, y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
-  theme(text = element_text(size = 14))
+  geom_text(data = summ, aes(x = year, y = max + 9, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/EP/byRegionByYear.jpg", width = 7, height = 9)
 #sd plot
 ggplot(epStats, aes(year, sd, color = region)) + 
   geom_point() +
   geom_line(group = epStats$region)
 #skew plot
 
-#TS only
-jpeg("figures/bodySize/time/NorthCentralTS.jpg")
-boxplot(length~year, filter(allLengths, region == "north_central", species == "TS"))
-dev.off()
-jpeg("figures/bodySize/time/NorthTS.jpg")
-boxplot(length~year, filter(allLengths, region == "north", species == "TS"))
-dev.off()
+#TS violin plot
+#summary data
+summ <- summarize(group_by_at(filter(allLengths, species == "TS"), vars(year, region)), max = max(length), n=n(), mean = round(mean(length), 1))
+#plot
+ggplot(filter(allLengths, species == "TS"), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("white", "grey", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2015", "2016", "2017", "2018")) +
+  facet_grid(rows = vars(region)) +
+  labs(x = "Year", y = "Length (mm)", title = "T. spinifera lengths by region and year") + 
+  geom_text(data = summ, aes(x = year, y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
+  geom_text(data = summ, aes(x = year, y = max + 9, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/TS/byRegionByYear.jpg", width = 7, height = 9)
 
-#ND only
-jpeg("figures/bodySize/time/NorthCentralND.jpg")
-boxplot(length~year, filter(allLengths, region == "north_central", species == "ND"))
-dev.off()
-jpeg("figures/bodySize/time/NorthND.jpg")
-boxplot(length~year, filter(allLengths, region == "north", species == "ND"))
-dev.off()
+#ND violin plot
+#summary data
+summ <- summarize(group_by_at(filter(allLengths, species == "ND"), vars(year, region)), max = max(length), n=n(), mean = round(mean(length), 1))
+#plot
+ggplot(filter(allLengths, species == "ND"), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("white", "grey", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2015", "2016", "2017", "2018")) +
+  facet_grid(rows = vars(region)) +
+  labs(x = "Year", y = "Length (mm)", title = "N. difficilis lengths by region and year") + 
+  geom_text(data = summ, aes(x = year, y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
+  geom_text(data = summ, aes(x = year, y = max + 9, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
+  theme(text = element_text(size = 14)) +
+  ggsave("figures/bodySize/ND/byRegionByYear.jpg", width = 7, height = 9)
 #=========
