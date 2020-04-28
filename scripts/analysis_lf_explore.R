@@ -619,20 +619,25 @@ lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
 lengthsBaldo$year <- as.factor(lengthsBaldo$year)
 allLengths <- rbind(lengths, lengthsBaldo)
 allLengths <- na.omit(allLengths)
+#allLengths <- filter(allLengths, length <50, length >10)
+
+geom_text(data=Summary.data ,aes(x = Species, y = avg, label=n),color="red", fontface =2, size = 5)
 
 #EP summary statistics
 ep <- filter(allLengths, species == "EP")
 epStats <- summarize(group_by_at(ep, vars(species, year, region)), med = median(length), mean = mean(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
 
 #EP violin plot
+#summary data
+summ <- summarize(group_by_at(filter(allLengths, species == "EP"), vars(year, region)), max = max(length), n=n())
 ggplot(filter(allLengths, species == "EP"), aes(x = year, y = length, fill = year)) +
   geom_violin() +
   geom_boxplot(width = 0.1) +
   scale_fill_manual(values = c("white", "grey", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2015", "2016", "2017", "2018")) +
   facet_grid(rows = vars(region)) +
   labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by region and year") + 
-  theme(text = element_text(size = 14)) +
-  ggsave("figures/bodySize/time/epRegPoolingViolin.jpg", width = 5, height = 9)
+  geom_text(data = summ, aes(x = year, y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
+  theme(text = element_text(size = 14))
 #sd plot
 ggplot(epStats, aes(year, sd, color = region)) + 
   geom_point() +
