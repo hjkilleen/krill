@@ -30,6 +30,20 @@ add_tally(group_by_at(lengths, vars(year, station, species, sex)))
 lengths <- filter(lengths, station %in% allSites)
 lengths <- left_join(lengths, regions, by = "station")
 save(lengths, file = "data/lengths.rda")
+#load 2011&2012 data and merge with 2015-2018 dataset
+lengthsBaldo <- read.csv("data/lengthsBaldo.csv")
+vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by")
+names(lengthsBaldo) <- vars
+#add lengths variable multiplying pixels by scale measure
+lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)
+lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))
+#get locational information
+lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
+#merge with 2015-2018 dataset and omit na
+lengthsBaldo$year <- as.factor(lengthsBaldo$year)
+allLengths <- rbind(lengths, lengthsBaldo)
+allLengths <- na.omit(allLengths)
+# allLengths <- filter(allLengths, length <50, length >10)
 
 #Cross-shelf transects histograms for comparison
 #==========
@@ -604,29 +618,8 @@ write.csv(nd, "output/timeND.csv")
 
 #TIME ANALYSIS
 
-#Central region comparisons to pre-blob data RUN AGAIN AFTER PUTTING IN 2017 AND 2018 DATA
+#Full 2011-2018 dataset
 #=========
-#load data
-lengthsBaldo <- read.csv("data/lengthsBaldo.csv")
-vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by")
-names(lengthsBaldo) <- vars
-#add lengths variable multiplying pixels by scale measure
-lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)
-lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))
-#get locational information
-lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
-#merge with 2015-2018 dataset and omit na
-lengthsBaldo$year <- as.factor(lengthsBaldo$year)
-allLengths <- rbind(lengths, lengthsBaldo)
-allLengths <- na.omit(allLengths)
-#allLengths <- filter(allLengths, length <50, length >10)
-
-geom_text(data=Summary.data ,aes(x = Species, y = avg, label=n),color="red", fontface =2, size = 5)
-
-#EP summary statistics
-ep <- filter(allLengths, species == "EP")
-epStats <- summarize(group_by_at(ep, vars(species, year, region)), med = median(length), mean = mean(length), sd = sd(length), skew = skewness(length), kurtosis = kurtosis(length))
-
 #EP violin plot
 #summary data
 summ <- summarize(group_by_at(filter(allLengths, species == "EP"), vars(year, region)), max = max(length), n=n(), mean = round(mean(length), 1))
