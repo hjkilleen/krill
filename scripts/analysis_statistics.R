@@ -38,7 +38,7 @@ ep.summ <- summarise(group_by_at(ep, vars(year, region, shore)), mean = mean(len
 #EP ANOVA
 ep.aov <- aov(length~year*region*shore, data = ep)
 summary.aov(ep.aov)
-TukeyHSD(ep.aov, which = "year")
+TukeyHSD(ep.aov, which = "region")
 #ANOVA shows that there is a significant difference in the mean length of krill from different years, regions, and crossshore distributions. All interactions (two-way and three-way) were also significannt. However, looking at the TukeyHSD test statistics for pairwise comparisons reveals that these differences are not very great in magnitude, generally 1-3mm, which is arguably biologically insignificant. However, this should be tested once we have information on krill abundance, from which we can look at biomass rather than length frequency alone. 
 
 #One thing that stands out in the TukeyHSD results is that the north region seems to be different from all of the others across years. All years were different from eachopther except 2018 & 2017 in pairwise comparisons, 2011 seems to be more so and shows the largest differences in all pairwise comparisons with other years. 
@@ -62,4 +62,21 @@ hist(ts$length, main = "T. spinifera Lengths")
 hist(nd$length, main = "N. difficilis Lengths")
 dev.off()
 
+#sd by year
+ep.summ <- summarize(group_by_at(ep, vars(year, region)), sd = sd(length))
+ggplot(ep.summ, aes(x = year, y = sd, color = region))+
+  geom_point() + 
+  geom_line(aes(group = region)) + 
+  ggtitle("E. pacifica length variability")
 
+ts.summ <- summarize(group_by_at(filter(ts, region != "south"), vars(year, region)), sd = sd(length))
+ggplot(ts.summ, aes(x = year, y = sd, color = region))+
+  geom_point() + 
+  geom_line(aes(group = region)) + 
+  ggtitle("T. spinifera length variability (no South)")
+
+nd.summ <- summarize(group_by_at(filter(nd, region != "north", region != "north_central"), vars(year, region)), sd = sd(length))
+ggplot(nd.summ, aes(x = year, y = sd, color = region))+
+  geom_point() + 
+  geom_line(aes(group = region)) + 
+  ggtitle("N. difficilis length variability (South & Central Only)")
