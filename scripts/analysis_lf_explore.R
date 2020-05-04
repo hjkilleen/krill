@@ -676,3 +676,23 @@ ggplot(filter(allLengths, species == "ND"), aes(x = year, y = length, fill = yea
 
 #Differences in onshore and offshore krill
 #===========
+#EP
+ep.onoff <- summarize(group_by_at(ep, vars(station, shore, year)), length = mean(length))
+ep.onoff <- left_join(ep.onoff, select(regions, c(latitude, station)), by = "station")
+ggplot(ep.onoff, aes(latitude, length, color = shore)) +
+  geom_point() + 
+  geom_smooth(aes(group = shore), method = lm)
+
+#TS
+ts.onoff <- summarize(group_by_at(ts, vars(station, shore, year)), length = mean(length))
+ts.onoff <- left_join(ts.onoff, select(regions, c(latitude, station)), by = "station")
+ggplot(ts.onoff, aes(latitude, length, color = shore)) +
+  geom_point() + 
+  geom_smooth(aes(group = shore), method = lm)
+
+#ND
+nd.onoff <- summarize(group_by_at(nd, vars(station, shore, year)), length = mean(length))
+nd.onoff <- left_join(nd.onoff, select(regions, c(latitude, station)), by = "station")
+ggplot(nd.onoff, aes(latitude, length, color = shore)) +
+  geom_point() + 
+  geom_smooth(aes(group = shore), method = lm)
