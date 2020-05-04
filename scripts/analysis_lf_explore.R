@@ -44,7 +44,10 @@ lengthsBaldo$year <- as.factor(lengthsBaldo$year)
 allLengths <- rbind(lengths, lengthsBaldo)
 allLengths <- na.omit(allLengths)
 # allLengths <- filter(allLengths, length <50, length >10)
-
+#filter by species
+ep <- filter(allLengths, species == "EP")
+ts <- filter(allLengths, species == "TS")
+nd <- filter(allLengths, species == "ND")
 #Cross-shelf transects histograms for comparison
 #==========
 #2015 only
@@ -670,3 +673,6 @@ ggplot(filter(allLengths, species == "ND"), aes(x = year, y = length, fill = yea
   theme(text = element_text(size = 14)) +
   ggsave("figures/bodySize/ND/byRegionByYear.jpg", width = 7, height = 9)
 #=========
+
+#Differences in onshore and offshore krill
+#===========
