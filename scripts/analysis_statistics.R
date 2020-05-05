@@ -74,22 +74,22 @@ hist(ts$length, main = "T. spinifera Lengths")
 hist(nd$length, main = "N. difficilis Lengths")
 dev.off()
 
-#sd by year
+#CV by year
 #=========
-ep.summ <- summarize(group_by_at(ep, vars(year, region)), sd = sd(length))
-ggplot(ep.summ, aes(x = year, y = sd, color = region))+
+ep.summ <- summarize(group_by_at(ep, vars(year, region)), cv = cv(length))
+ggplot(ep.summ, aes(x = year, y = cv, color = region))+
   geom_point() + 
   geom_line(aes(group = region)) + 
   ggtitle("E. pacifica length variability")
 
-ts.summ <- summarize(group_by_at(filter(ts, region != "south"), vars(year, region)), sd = sd(length))
-ggplot(ts.summ, aes(x = year, y = sd, color = region))+
+ts.summ <- summarize(group_by_at(filter(ts, region != "south"), vars(year, region)), cv = cv(length))
+ggplot(ts.summ, aes(x = year, y = cv, color = region))+
   geom_point() + 
   geom_line(aes(group = region)) + 
   ggtitle("T. spinifera length variability (no South)")
 
-nd.summ <- summarize(group_by_at(filter(nd, region != "north", region != "north_central"), vars(year, region)), sd = sd(length))
-ggplot(nd.summ, aes(x = year, y = sd, color = region))+
+nd.summ <- summarize(group_by_at(filter(nd, region != "north", region != "north_central"), vars(year, region)), cv = cv(length))
+ggplot(nd.summ, aes(x = year, y = cv, color = region))+
   geom_point() + 
   geom_line(aes(group = region)) + 
   ggtitle("N. difficilis length variability (South & Central Only)")
