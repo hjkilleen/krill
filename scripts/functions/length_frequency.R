@@ -38,3 +38,8 @@ mapStations <- function(i) {
                            style = north_arrow_fancy_orienteering) +
     coord_sf(xlim = c(-125.5, -116.75), ylim = c(32.0, 42.30), expand = FALSE)
 }
+
+#Calculate the coefficient of variation as a percent value
+cv <- function(i) {
+  (sd(i, na.rm = TRUE)/mean(i, na.rm = TRUE))*100
+}
