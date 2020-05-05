@@ -9,7 +9,8 @@ sign_formatter <- formatter("span",
                                                              ifelse(x < 0, "red", "black"))))
 
 
-#Three-Way ANOVA
+#Three-Way ANOVA with individual krill as observational units
+#==========
 ep <- filter(allLengths, species == "EP")
 ts <- filter(allLengths, species == "TS")
 nd <- filter(allLengths, species == "ND")
@@ -54,6 +55,17 @@ nd.aov <- aov(length~year*region*shore, data = nd)
 summary.aov(nd.aov)
 TukeyHSD(nd.aov, which = "year")
 #All factors and interactions were significant except for region:shore. Less variability across years for NDs, 2011 remains the most different from all years with smaller mean lenghts (1-3.3 mm). The north is different from all other regions, but not by much. Otherwise, regions are similar. Onshore krill are ~0.5mm longer than offshore krill. 
+#==========
+
+#Two-way nested ANOVA with stations as observational units
+#===========
+#if you want to include sex as a factor in the final analysis then it needs to be added in the grouping variables below.
+ep.st <- summarize(group_by_at(ep, vars(station, year, sex)), mean.length = mean(length))
+ep.st <- left_join(ep.st, regions, by = "station")
+ep.st.aov <- aov(mean.length~year*region*sex, data = ep.st)
+summary.aov(ep.st.aov)
+#===========
+
 
 jpeg("figures/sideBySideAllLengths.jpg")
 par(mfrow = c(1,3))
@@ -63,6 +75,7 @@ hist(nd$length, main = "N. difficilis Lengths")
 dev.off()
 
 #sd by year
+#=========
 ep.summ <- summarize(group_by_at(ep, vars(year, region)), sd = sd(length))
 ggplot(ep.summ, aes(x = year, y = sd, color = region))+
   geom_point() + 
@@ -80,3 +93,4 @@ ggplot(nd.summ, aes(x = year, y = sd, color = region))+
   geom_point() + 
   geom_line(aes(group = region)) + 
   ggtitle("N. difficilis length variability (South & Central Only)")
+#=========
