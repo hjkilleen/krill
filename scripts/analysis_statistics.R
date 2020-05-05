@@ -59,11 +59,18 @@ TukeyHSD(nd.aov, which = "year")
 
 #Two-way nested ANOVA with stations as observational units
 #===========
+#EP
 #if you want to include sex as a factor in the final analysis then it needs to be added in the grouping variables below.
 ep.st <- summarize(group_by_at(ep, vars(station, year, sex)), mean.length = mean(length))
 ep.st <- left_join(ep.st, regions, by = "station")
 ep.st.aov <- aov(mean.length~year*region*sex, data = ep.st)
 summary.aov(ep.st.aov)
+
+#TS
+ts.st <- summarize(group_by_at(ts, vars(station, year, sex)), mean.length = mean(length))
+ts.st <- left_join(ts.st, regions, by = "station")
+ts.st.aov <- aov(mean.length~year*region*sex, data = ts.st)
+summary.aov(ts.st.aov)
 #===========
 
 
