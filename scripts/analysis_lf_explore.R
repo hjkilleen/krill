@@ -681,7 +681,8 @@ ep.onoff <- summarize(group_by_at(ep, vars(station, shore, year)), length = mean
 ep.onoff <- left_join(ep.onoff, select(regions, c(latitude, station)), by = "station")
 ggplot(ep.onoff, aes(latitude, length, color = shore)) +
   geom_point() + 
-  geom_smooth(aes(group = shore), method = lm)
+  geom_smooth(aes(group = shore), method = lm) + 
+  facet_grid(rows = vars(year))
 
 #TS
 ts.onoff <- summarize(group_by_at(ts, vars(station, shore, year)), length = mean(length))
@@ -696,3 +697,30 @@ nd.onoff <- left_join(nd.onoff, select(regions, c(latitude, station)), by = "sta
 ggplot(nd.onoff, aes(latitude, length, color = shore)) +
   geom_point() + 
   geom_smooth(aes(group = shore), method = lm)
+#=============
+
+#Differences in kirll length by sex
+#===========
+#EP
+ep.sex <- summarize(group_by_at(ep, vars(station, sex, year)), length = mean(length))
+ep.sex <- left_join(ep.sex, select(regions, c(latitude, station)), by = "station")
+ggplot(ep.sex, aes(latitude, length, color = sex)) +
+  geom_point() + 
+  geom_smooth(aes(group = sex), method = lm) + 
+  facet_grid(rows = vars(year))
+
+#TS
+ts.sex <- summarize(group_by_at(ts, vars(station, sex, year)), length = mean(length))
+ts.sex <- left_join(ts.sex, select(regions, c(latitude, station)), by = "station")
+ggplot(ts.sex, aes(latitude, length, color = sex)) +
+  geom_point() + 
+  geom_smooth(aes(group = sex), method = lm) + 
+  facet_grid(rows = vars(year))
+
+#ND
+nd.sex <- summarize(group_by_at(nd, vars(station, sex, year)), length = mean(length))
+nd.sex <- left_join(nd.sex, select(regions, c(latitude, station)), by = "station")
+ggplot(nd.sex, aes(latitude, length, color = sex)) +
+  geom_point() + 
+  geom_smooth(aes(group = sex), method = lm)
+#===========
