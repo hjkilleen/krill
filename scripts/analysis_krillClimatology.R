@@ -5,14 +5,7 @@
 #LIBRARIES AND SOURCES-----------
 library(dplyr)
 library(reshape2)
-library(ggplot2)
-library(gridExtra)
-library(stringr)
-library(readxl)
-library(lubridate)
-library(e1071) #for histogram stats
-library(ggridges)
-library(formattable)
+
 #You can find these scripts in the GitHub krill repository. Once you download them you can change the filepath to match their location on your computer.
 source("scripts/functions/length_frequency.R")
 source("scripts/functions/regions.R")
