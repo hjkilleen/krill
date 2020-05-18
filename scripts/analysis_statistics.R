@@ -1,4 +1,14 @@
+# Mon May 18 14:12:59 2020 ------------------------------
+
+jpeg("figures/sideBySideAllLengths.jpg")
+par(mfrow = c(1,3))
+hist(ep$length, main = "E. pacifica Lengths")
+hist(ts$length, main = "T. spinifera Lengths")
+hist(nd$length, main = "N. difficilis Lengths")
+dev.off()
+
 #Environmental indicators table
+#========
 env <- read_xlsx("data/environment.xlsx")
 env.means <- group_by_at(env, vars(year, region)) %>% 
   summarize(lat = mean(lat), oni = mean(oni), pdo = mean(pdo), npgo = mean(npgo), sst_anom = mean(sst_anom), temp_anom_one.hun = mean(temp_anom_one.hun), temp_anom_two.hun = mean(temp_anom_two.hun), uw_anom = mean(uw_anom))
@@ -7,7 +17,7 @@ formattable(env.means, list(`oni` = color_bar("#FA614B"), `pdo` = color_bar("#71
 sign_formatter <- formatter("span",
                             style = x ~ style(color = ifelse(x > 0, "green",
                                                              ifelse(x < 0, "red", "black"))))
-
+#===========
 
 #Three-Way ANOVA with individual krill as observational units
 #==========
@@ -72,14 +82,6 @@ ts.st <- left_join(ts.st, regions, by = "station")
 ts.st.aov <- aov(mean.length~year*region*sex, data = ts.st)
 summary.aov(ts.st.aov)
 #===========
-
-
-jpeg("figures/sideBySideAllLengths.jpg")
-par(mfrow = c(1,3))
-hist(ep$length, main = "E. pacifica Lengths")
-hist(ts$length, main = "T. spinifera Lengths")
-hist(nd$length, main = "N. difficilis Lengths")
-dev.off()
 
 #CV by year
 #=========
