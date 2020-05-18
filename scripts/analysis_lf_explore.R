@@ -43,6 +43,8 @@ lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
 lengthsBaldo$year <- as.factor(lengthsBaldo$year)
 allLengths <- rbind(lengths, lengthsBaldo)
 allLengths <- na.omit(allLengths)
+#create sample ID
+allLengths$sample <- seq(1:nrow(allLengths))
 # allLengths <- filter(allLengths, length <50, length >10)
 #filter by species
 ep <- filter(allLengths, species == "EP")
