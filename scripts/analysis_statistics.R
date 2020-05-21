@@ -1,5 +1,9 @@
 # Mon May 18 14:12:59 2020 ------------------------------
 
+#LIBRARIES & SOURCES
+
+library(lme4)
+
 jpeg("figures/sideBySideAllLengths.jpg")
 par(mfrow = c(1,3))
 hist(ep$length, main = "E. pacifica Lengths")
@@ -103,3 +107,49 @@ ggplot(nd.summ, aes(x = year, y = cv, color = region))+
   geom_line(aes(group = region)) + 
   ggtitle("N. difficilis length variability (South & Central Only)")
 #=========
+
+#Multilevel modeling
+#=======
+#use mean length for each station
+epSt <- summarise(group_by_at(ep, vars(station, year, region, sex, shore)), length = mean(length))
+#drop 2011 & 2012 until I can explore Baldo's length choice (SL1/SL2/something else)
+epRecent <- filter(ep, year != "2011", year != "2012")
+tsRecent <- filter(ts, year != "2011", year != "2012")
+
+#A full model with all species
+M1 <- lmer(length ~ year + region + sex + shore + species + (1|station), data = allLengths)
+summary (M1)
+#A model with a random intercept for station
+Me1 <- lmer(length ~ year + region + sex + shore + (1|station), data = epRecent, REML = FALSE)
+Me2 <- lmer(length ~ year + sex + shore + (1|station), data = epRecent, REML = FALSE)
+Me3 <- lmer(length ~ year*region + sex + shore + (1|station), data = epRecent, REML = FALSE)
+Me4 <- lmer(length ~ year + year:region + sex + shore + (1|station), data = epRecent, REML = FALSE) #this one has lowest AIC of the four alternatives. Prevalence of interactions suggests that a strictly physical approach would be fruitful. 
+
+AIC(Me1, Me2, Me3, Me4)
+summary(Me3)
+anova(Me1)
+fixef(Me1)
+#confidence interval plot
+ggCaterpillar(Me1)
+simMe1 <- fsim.glmm(Me1) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
+#sim sum provides confidence intervals etc.
+simsum(simMe1)
+#plot sets up ggplot for simulated data
+str(simM1)
+#plot
+plot.simsum(simM1, year)
+#A model with a random intercept for station AND a random slope to investigate the hypothesis that different stations respond differently across years
+Me2 <- lmer(length ~ year + region + sex + shore + (year|station), data = epRecent, REML = TRUE)
+summary(Me2) #improved treatment of random effects compared to model Me1 use REML=TRUE
+
+#TS
+Mt1 <- lmer(length ~ year + region + sex + shore + (1|station), data = tsRecent, REML = FALSE)
+summary(Mt1)
+
+#1 keep going on the Multilevel path, try some different model specifications and plot some simulated data. Use IC to determine how many predictors to use. Don't impute, making too big of assumptions. Bayesian helps with this too. Take note when simulating the model for combinations of predictors variables that weren't present in the dataset. 
+#Bayesian = better job of using information from data rich sites to inform data poor sites. 
+#take the physical approach and use actual temperatures, etc. but be careful about collinearity. Consider using EOF/PCA.
+#Best approach is probably to use actual physical variables and a bayesian approach
+
+
+                  
