@@ -123,21 +123,25 @@ summary (M1)
 Me1 <- lmer(length ~ year + region + sex + shore + (1|station), data = epRecent, REML = FALSE)
 Me2 <- lmer(length ~ year + sex + shore + (1|station), data = epRecent, REML = FALSE)
 Me3 <- lmer(length ~ year*region + sex + shore + (1|station), data = epRecent, REML = FALSE)
-Me4 <- lmer(length ~ year + year:region + sex + shore + (1|station), data = epRecent, REML = FALSE) #this one has lowest AIC of the four alternatives. Prevalence of interactions suggests that a strictly physical approach would be fruitful. 
+Me4 <- lmer(length ~ year + year:region + sex + shore + (1|station), data = epRecent, REML = FALSE) #Me3/Me4 have lowest AIC of the four alternatives. Prevalence of interactions suggests that a strictly physical approach would be fruitful. 
 
 AIC(Me1, Me2, Me3, Me4)
 summary(Me3)
 anova(Me1)
 fixef(Me1)
+sjPlot::plot_model(Me3)
+
+pred.Me4 <- ggpredict(Me, terms = c("year"))  # this gives overall predictions for the model
+
 #confidence interval plot
 ggCaterpillar(Me1)
-simMe1 <- fsim.glmm(Me1) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
+simMe3 <- fsim.glmm(Me3) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
 #sim sum provides confidence intervals etc.
-simsum(simMe1)
+simsumMe3 <- simsum(simMe3)
 #plot sets up ggplot for simulated data
 str(simM1)
 #plot
-plot.simsum(simM1, year)
+plot.simsum(simsumMe3, "year")
 #A model with a random intercept for station AND a random slope to investigate the hypothesis that different stations respond differently across years
 Me2 <- lmer(length ~ year + region + sex + shore + (year|station), data = epRecent, REML = TRUE)
 summary(Me2) #improved treatment of random effects compared to model Me1 use REML=TRUE
