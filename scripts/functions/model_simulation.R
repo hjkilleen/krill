@@ -69,54 +69,19 @@ simsum <- function(sim.df){
 
 
 plot.simsum <- function(simsum.in, env_predictor){
-  plot.simsum.out <- ggplot(simsum.in) + geom_hline(aes(yintercept = 0)) + geom_vline(aes(xintercept = 0)) +
-    geom_ribbon(data = simsum.in, aes(x = !!sym(env_predictor), ymin = lower.95, ymax = upper.95, fill = Location), alpha = 0.2) +
+  plot.simsum.out <- ggplot(simsum.in)  +
+    geom_ribbon(data = simsum.in, aes(x = !!sym(env_predictor), ymin = lower.95, ymax = upper.95, fill = region), alpha = 0.2) +
     geom_line(data = simsum.in, aes(x = !!sym(env_predictor), y = sim.mean,
-                                    color = Location)) +
+                                    color = region)) +
     # geom_point(data = m.jet1.sim$dpred, aes(x = env_predictor, y = predTC.respScale,
     # 	color = Location, shape = catDep)) +
     # geom_point(data = cbind(m.jet1.sim$dpred[,1:3], m.jet1.sim$dsim) %>% melt(id.vars = c('catDep', 'Location', 'env_predictor')), aes(x = env_predictor, y = value,
     # 	color = Location, shape = catDep)) +
     # facet_wrap(catDep ~ ., nrow = 2) +
-    facet_wrap(catDep ~ Location, nrow = 2, scales = 'free') +
+    #facet_wrap(year ~ region, nrow = 2, scales = 'free') +
     ylab("GAM simulated NMDS value (mean +/- 95% CI)") +
     theme_bw()
   return(plot.simsum.out)
 }
 
-ggCaterpillar <- function(re, QQ=TRUE, likeDotplot=TRUE) {
-  require(ggplot2)
-  f <- function(x) {
-    pv   <- attr(x, "postVar")
-    cols <- 1:(dim(pv)[1])
-    se   <- unlist(lapply(cols, function(i) sqrt(pv[i, i, ])))
-    ord  <- unlist(lapply(x, order)) + rep((0:(ncol(x) - 1)) * nrow(x), each=nrow(x))
-    pDf  <- data.frame(y=unlist(x)[ord],
-                       ci=1.96*se[ord],
-                       nQQ=rep(qnorm(ppoints(nrow(x))), ncol(x)),
-                       ID=factor(rep(rownames(x), ncol(x))[ord], levels=rownames(x)[ord]),
-                       ind=gl(ncol(x), nrow(x), labels=names(x)))
-    
-    if(QQ) {  ## normal QQ-plot
-      p <- ggplot(pDf, aes(nQQ, y))
-      p <- p + facet_wrap(~ ind, scales="free")
-      p <- p + xlab("Standard normal quantiles") + ylab("Random effect quantiles")
-    } else {  ## caterpillar dotplot
-      p <- ggplot(pDf, aes(ID, y)) + coord_flip()
-      if(likeDotplot) {  ## imitate dotplot() -> same scales for random effects
-        p <- p + facet_wrap(~ ind)
-      } else {           ## different scales for random effects
-        p <- p + facet_grid(ind ~ ., scales="free_y")
-      }
-      p <- p + xlab("Levels") + ylab("Random effects")
-    }
-    
-    p <- p + theme(legend.position="none")
-    p <- p + geom_hline(yintercept=0)
-    p <- p + geom_errorbar(aes(ymin=y-ci, ymax=y+ci), width=0, colour="black")
-    p <- p + geom_point(aes(size=1.2), colour="blue") 
-    return(p)
-  }
-  
-  lapply(re, f)
-}
+
