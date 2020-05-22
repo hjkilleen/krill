@@ -45,7 +45,7 @@ allLengths <- rbind(lengths, lengthsBaldo)
 allLengths <- na.omit(allLengths)
 #create sample ID
 allLengths$sample <- seq(1:nrow(allLengths))
-# allLengths <- filter(allLengths, length <50, length >10)
+allLengths <- filter(allLengths, length <50, length >10)
 #filter by species
 ep <- filter(allLengths, species == "EP")
 ts <- filter(allLengths, species == "TS")
