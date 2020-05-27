@@ -29,7 +29,7 @@ mapStations(summarize(
   group_by(rfYear, station),
   lat = mean(latitude),
   lon = mean(longitude)
-))
+), j = 25)
 dev.off()
 
 #for 2016
@@ -39,7 +39,7 @@ mapStations(summarize(
   group_by(rfYear, station),
   lat = mean(latitude),
   lon = mean(longitude)
-))
+), j = 25)
 dev.off()
 
 #for 2017
@@ -49,7 +49,7 @@ mapStations(summarize(
   group_by(rfYear, station),
   lat = mean(latitude),
   lon = mean(longitude)
-))
+), j = 25)
 dev.off()
 
 #for 2018
@@ -59,7 +59,7 @@ mapStations(summarize(
   group_by(rfYear, station),
   lat = mean(latitude),
   lon = mean(longitude)
-))
+), j = 25)
 dev.off()
 #=======
 
