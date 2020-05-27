@@ -28,7 +28,7 @@ numSamp <- function(i, data = lengths) {
 #Plot a map of CA with station locactions
 mapStations <- function(i) {
   ggplot(data = world) +
-    geom_sf(color = "black", fill = "lightgreen") +
+    geom_sf(color = "black", fill = "bisque2") +
     geom_sf(data = states, fill = NA) +
     annotation_scale(location = "bl", width_hint = 0.5) +
     geom_point(data = i, aes(x = lon, y = lat), size = 2, 
