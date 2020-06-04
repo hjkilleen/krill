@@ -1,3 +1,4 @@
+library(tidyverse)
 library(ggplot2)
 library(sf)
 library(rnaturalearth)
@@ -21,6 +22,10 @@ ggplot(data = coast) +
 #read in RF dataset for Euphausia
 rf <- read_xlsx("../../PhD/Research/Krill/RF_Survey_Data_EUPHAUSIDAE.xlsx")
 rf$time <- as_datetime(rf$time)
+#all stations from all years
+rfYear <- filter(rf, station %in% allSites)
+rfYear <- select(rfYear, station, station_longitude, station_latitude, area, bottom_depth)
+write_csv(rfYear, "data/stationMetadata.csv")
 #Pull out position information for relevant stations
 #for 2015
 rfYear <- filter(rf, station %in% allSites2015)
