@@ -3,6 +3,8 @@
 #LIBRARIES & SOURCES
 
 library(lme4)
+library(ggeffects)
+source("scripts/analysis_lf_explore.R")
 
 jpeg("figures/sideBySideAllLengths.jpg")
 par(mfrow = c(1,3))
@@ -113,35 +115,65 @@ ggplot(nd.summ, aes(x = year, y = cv, color = region))+
 #use mean length for each station
 epSt <- summarise(group_by_at(ep, vars(station, year, region, sex, shore)), length = mean(length))
 #drop 2011 & 2012 until I can explore Baldo's length choice (SL1/SL2/something else)
+allLengthsRecent <- filter(allLengths, year != "2011", year != "2012")
 epRecent <- filter(ep, year != "2011", year != "2012")
 tsRecent <- filter(ts, year != "2011", year != "2012")
 
 #A full model with all species
-M1 <- lmer(length ~ year + region + sex + shore + species + (1|station), data = allLengths)
-summary (M1)
+M1 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allLengthsRecent)
+M2 <- lmer(length ~ year*region + sex*species + species:year + shore + shore:year + (1|station), data = allLengthsRecent)
+M3 <- lmer(length ~ year*region + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsRecent)
+M4 <- lmer(length ~ year*region + sex + species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsRecent)
+
+
+AIC(M1, M2, M3, M4)
+summary (M3)
+fixef(M3)
+sjPlot::tab_model(M3, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
+sjPlot::plot_model()
 #A model with a random intercept for station
 Me1 <- lmer(length ~ year + region + sex + shore + (1|station), data = epRecent, REML = FALSE)
 Me2 <- lmer(length ~ year + sex + shore + (1|station), data = epRecent, REML = FALSE)
 Me3 <- lmer(length ~ year*region + sex + shore + (1|station), data = epRecent, REML = FALSE)
 Me4 <- lmer(length ~ year + year:region + sex + shore + (1|station), data = epRecent, REML = FALSE) #Me3/Me4 have lowest AIC of the four alternatives. Prevalence of interactions suggests that a strictly physical approach would be fruitful. 
+#test fit
+1 - var(resid(M2))/var(allLengths$length) #R=30%
+1 - var(resid(Me3))/var(epRecent$length) #R=12%
+plot(Me3)
 
 AIC(Me1, Me2, Me3, Me4)
-summary(Me3)
-anova(Me1)
-fixef(Me1)
+summar(Me3)
+anova(Me3)
+fixef(Me3)
 sjPlot::plot_model(Me3)
 
-pred.Me4 <- ggpredict(Me, terms = c("year"))  # this gives overall predictions for the model
+pred.Me3 <- ggpredict(Me3, terms = c("year"))  # this gives overall predictions for the model
 
 #confidence interval plot
-ggCaterpillar(Me1)
-simMe3 <- fsim.glmm(Me3) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
+ggCaterpillar(Me3)
+
+simM3 <- fsim.glmm(M3) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
 #sim sum provides confidence intervals etc.
-simsumMe3 <- simsum(simMe3)
+simsumM3 <- simsum(simM3)
+#simsumM3 <- filter(simsumM3, species != "ND") #drop ND for NRT presentation
 #plot sets up ggplot for simulated data
-str(simM1)
+View(simsumMe3)
 #plot
-plot.simsum(simsumMe3, "year")
+sum <- summarize(group_by_at(simsumM3, vars(species, year, region)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+ggplot(simsumM3) + 
+  geom_point(aes(x = year, y = sim.mean, color = species), alpha = 0.1) + 
+  facet_wrap(vars(region)) +   
+  #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
+  geom_line(data = sum, aes(x = as.numeric(year), y = sim.mean, color = species)) + 
+  labs(y = "Length (mm)", x = "Year", title = "Simulated krill lengths during a marine heatwave") +
+  theme(text = element_text(size = 20))
+
+ggplot(simsumM1) +
+  geom_density_ridges(aes(x = sim.mean, y = year, group = year, fill = year)) +
+  facet_wrap(simsumM1$species)
+  
 #A model with a random intercept for station AND a random slope to investigate the hypothesis that different stations respond differently across years
 Me2 <- lmer(length ~ year + region + sex + shore + (year|station), data = epRecent, REML = TRUE)
 summary(Me2) #improved treatment of random effects compared to model Me1 use REML=TRUE
@@ -155,5 +187,11 @@ summary(Mt1)
 #take the physical approach and use actual temperatures, etc. but be careful about collinearity. Consider using EOF/PCA.
 #Best approach is probably to use actual physical variables and a bayesian approach
 
+al <- summarize(group_by_at(filter(allLengths, year != "2011", year != "2012", species != "ND"), vars(year, station, species)), mean = mean(length), median = median(length), cv = cv(length), skew = skewness(length), kurtosis = kurtosis(length))
 
-                  
+ggplot(al) + 
+  geom_boxplot(aes(year, cv)) + 
+  facet_wrap(vars(species)) + 
+  theme_bw(base_size = 20) + 
+  ylim(0, 35) + 
+  labs(x = "Year", y = "Coefficient of Variation")

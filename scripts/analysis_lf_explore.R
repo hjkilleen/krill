@@ -108,58 +108,58 @@ tally <- mutate(tally, id = paste(station, species, year, sep = ""))
 lengthss <- mutate(lengthss, id = paste(station, species, year, sep = ""))
 lengthss <- filter(lengthss, id %in% tally$id)
 
-#Fort Ross line histograms
-d <- filter(lengthss, station %in% FortRoss)
-x <- histGrid(d, "Fort Ross")
-ggsave("figures/regions_hist/FortRoss.pdf", x, device = "pdf")
-#Point Reyes line histograms
-d <- filter(lengthss, station %in% PointReyes)
-x <- histGrid(d, "Point Reyes")
-ggsave("figures/regions_hist/PointReyes.pdf", x, device = "pdf")
-#Gulf of the Farallons line histograms
-d <- filter(lengthss, station %in% GulfFarallons)
-x <- histGrid(d, "Gulf of the Farallons")
-ggsave("figures/regions_hist/GoF.pdf", x, device = "pdf")
-#San Mateo line histograms
-d <- filter(lengthss, station %in% SanMateo)
-x <- histGrid(d, "San Mateo")
-ggsave("figures/regions_hist/SanMateo.pdf", x, device = "pdf")
-#Davenport line histograms
-d <- filter(lengthss, station %in% Davenport)
-x <- histGrid(d, "Davenport")
-ggsave("figures/regions_hist/Davenport.pdf", x, device = "pdf")
-#Monterey Bay line histograms
-d <- filter(lengthss, station %in% MontereyBay)
-x <- histGrid(d, "Monterey Bay")
-ggsave("figures/regions_hist/MontereyBay.pdf", x, device = "pdf")
-#Point Sur line histograms
-d <- filter(lengthss, station %in% PointSur)
-x <- histGrid(d, "Point Sur")
-ggsave("figures/regions_hist/PointSur.pdf", x, device = "pdf")
-#Piedras Blancas line histograms
-d <- filter(lengthss, station %in% PiedrasBlancas)
-x <- histGrid(d, "Piedras Blancas")
-ggsave("figures/regions_hist/PiedrasBlancas.pdf", x, device = "pdf")
-#Morro Bay line histograms
-d <- filter(lengthss, station %in% MorroBay)
-x <- histGrid(d, "Morro Bay")
-ggsave("figures/regions_hist/MorroBay.pdf", x, device = "pdf")
-#Point ConcTStion line histograms
-d <- filter(lengthss, station %in% PointConcTStion)
-x <- histGrid(d, "Point Conception")
-ggsave("figures/regions_hist/PointConception.pdf", x, device = "pdf")
-#Santa Barbars line histograms
-d <- filter(lengthss, station %in% SantaBarbara)
-x <- histGrid(d, "Santa Barbara")
-ggsave("figures/regions_hist/SantaBarbara.pdf", x, device = "pdf")
-#Mid Channel Islands line histograms
-d <- filter(lengthss, station %in% MidChannelIslands)
-x <- histGrid(d, "Mid Channel Islands")
-ggsave("figures/regions_hist/MidChannelIslands.pdf", x, device = "pdf")
-#Southern CA line histograms
-d <- filter(lengthss, station %in% SouthernCA)
-x <- histGrid(d, "Southern CA")
-ggsave("figures/regions_hist/SouthernCA.pdf", x, device = "pdf")
+# #Fort Ross line histograms
+# d <- filter(lengthss, station %in% FortRoss)
+# x <- histGrid(d, "Fort Ross")
+# ggsave("figures/regions_hist/FortRoss.pdf", x, device = "pdf")
+# #Point Reyes line histograms
+# d <- filter(lengthss, station %in% PointReyes)
+# x <- histGrid(d, "Point Reyes")
+# ggsave("figures/regions_hist/PointReyes.pdf", x, device = "pdf")
+# #Gulf of the Farallons line histograms
+# d <- filter(lengthss, station %in% GulfFarallons)
+# x <- histGrid(d, "Gulf of the Farallons")
+# ggsave("figures/regions_hist/GoF.pdf", x, device = "pdf")
+# #San Mateo line histograms
+# d <- filter(lengthss, station %in% SanMateo)
+# x <- histGrid(d, "San Mateo")
+# ggsave("figures/regions_hist/SanMateo.pdf", x, device = "pdf")
+# #Davenport line histograms
+# d <- filter(lengthss, station %in% Davenport)
+# x <- histGrid(d, "Davenport")
+# ggsave("figures/regions_hist/Davenport.pdf", x, device = "pdf")
+# #Monterey Bay line histograms
+# d <- filter(lengthss, station %in% MontereyBay)
+# x <- histGrid(d, "Monterey Bay")
+# ggsave("figures/regions_hist/MontereyBay.pdf", x, device = "pdf")
+# #Point Sur line histograms
+# d <- filter(lengthss, station %in% PointSur)
+# x <- histGrid(d, "Point Sur")
+# ggsave("figures/regions_hist/PointSur.pdf", x, device = "pdf")
+# #Piedras Blancas line histograms
+# d <- filter(lengthss, station %in% PiedrasBlancas)
+# x <- histGrid(d, "Piedras Blancas")
+# ggsave("figures/regions_hist/PiedrasBlancas.pdf", x, device = "pdf")
+# #Morro Bay line histograms
+# d <- filter(lengthss, station %in% MorroBay)
+# x <- histGrid(d, "Morro Bay")
+# ggsave("figures/regions_hist/MorroBay.pdf", x, device = "pdf")
+# #Point ConcTStion line histograms
+# d <- filter(lengthss, station %in% PointConcTStion)
+# x <- histGrid(d, "Point Conception")
+# ggsave("figures/regions_hist/PointConception.pdf", x, device = "pdf")
+# #Santa Barbars line histograms
+# d <- filter(lengthss, station %in% SantaBarbara)
+# x <- histGrid(d, "Santa Barbara")
+# ggsave("figures/regions_hist/SantaBarbara.pdf", x, device = "pdf")
+# #Mid Channel Islands line histograms
+# d <- filter(lengthss, station %in% MidChannelIslands)
+# x <- histGrid(d, "Mid Channel Islands")
+# ggsave("figures/regions_hist/MidChannelIslands.pdf", x, device = "pdf")
+# #Southern CA line histograms
+# d <- filter(lengthss, station %in% SouthernCA)
+# x <- histGrid(d, "Southern CA")
+# ggsave("figures/regions_hist/SouthernCA.pdf", x, device = "pdf")
 #=========
 
 #Create dataframe with histogram summary statistics 2015-2018 as available
@@ -632,6 +632,14 @@ write.csv(nd, "output/timeND.csv")
 #EP violin plot
 #summary data
 summ <- summarize(group_by_at(filter(allLengths, species == "EP"), vars(year, region)), max = max(length), n=n(), mean = round(mean(length), 1))
+#All regions
+ggplot(filter(epRecent), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
+  labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by year") + 
+  theme(text = element_text(size = 20)) +
+  ggsave("figures/bodySize/EP/byYear.jpg", width = 7, height = 9)
 #plot
 ggplot(filter(allLengths, species == "EP"), aes(x = year, y = length, fill = year)) +
   geom_violin() +
@@ -652,6 +660,14 @@ ggplot(epStats, aes(year, sd, color = region)) +
 #TS violin plot
 #summary data
 summ <- summarize(group_by_at(filter(allLengths, species == "TS"), vars(year, region)), max = max(length), n=n(), mean = round(mean(length), 1))
+#pooled regions
+ggplot(filter(tsRecent), aes(x = year, y = length, fill = year)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2015", "2016", "2017", "2018")) +
+  labs(x = "Year", y = "Length (mm)", title = "T. spinifera lengths by year") + 
+  theme(text = element_text(size = 20)) +
+  ggsave("figures/bodySize/TS/byYear.jpg", width = 7, height = 9)
 #plot
 ggplot(filter(allLengths, species == "TS"), aes(x = year, y = length, fill = year)) +
   geom_violin() +
