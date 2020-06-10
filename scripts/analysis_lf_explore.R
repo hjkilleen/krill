@@ -30,6 +30,7 @@ add_tally(group_by_at(lengths, vars(year, station, species, sex)))
 lengths <- filter(lengths, station %in% allSites)
 lengths <- left_join(lengths, regions, by = "station")
 lengths <- filter(lengths, species == "EP" | species == "TS" | species == "ND")
+lengths <- filter(lengths, length <50, length >10)
 save(lengths, file = "data/lengths.rda")
 #load 2011&2012 data and merge with 2015-2018 dataset
 lengthsBaldo <- read.csv("data/lengthsBaldo.csv")
