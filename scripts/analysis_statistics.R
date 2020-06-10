@@ -135,12 +135,18 @@ sjPlot::tab_model(M3,
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
 sjPlot::plot_model()
 
-#
+#Explore lengthEnv relationships with plots
+ggplot(lengthEnv, aes(x = temp_100, y = length, color = species)) + 
+  geom_point() + 
+  geom_smooth()
+ggplot(lengthEnv) + 
+  geom_histogram(aes(length, color = species))
 #A full model with surface and subsurface temperature as fixed effects
-M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = lengthEnv)
-M6 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = lengthEnv)
+M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
+M6 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
 AIC(M5, M6)
-summary(M5)
+summary(M6)
+1 - var(resid(M6))/var(allLengthsRecentEnv$length) #R=31%
 
 #A model with a random intercept for station
 Me1 <- lmer(length ~ year + region + sex + shore + (1|station), data = epRecent, REML = FALSE)
