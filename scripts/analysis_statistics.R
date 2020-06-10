@@ -5,6 +5,7 @@
 library(lme4)
 library(ggeffects)
 source("scripts/analysis_lf_explore.R")
+source("scripts/data_load_roms.R")
 
 jpeg("figures/sideBySideAllLengths.jpg")
 par(mfrow = c(1,3))
@@ -133,6 +134,14 @@ sjPlot::tab_model(M3,
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
 sjPlot::plot_model()
+
+#
+#A full model with surface and subsurface temperature as fixed effects
+M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = lengthEnv)
+M6 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = lengthEnv)
+AIC(M5, M6)
+summary(M5)
+
 #A model with a random intercept for station
 Me1 <- lmer(length ~ year + region + sex + shore + (1|station), data = epRecent, REML = FALSE)
 Me2 <- lmer(length ~ year + sex + shore + (1|station), data = epRecent, REML = FALSE)
