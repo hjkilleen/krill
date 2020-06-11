@@ -6,6 +6,7 @@ library(lme4)
 library(ggeffects)
 source("scripts/analysis_lf_explore.R")
 source("scripts/data_load_roms.R")
+source("scripts/functions/model_simulation.R")
 
 jpeg("figures/sideBySideAllLengths.jpg")
 par(mfrow = c(1,3))
@@ -136,18 +137,40 @@ sjPlot::tab_model(M3,
 sjPlot::plot_model()
 
 #Explore lengthEnv relationships with plots
-ggplot(lengthEnv, aes(x = temp_100, y = length, color = species)) + 
-  geom_point() + 
-  geom_smooth()
+lowTemp <- filter(lengthEnv, temp_2<13.5)
+highTemp <- filter(lengthEnv, temp_2>=13.5)
+ggplot(lengthEnv, aes(x = temp_100, y = (length-mean(length)), color = species)) + 
+  geom_point(data = lowTemp, aes(x = temp_2, y = length), alpha = 0.9) +
+  geom_point(data = highTemp, aes(x= temp_2, y = length), alpha = 0.1)
 ggplot(lengthEnv) + 
   geom_histogram(aes(length, color = species))
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
-M6 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
-AIC(M5, M6)
+M6 <- lmer(length ~ temp_2 + temp_100 + temp_2:region + temp_100:region + temp_2:species + temp_100:species + temp_2:species:region + temp_100:species:region + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
+#only low temps
+M7 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = filter(allLengthsRecentEnv, temp_2<13.5))
+#only high temps 
+M8 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = (filter(allLengthsRecentEnv, temp_2>=13.5)))
+AIC(M3, M6)
 summary(M6)
-1 - var(resid(M6))/var(allLengthsRecentEnv$length) #R=31%
-
+1 - var(resid(M6))/var(allLengthsRecentEnv$length) #R=33%
+#simulation for M6
+#========
+simM6 <- fsim.glmm(M6) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
+#sim sum provides confidence intervals etc.
+simsumM6 <- simsum(simM6)
+#simsumM3 <- filter(simsumM3, species != "ND") #drop ND for NRT presentation
+#plot sets up ggplot for simulated data
+View(simsumM6)
+#plot
+sum <- summarize(group_by_at(simsumM6, vars(species, temp_2, region)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+ggplot(simsumM6) + 
+  geom_point(aes(x = temp_2, y = sim.mean, color = species), alpha = 0.1) + #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
+  facet_wrap(simsumM6$region) + 
+  geom_smooth(aes(x = temp_2, y = sim.mean, color = species)) + 
+  labs(y = "Length (mm)", x = "Temp (C)", title = "Simulated krill lengths during a marine heatwave") +
+  theme(text = element_text(size = 20))
+#==========
 #A model with a random intercept for station
 Me1 <- lmer(length ~ year + region + sex + shore + (1|station), data = epRecent, REML = FALSE)
 Me2 <- lmer(length ~ year + sex + shore + (1|station), data = epRecent, REML = FALSE)
