@@ -4,15 +4,19 @@ library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(ggspatial)
+library(sp)
 library(maps)
 library(readxl)
 library(lubridate)
+library(geosphere)
 source("scripts/functions/regions.R")
 
 world <- ne_countries(scale = "medium", returnclass = "sf")
 class(world)
 
 states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
+CAfromstates <- states %>%
+  subset(., states$ID == "california")
 
 ggplot(data = coast) +
   geom_sf()
@@ -93,6 +97,30 @@ ggplot(data = world) +
   coord_sf(xlim = c(-125.5, -124.0), ylim = c(40.0, 42.30), expand = FALSE)
 #========
 
+#Calculate the distance between stations and the coast in meters https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/
+#==========
+#get station data and convert to sf
+stations <- read.csv("data/stationMetadata.csv")
+stations.sf <- stations %>% st_as_sf(coords = c('station_longitude','station_latitude')) %>% 
+  st_set_crs(4326)
+#transform CA polygon to a line
+ca <- st_cast(CAfromstates, "MULTILINESTRING")
+#calculate the distance between the set of points and the line
+dist <- st_distance(ca, stations.sf)
+#combine distances with stations
+df <- data.frame(dist = as.vector(dist)/1000,
+                 st_coordinates(stations.sf))
+df <- left_join(df, stations, by = c("X" = "station_longitude", "Y" = "station_latitude"))
+df <- left_join(df, regions)
+df <- summarize(group_by_at(df, vars(station, shore, sites)), dist = mean(dist))
 
-
-
+# 
+# col_dist <- RColorBrewer::brewer.pal(9, "YlGnBu")
+# 
+# 
+# ggplot(df, aes(X, Y, fill = dist))+ #variables
+#   geom_tile()+ #geometry
+#   scale_fill_gradientn(colours = rev(col_dist))+ #colors for plotting the distance
+#   labs(fill = "Distance (km)")+ #legend name
+#   theme_void()+ #map theme
+#   theme(legend.position = "bottom") #legend position
