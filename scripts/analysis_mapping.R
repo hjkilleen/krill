@@ -108,7 +108,7 @@ df <- data.frame(dist = as.vector(dist)/1000,
                  st_coordinates(stations.sf))
 df <- left_join(df, stations, by = c("X" = "station_longitude", "Y" = "station_latitude"))
 df <- left_join(df, regions)
-df <- summarize(group_by_at(df, vars(station, shore, sites)), dist = mean(dist))
+distFromShore <- summarize(group_by_at(df, vars(station, shore, sites)), dist = mean(dist))
 
 # 
 # col_dist <- RColorBrewer::brewer.pal(9, "YlGnBu")
