@@ -26,18 +26,19 @@ numSamp <- function(i, data = lengths) {
   }
 
 #Plot a map of CA with station locactions
-mapStations <- function(i, j = 16) {
+mapStations <- function(i, font_size = 16) {
   ggplot(data = world) +
     geom_sf(color = "black", fill = "bisque2") +
     geom_sf(data = states, fill = NA) +
     annotation_scale(location = "bl", width_hint = 0.5) +
     geom_point(data = i, aes(x = lon, y = lat), size = 2, 
                shape = 23, fill = "darkred") +
+    geom_text(data = i, aes(x = lon, y = lat, label = station)) + 
     annotation_north_arrow(location = "bl", which_north = "true", 
                            pad_x = unit(0.2, "in"), pad_y = unit(0.3, "in"),
                            style = north_arrow_fancy_orienteering) +
     coord_sf(xlim = c(-125.5, -116.75), ylim = c(32.0, 42.30), expand = FALSE) + 
-    theme(text = element_text(size = j))    
+    theme(text = element_text(size = font_size))    
 }
 
 #Calculate the coefficient of variation as a percent value

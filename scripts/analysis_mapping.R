@@ -32,43 +32,39 @@ rfYear <- select(rfYear, station, station_longitude, station_latitude, area, bot
 write_csv(rfYear, "data/stationMetadata.csv")
 #Pull out position information for relevant stations
 #for 2015
-rfYear <- filter(rf, station %in% allSites2015)
 jpeg("figures/stationMaps/2015.jpg")
 mapStations(summarize(
-  group_by(rfYear, station),
+  group_by(filter(rf, station %in% allSites2015), station),
   lat = mean(latitude),
   lon = mean(longitude)
-), j = 25)
+), font_size = 25)
 dev.off()
 
 #for 2016
-rfYear <- filter(rf, station %in% allSites2016)
 jpeg("figures/stationMaps/2016.jpg")
 mapStations(summarize(
-  group_by(rfYear, station),
+  group_by(filter(rf, station %in% allSites2016), station),
   lat = mean(latitude),
   lon = mean(longitude)
-), j = 25)
+), font_size = 25)
 dev.off()
 
 #for 2017
-rfYear <- filter(rf, station %in% allSites2017)
 jpeg("figures/stationMaps/2017.jpg")
 mapStations(summarize(
-  group_by(rfYear, station),
+  group_by(filter(rf, station %in% allSites2017), station),
   lat = mean(latitude),
   lon = mean(longitude)
-), j = 25)
+), font_size = 25)
 dev.off()
 
 #for 2018
-rfYear <- filter(rf, station %in% allSites2018)
 jpeg("figures/stationMaps/2018.jpg")
 mapStations(summarize(
-  group_by(rfYear, station),
+  group_by(filter(rf, station %in% allSites2018), station),
   lat = mean(latitude),
   lon = mean(longitude)
-), j = 25)
+), font_size = 25)
 dev.off()
 #=======
 
