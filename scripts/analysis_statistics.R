@@ -21,10 +21,6 @@ env <- read_xlsx("data/environment.xlsx")
 env.means <- group_by_at(env, vars(year, region)) %>% 
   summarize(lat = mean(lat), oni = mean(oni), pdo = mean(pdo), npgo = mean(npgo), sst_anom = mean(sst_anom), temp_anom_one.hun = mean(temp_anom_one.hun), temp_anom_two.hun = mean(temp_anom_two.hun), uw_anom = mean(uw_anom))
 formattable(env.means, list(`oni` = color_bar("#FA614B"), `pdo` = color_bar("#71CA97"), `npgo` = color_bar("#FA614B"), `sst_anom` = color_bar("#71CA97"), `temp_anom_one.hun` = color_bar("#FA614B"), `temp_anom_two.hun` = color_bar("#71CA97")))
-
-sign_formatter <- formatter("span",
-                            style = x ~ style(color = ifelse(x > 0, "green",
-                                                             ifelse(x < 0, "red", "black"))))
 #===========
 
 #Three-Way ANOVA with individual krill as observational units
@@ -126,8 +122,6 @@ M1 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allL
 M2 <- lmer(length ~ year*region + sex*species + species:year + shore + shore:year + (1|station), data = allLengthsRecent)
 M3 <- lmer(length ~ year*region + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsRecent)
 M4 <- lmer(length ~ year*region + sex + species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsRecent)
-
-
 AIC(M1, M2, M3, M4)
 summary (M3)
 fixef(M3)
@@ -151,9 +145,16 @@ M6 <- lmer(length ~ temp_2 + temp_100 + temp_2:region + temp_100:region + temp_2
 M7 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = filter(allLengthsRecentEnv, temp_2<13.5))
 #only high temps 
 M8 <- lmer(length ~ temp_2*species + temp_100*species + shore + sex + species + (1|station.x), data = (filter(allLengthsRecentEnv, temp_2>=13.5)))
-AIC(M3, M6)
+AIC(M3, M6, M9)
 summary(M6)
 1 - var(resid(M6))/var(allLengthsRecentEnv$length) #R=33%
+
+#Use distance from shore explicitly
+#merge with distance from shore data
+allLengthsRecentEnv <- left_join(allLengthsRecentEnv, select(distFromShore, station, dist), by = c("station.x" = "station"))
+#model
+M9 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + temp_100 + species:temp_100 + region:temp_100 + dist + species:dist + (1|station.x), data = allLengthsRecentEnv, REML = FALSE)
+#==========
 #simulation for M6
 #========
 simM6 <- fsim.glmm(M6) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
