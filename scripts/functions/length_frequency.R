@@ -33,7 +33,7 @@ mapStations <- function(i, font_size = 16) {
     annotation_scale(location = "bl", width_hint = 0.5) +
     geom_point(data = i, aes(x = lon, y = lat), size = 2, 
                shape = 23, fill = "darkred") +
-    geom_text(data = i, aes(x = lon, y = lat, label = station)) + 
+    geom_label(data = i, aes(x = lon, y = lat, label = station), nudge_y = 0.5) + 
     annotation_north_arrow(location = "bl", which_north = "true", 
                            pad_x = unit(0.2, "in"), pad_y = unit(0.3, "in"),
                            style = north_arrow_fancy_orienteering) +
