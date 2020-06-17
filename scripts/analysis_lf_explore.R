@@ -15,6 +15,7 @@ library(ggridges)
 library(formattable)
 source("scripts/functions/length_frequency.R")
 source("scripts/functions/regions.R")
+'%!in%' <- function(x,y)!('%in%'(x,y))
 
 #LOAD DATA
 lengths <- read.csv("data/lengths.csv")
