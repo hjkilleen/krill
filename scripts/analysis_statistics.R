@@ -153,22 +153,22 @@ summary(M6)
 #merge with distance from shore data
 allLengthsRecentEnv <- left_join(allLengthsRecentEnv, select(distFromShore, station, dist), by = c("station.x" = "station"))
 #model
-M9 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + temp_100 + species:temp_100 + region:temp_100 + dist + species:dist + (1|station.x), data = allLengthsRecentEnv, REML = FALSE)
+M9 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + region:temp_100 + sex:temp_100 + dist + species:dist + (1|station.x), data = allLengthsRecentEnv, REML = FALSE)
 #==========
 #simulation for M6
 #========
-simM6 <- fsim.glmm(M6) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
+simM9 <- fsim.glmm(M9) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
 #sim sum provides confidence intervals etc.
-simsumM6 <- simsum(simM6)
+simsumM9 <- simsum(simM9)
 #simsumM3 <- filter(simsumM3, species != "ND") #drop ND for NRT presentation
 #plot sets up ggplot for simulated data
 View(simsumM6)
 #plot
-sum <- summarize(group_by_at(simsumM6, vars(species, temp_2, region)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
-ggplot(simsumM6) + 
+sum <- summarize(group_by_at(simsumM9, vars(species, temp_2, region)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+ggplot(simsumM9) + 
   geom_point(aes(x = temp_2, y = sim.mean, color = species), alpha = 0.1) + #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
-  facet_wrap(simsumM6$region) + 
-  geom_smooth(aes(x = temp_2, y = sim.mean, color = species)) + 
+  facet_wrap(simsumM9$region) + 
+  geom_smooth(aes(x = temp_2, y = sim.mean, color = species, linetype = sex)) + 
   labs(y = "Length (mm)", x = "Temp (C)", title = "Simulated krill lengths during a marine heatwave") +
   theme(text = element_text(size = 20))
 #==========
