@@ -120,3 +120,19 @@ distFromShore <- summarize(group_by_at(df, vars(station, shore, sites)), dist = 
 #   labs(fill = "Distance (km)")+ #legend name
 #   theme_void()+ #map theme
 #   theme(legend.position = "bottom") #legend position
+
+#plot map of stations colored by temperature
+for(i in 2015:2018){
+ggplot(data = world) +
+  geom_sf(color = "black", fill = "bisque2") +
+  geom_sf(data = states, fill = NA) +
+  annotation_scale(location = "bl", width_hint = 0.5) +
+  geom_point(data = filter(allLengthsRecentEnv, year.x == i), aes(x = latitude, y = longitude, color = temp_2, size = 2, 
+             shape = 23, fill = "darkred") +
+  geom_label(data = i, aes(x = lon, y = lat, label = station), nudge_y = 0.5) + 
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.2, "in"), pad_y = unit(0.3, "in"),
+                         style = north_arrow_fancy_orienteering) +
+  coord_sf(xlim = c(-125.5, -116.75), ylim = c(32.0, 42.30), expand = FALSE) + 
+  theme(text = element_text(size = font_size))  
+}
