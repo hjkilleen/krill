@@ -6,7 +6,6 @@
 #LIBRARIES & SOURCES
 #====
 source("scripts/data_load.R")
-source("scripts/functions/regions.R")
 
 #TIDY LENGTH DATASET
 #====
