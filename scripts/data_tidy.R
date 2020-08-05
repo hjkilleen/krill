@@ -19,7 +19,7 @@ lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID,
 #add variable for number of observations for each station/year/species/sex
 add_tally(group_by_at(lengths, vars(year, station, species, sex)))
 #filter to only the stations we are including in the analysis
-lengths <- filter(lengths, station %in% allSites)
+lengths <- filter(lengths, station %in% regions$station)
 lengths <- left_join(lengths, regions, by = "station")
 lengths <- filter(lengths, species == "EP" | species == "TS" | species == "ND")
 lengths <- filter(lengths, length <50, length >10)
