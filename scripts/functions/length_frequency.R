@@ -1,3 +1,6 @@
+#Not in function
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
 #Plot histograms from length frequency data
 plotHist <- function(j, i = paste(j$station[1], j$species[1], j$year, sep = " ")) {
   ggplot(j, aes(x = length, color = sex)) + 
