@@ -5,7 +5,8 @@
 
 #LIBRARIES & SOURCES
 #====
-
+library(readr)
+#====
 #LOAD METADATA
 #====
 #Load station metadata (lats are from mean latitude of corresponding "area" in NMFS 2015 MWT dataset, except for San Mateo, which I estimated on google maps, and Monterey, which is an average value of all the MWT Monterey sites)
@@ -20,5 +21,5 @@ sites2018 <- read_csv("data/sites2018.csv")
 #====
 #LOAD LENGTH DATA
 #====
-lengths <- read.csv("data/lengths.csv")
-lengthsBaldo <- read.csv("data/lengthsBaldo.csv")
+lengths <- read_csv("data/lengths.csv")
+lengthsBaldo <- read_csv("data/lengthsBaldo.csv")
