@@ -28,6 +28,7 @@ save(lengths, file = "data/lengths.rda")
 #Merge 2011 & 2012 with 2015-2018 dataset
 vars <- c("ID", "station", "species", "sex", "dish", "scale", "pixels", "notes", "incomplete", "measured_by")
 names(lengthsBaldo) <- vars
+rm(vars)
 #add lengths variable multiplying pixels by scale measure
 lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)
 lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))
