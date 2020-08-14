@@ -39,7 +39,6 @@ lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
 #merge with 2015-2018 dataset and omit na
 lengthsBaldo$year <- as.factor(lengthsBaldo$year)
 allLengths <- rbind(lengths, lengthsBaldo)
-allLengths <- na.omit(allLengths)
 #create sample ID
 allLengths$sample <- seq(1:nrow(allLengths))
 #filter to relevant species and sizes
