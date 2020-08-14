@@ -6,6 +6,8 @@
 #LIBRARIES & SOURCES
 #====
 source("scripts/data_load.R")
+library(tidyverse)
+#====
 
 #TIDY LENGTH DATASET
 #====
