@@ -120,7 +120,7 @@ tsRecent <- filter(ts, year != "2011", year != "2012")
 #A full model with all species
 M1 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allLengthsRecent)
 M2 <- lmer(length ~ year*region + sex*species + species:year + shore + shore:year + (1|station), data = allLengthsRecent)
-M3 <- lmer(length ~ year*region + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsRecent)
+M3 <- lmer(length ~ year*region + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengths)
 M4 <- lmer(length ~ year*region + sex + species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsRecent)
 AIC(M1, M2, M3, M4)
 summary (M3)
@@ -264,18 +264,17 @@ ggplot(filter(allLengthsEnv, species == "EP")) +
 geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2)
   
 #Split EP into two regions, north and south of PC
-x <- filter(allLengthsRecentEnv, latitude >34.4)
-y <- filter(allLengthsRecentEnv, latitude <=34.4)
+x <- filter(allLengthsEnvDep, latitude >34.4)
+y <- filter(allLengthsEnvDep, latitude <=34.4)
 x <- mutate(x, NS = "N")
 y <- mutate(y, NS = "S")
-epNS <-rbind(x, y)
-MepNS <- lmer(length ~ species*sex + temp_2 + species:temp_2 + NS:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + NS:temp_100 + sex:temp_100 + dist + species:dist + (1|station.x), data = epNS, REML = FALSE)
+NS <-rbind(x, y)
+MNS <- lmer(length ~ species*sex + temp_2 + species:temp_2 + NS:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + NS:temp_100 + sex:temp_100 + dist + species:dist + (1|station.x), data = NS, REML = FALSE)
 
-simMepNS <- fsim.glmm(MepNS)
-simsumMepNS <- simsum(simMepNS)
+simMNS <- fsim.glmm(MNS)
+simsumMNS <- simsum(simMNS)
 
-ggplot(epNS) +
-  geom_point(aes(temp_2, length, color = latitude)) + 
-  geom_smooth(method='lm', aes(x = temp_2, y = length), alpha = 0.5) + 
-  geom_smooth(data = filter(simsumMepNS), method = "lm", aes(x = temp_2, y = sim.mean), color = "red") +
+ggplot() +
+  geom_point(data = NS, aes(temp_2, length, color = species), alpha = 0.2) + 
+  geom_smooth(data = simsumMNS, method = "lm", aes(x = temp_2, y = sim.mean, color = species)) +
   facet_wrap(~NS, nrow=1, ncol=2, scales = "free_y")
