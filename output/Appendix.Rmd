@@ -1,0 +1,20 @@
+---
+title: "Krill Lengths Appendix"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+#Data Description Table
+```{r}
+library(formattable)
+tally <- as.data.frame(group_by_at(allLengths, vars(year, region, shore, species)) %>% tally())
+tally <- na.omit(tally)
+```
+
+
+#Model Summary Output
+```{r}
+print(summary(M9))
+```
+

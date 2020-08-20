@@ -173,7 +173,7 @@ simsumM9 <- simsum(simM9)
 sum <- summarize(group_by_at(simsumM9, vars(species, temp_2, region)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
 ggplot(simsumM9) + 
   geom_point(aes(x = temp_2, y = sim.mean, color = species), alpha = 0.1) + #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
-  #facet_wrap(simsumM9$region) + 
+  facet_wrap(simsumM9$region) + 
   geom_smooth(aes(x = temp_2, y = sim.mean, color = species, linetype = sex)) + 
   labs(y = "Length (mm)", x = "Temp (C)", title = "Simulated krill lengths by temperature") +
   theme(text = element_text(size = 20))
