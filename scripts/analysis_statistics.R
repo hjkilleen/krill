@@ -151,11 +151,13 @@ summary(M6)
 
 #Use distance from shore explicitly
 #merge with distance from shore data
-allLengthsRecentEnv <- left_join(allLengthsRecentEnv, select(distFromShore, station, dist), by = c("station.x" = "station"))
+allLengthsEnvDep <- left_join(allLengthsEnv, select(regions, station, dist), by = c("station.x" = "station"))
 #model
-M9 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + region:temp_100 + sex:temp_100 + dist + species:dist + (1|station.x), data = allLengthsRecentEnv, REML = FALSE)
-M10 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + temp_100 + species:temp_100 + region:temp_100 + dist + species:dist + (1|station.x), data = allLengthsRecentEnv, REML = FALSE)
-M11 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + dist + species:dist + (1|station.x), data = allLengthsRecentEnv, REML = FALSE)
+M9 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + region:temp_100 + sex:temp_100 + dist + species:dist + (1|station.x), data = allLengthsEnvDep, REML = FALSE)
+#remove sex:temp interaction
+M10 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + temp_100 + species:temp_100 + region:temp_100 + dist + species:dist + (1|station.x), data = allLengthsEnvDep, REML = FALSE)
+#remove regionL:temp interaction
+M11 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + dist + species:dist + (1|station.x), data = allLengthsEnvDep, REML = FALSE)
 AIC(M9, M10, M11)
 M12 <- lm(length ~ temp_2, data = allLengthsRecentEnv)
 M13 <- lmer(length ~ temp_2 + (1|station.x), data = allLengthsRecentEnv)
@@ -243,21 +245,21 @@ ggplot(al) +
 
 #In answer to Jeff & Bill
 #LvT for each species with a linear regression 
-ggplot(allLengthsRecentEnv) +
+ggplot(allLengthsEnv) +
   geom_point(aes(latitude, length, color = temp_2)) + 
   geom_smooth(method='lm', aes(x = latitude, y = length), alpha = 0.5) + 
   #geom_smooth(data = filter(simsumM9), method = "lm", aes(x = temp_100, y = sim.mean), color = "red") + 
   facet_wrap(~species, nrow=1, ncol=3, scales = "free_y")
 
-x <- summarize(group_by_at(allLengthsRecentEnv, vars(station.x, year.x, species)), temp_2 = mean(temp_2), temp_100 = mean(temp_100), length = mean(length))
+x <- summarize(group_by_at(allLengthsEnv, vars(station.x, year.x, species)), temp_2 = mean(temp_2), temp_100 = mean(temp_100), length = mean(length))
 ggplot(x) +
-  geom_point(aes(temp_2, length, color = species)) + 
+  geom_point(aes(temp_2, length, color = year.x)) + 
   facet_wrap(~species, nrow=1, ncol=3, scales = "free_y")
 ggplot(x) +
-  geom_point(aes(temp_100, length, color = species)) + 
+  geom_point(aes(temp_100, length, color = year.x)) + 
   facet_wrap(~species, nrow=1, ncol=3, scales = "free_y")
 
-ggplot(filter(allLengthsRecentEnv, species == "EP")) +
+ggplot(filter(allLengthsEnv, species == "EP")) +
   geom_point(aes(temp_2, length, color = latitude)) +
   geom_smooth(data = filter(simsumM9, species == "EP"), aes(temp_2, sim.mean))
 
