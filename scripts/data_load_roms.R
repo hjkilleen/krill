@@ -5,6 +5,7 @@ library(readr)
 load("data/allLengths.rda")
 #Get data from CenCOOS servers using the virtual sensor tool. Data are from ROMS/TOMS nowcast (10km), May1-June15 average at 2m and 100m depths. Station locations are taken from the RF_Euphausidae station_lat and _lon. 
 #Note that I shifted station 132 and 481 location ~2 km onshore. The original location (-122.65, -117.7500 respectively) was on a grid boundary and returned an error. I also moved station 183 ~1 km offshore as the nearshore location (-123.2333) was outside the model boundary.
+#I do not have station information for station 166, 421, and 118. These need to be added to urls and ROMS data from the most recent RF dataset (or ask Keith). 
 urls <- read.csv("data/urls.csv")
 for(i in seq(1:nrow(urls))) {
   #download file and read as csv
@@ -34,8 +35,9 @@ for(i in seq(1:nrow(urls))) {
     names(temps) <- c("lat", "lon", "year", "month", "day", "monthDay", "temp_2")
   }
   temps$lat_lon <- paste(temps$lat, temps$lon, sep = "_")
+  temps <- filter(temps, year >= 2011, year <=2018)
+  temps <- filter(temps, year != 2014)
   temps <- filter(temps, monthDay %in% dates)
-  temps <- filter(temps, year >= 2015, year <=2018)
   #convert temp to Celsius
   temps$temp_2 <- (temps$temp_2-32)/1.8
   if("temp_100" %in% names(temps)){
