@@ -156,28 +156,26 @@ allLengthsEnvDep <- left_join(allLengthsEnv, select(regions, station, dist), by 
 M9 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + region:temp_100 + sex:temp_100 + dist + species:dist + (1|station.x), data = allLengthsEnvDep, REML = FALSE)
 #remove sex:temp interaction
 M10 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + region:temp_2 + temp_100 + species:temp_100 + region:temp_100 + dist + species:dist + (1|station.x), data = allLengthsEnvDep, REML = FALSE)
-#remove regionL:temp interaction
+#remove region:temp interaction
 M11 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + dist + species:dist + (1|station.x), data = allLengthsEnvDep, REML = FALSE)
 AIC(M9, M10, M11)
 M12 <- lm(length ~ temp_2, data = allLengthsRecentEnv)
 M13 <- lmer(length ~ temp_2 + (1|station.x), data = allLengthsRecentEnv)
 summary(M13)
 #==========
-#simulation for M6
+#simulation for M9
 #========
 simM9 <- fsim.glmm(M9) #simulates data across bins of variable values, cont.expansion is for prediction, nsim is number os simulations to run. Returns two lists 1) full factorial of all parameter values, 2) provides the response variables for those values
 #sim sum provides confidence intervals etc.
 simsumM9 <- simsum(simM9)
 #simsumM3 <- filter(simsumM3, species != "ND") #drop ND for NRT presentation
 #plot sets up ggplot for simulated data
-View(simsumM6)
-#plot
 sum <- summarize(group_by_at(simsumM9, vars(species, temp_2, region)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
 ggplot(simsumM9) + 
   geom_point(aes(x = temp_2, y = sim.mean, color = species), alpha = 0.1) + #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
   #facet_wrap(simsumM9$region) + 
   geom_smooth(aes(x = temp_2, y = sim.mean, color = species, linetype = sex)) + 
-  labs(y = "Length (mm)", x = "Temp (C)", title = "Simulated krill lengths during a marine heatwave") +
+  labs(y = "Length (mm)", x = "Temp (C)", title = "Simulated krill lengths by temperature") +
   theme(text = element_text(size = 20))
 #==========
 #A model with a random intercept for station
