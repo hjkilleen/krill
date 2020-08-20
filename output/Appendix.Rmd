@@ -18,7 +18,13 @@ knitr::kable(regions)
 ```
 
 #Model Summary Output
+Temperature effects model
 ```{r}
 print(summary(M9))
+```
+
+Year effects model
+```{r}
+print(summary(M3))
 ```
 
