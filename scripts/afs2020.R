@@ -2,6 +2,10 @@
 #Figures for presentation given at the American Fisheries Society Annual Meeting in September 2020
 
 # Thu Aug 13 19:30:48 2020 ------------------------------
+summaryM9 <- summary(M9)
+summaryM3 <- summary(M3)
+save(summaryM9, file = "output/M9.rda")
+save(summaryM3, file = "output/M3.rda")
   
 #Figure 1a - E. pacfica lengths by year
 #ep <- add_tally(group_by_at(ep, vars(year)))

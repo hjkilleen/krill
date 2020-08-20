@@ -1,12 +1,16 @@
 ---
 title: "Krill Lengths Appendix"
-output: html_notebook
-editor_options: 
+output:
+  pdf_document: default
+  html_notebook: default
+editor_options:
   chunk_output_type: inline
 ---
 
 #Data Description Table
 ```{r}
+library(tidyverse)
+load("../data/allLengths.rda")
 tally <- as.data.frame(group_by_at(allLengths, vars(year, region, shore, species)) %>% tally())
 tally <- na.omit(tally)
 knitr::kable(tally)
@@ -14,17 +18,20 @@ knitr::kable(tally)
 
 #Regional Description Table
 ```{r}
+regions <- read.csv("../data/regions.csv")
 knitr::kable(regions)
 ```
 
 #Model Summary Output
 Temperature effects model
 ```{r}
-print(summary(M9))
+load("M9.rda")
+print(summaryM9)
 ```
 
 Year effects model
 ```{r}
-print(summary(M3))
+load("M3.rda")
+print(summaryM3)
 ```
 
