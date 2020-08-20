@@ -9,8 +9,8 @@ library(maps)
 library(readxl)
 library(lubridate)
 library(geosphere)
-source("scripts/functions/regions.R")
 
+#General mapping objects
 world <- ne_countries(scale = "medium", returnclass = "sf")
 class(world)
 
@@ -18,8 +18,8 @@ states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
 CAfromstates <- states %>%
   subset(., states$ID == "california")
 
-ggplot(data = coast) +
-  geom_sf()
+#ggplot(data = coast) +
+  #geom_sf()
 
 #Station maps for each year
 #=======
@@ -96,8 +96,8 @@ ggplot(data = world) +
 #Calculate the distance between stations and the coast in meters https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/
 #==========
 #get station data and convert to sf
-stations <- read.csv("data/stationMetadata.csv")
-stations.sf <- stations %>% st_as_sf(coords = c('station_longitude','station_latitude')) %>% 
+urls <- read.csv("data/urls.csv")
+stations.sf <- urls %>% st_as_sf(coords = c('lon','lat')) %>% 
   st_set_crs(4326)
 #transform CA polygon to a line
 ca <- st_cast(CAfromstates, "MULTILINESTRING")
@@ -106,9 +106,11 @@ dist <- st_distance(ca, stations.sf)
 #combine distances with stations
 df <- data.frame(dist = as.vector(dist)/1000,
                  st_coordinates(stations.sf))
-df <- left_join(df, stations, by = c("X" = "station_longitude", "Y" = "station_latitude"))
+df <- left_join(df, urls[,1:4], by = c("X" = "lon", "Y" = "lat"))
 df <- left_join(df, regions)
 distFromShore <- summarize(group_by_at(df, vars(station, shore, sites)), dist = mean(dist))
+regions <- left_join(regions, distFromShore)
+rm(distFromShore)
 
 # 
 # col_dist <- RColorBrewer::brewer.pal(9, "YlGnBu")
