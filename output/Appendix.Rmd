@@ -7,11 +7,15 @@ editor_options:
 
 #Data Description Table
 ```{r}
-library(formattable)
 tally <- as.data.frame(group_by_at(allLengths, vars(year, region, shore, species)) %>% tally())
 tally <- na.omit(tally)
+knitr::kable(tally)
 ```
 
+#Regional Description Table
+```{r}
+knitr::kable(regions)
+```
 
 #Model Summary Output
 ```{r}
