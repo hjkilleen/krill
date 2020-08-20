@@ -5,6 +5,9 @@ library(readr)
 load("data/allLengths.rda")
 #Get data from CenCOOS servers using the virtual sensor tool. Data are from ROMS/TOMS nowcast (10km), May1-June15 average at 2m and 100m depths. Station locations are taken from the RF_Euphausidae station_lat and _lon. 
 #Note that I shifted station 132 and 481 location ~2 km onshore. The original location (-122.65, -117.7500 respectively) was on a grid boundary and returned an error. I also moved station 183 ~1 km offshore as the nearshore location (-123.2333) was outside the model boundary.
+#I do not have station information for station 166, 421, and 118. These need to be added to urls and ROMS data from the most recent RF dataset (or ask Keith). 
+stations <- read.csv("data/stationMetadata.csv")
+station <- summarize(group_by(stations, station), lat = mean(station_latitude), lon = mean(station_longitude), depth = mean(bottom_depth))
 urls <- read.csv("data/urls.csv")
 for(i in seq(1:nrow(urls))) {
   #download file and read as csv
@@ -34,8 +37,9 @@ for(i in seq(1:nrow(urls))) {
     names(temps) <- c("lat", "lon", "year", "month", "day", "monthDay", "temp_2")
   }
   temps$lat_lon <- paste(temps$lat, temps$lon, sep = "_")
+  temps <- filter(temps, year >= 2011, year <=2018)
+  temps <- filter(temps, year != 2014)
   temps <- filter(temps, monthDay %in% dates)
-  temps <- filter(temps, year >= 2015, year <=2018)
   #convert temp to Celsius
   temps$temp_2 <- (temps$temp_2-32)/1.8
   if("temp_100" %in% names(temps)){
@@ -58,12 +62,8 @@ myfiles
 dat_csv = plyr::ldply(myfiles, read_csv)
 
 #merge with krill length data
-allLengthsRecent <- filter(allLengths, year != "2011", year != "2012")
-
-stations <- read.csv("data/stationMetadata.csv")
-station <- summarize(group_by(stations, station), lat = mean(station_latitude), lon = mean(station_longitude), depth = mean(bottom_depth))
-waterTemp <- left_join(dat_csv, station, by = c("lat", "lon"))
+waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
 waterTemp <- select(waterTemp, year, station, temp_2, temp_100)
-allLengthsRecent$stationYear <- paste(allLengthsRecent$station, allLengthsRecent$year, sep = "")
+allLengths$stationYear <- paste(allLengths$station, allLengths$year, sep = "")
 waterTemp$stationYear <- paste(waterTemp$station, waterTemp$year, sep = "")
-allLengthsRecentEnv <- left_join(allLengthsRecent, waterTemp, by = "stationYear")
+allLengthsEnv <- left_join(allLengths, waterTemp, by = "stationYear")
