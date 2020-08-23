@@ -8,7 +8,11 @@ source("scripts/analysis_lf_explore.R")
 source("scripts/functions/model_simulation.R")
 load("data/allLengthsEnv.rda")
 
+#CHECK VARIABLE DISTRIBUTIONS
+qqnorm(allLengths$length)
+shapiro.test(sample(allLengths$length, 5000))
 
+#SIMPLE UNI/BIVARIATE PLOTS OF DATA
 jpeg("figures/sideBySideAllLengths.jpg")
 par(mfrow = c(1,3))
 hist(ep$length, main = "E. pacifica Lengths")
