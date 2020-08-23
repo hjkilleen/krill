@@ -4,21 +4,8 @@
 
 library(lme4)
 library(ggeffects)
-source("scripts/analysis_lf_explore.R")
 source("scripts/functions/model_simulation.R")
 load("data/allLengthsEnv.rda")
-
-#CHECK VARIABLE DISTRIBUTIONS
-qqnorm(allLengths$length)
-shapiro.test(sample(allLengths$length, 5000))
-
-#SIMPLE UNI/BIVARIATE PLOTS OF DATA
-jpeg("figures/sideBySideAllLengths.jpg")
-par(mfrow = c(1,3))
-hist(ep$length, main = "E. pacifica Lengths")
-hist(ts$length, main = "T. spinifera Lengths")
-hist(nd$length, main = "N. difficilis Lengths")
-dev.off()
 
 #Environmental indicators table
 #========
@@ -27,28 +14,16 @@ env.means <- group_by_at(env, vars(year, region)) %>%
   summarize(lat = mean(lat), oni = mean(oni), pdo = mean(pdo), npgo = mean(npgo), sst_anom = mean(sst_anom), temp_anom_one.hun = mean(temp_anom_one.hun), temp_anom_two.hun = mean(temp_anom_two.hun), uw_anom = mean(uw_anom))
 formattable(env.means, list(`oni` = color_bar("#FA614B"), `pdo` = color_bar("#71CA97"), `npgo` = color_bar("#FA614B"), `sst_anom` = color_bar("#71CA97"), `temp_anom_one.hun` = color_bar("#FA614B"), `temp_anom_two.hun` = color_bar("#71CA97")))
 #===========
-
 #Three-Way ANOVA with individual krill as observational units
 #==========
-ep <- filter(allLengths, species == "EP")
-ts <- filter(allLengths, species == "TS")
-nd <- filter(allLengths, species == "ND")
 #Test for normality of each species distribution
 #structure of all krill lengths
-hist(ep$length)
-hist(ts$length)
-hist(nd$length)
-qqnorm(ep$length)
-qqnorm(ts$length)
-qqnorm(nd$length)
+hist(allLengths$length)
+qqnorm(allLengths$length)
 #Agostino test for normality
-agostino.test(ep$length)
-agostino.test(ts$length)
-agostino.test(nd$length)
+moments::agostino.test(allLengths$length)
 #Total kurtosis (-3 for excess kurtosis)
-3-kurtosis(ep$length)
-3-kurtosis(ts$length)
-3-kurtosis(nd$length)
+kurtosis(allLengths$length)-3
 
 #All three species have approximately normal length distributions with slight negative skew and are slightly divergent from noraml levels of kurtosis (leptokurtic for EP & TS, platykurtic for ND). Though the distributions are non-normal, the kurtosis is small enough for each species that an ANOVA is appropriate. 
 
