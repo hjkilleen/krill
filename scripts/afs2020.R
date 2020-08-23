@@ -2,8 +2,8 @@
 #Figures for presentation given at the American Fisheries Society Annual Meeting in September 2020
 
 # Thu Aug 13 19:30:48 2020 ------------------------------
-summaryM9 <- summary(M9)
-summaryM3 <- summary(M3)
+summaryM9 <- summary(M9, correlation = FALSE)
+summaryM3 <- summary(M3, correlation = FALSE)
 save(summaryM9, file = "output/M9.rda")
 save(summaryM3, file = "output/M3.rda")
   

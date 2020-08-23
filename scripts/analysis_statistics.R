@@ -5,8 +5,9 @@
 library(lme4)
 library(ggeffects)
 source("scripts/analysis_lf_explore.R")
-source("scripts/data_load_roms.R")
 source("scripts/functions/model_simulation.R")
+load("data/allLengthsEnv.rda")
+
 
 jpeg("figures/sideBySideAllLengths.jpg")
 par(mfrow = c(1,3))
