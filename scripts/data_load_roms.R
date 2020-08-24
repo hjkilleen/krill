@@ -63,13 +63,11 @@ urls <- read.csv("data/urls.csv")
 #Load csv files
 mydir = "data/roms_temperatures/"
 myfiles = list.files(path=mydir, pattern="*.csv", full.names=TRUE)
-myfiles
 dat_csv = plyr::ldply(myfiles, read_csv)
 
 #merge with krill length data
 waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
 waterTemp <- select(waterTemp, year, station, temp_2, temp_100)
-allLengths$stationYear <- paste(allLengths$station, allLengths$year, sep = "")
-waterTemp$stationYear <- paste(waterTemp$station, waterTemp$year, sep = "")
-allLengthsEnv <- left_join(allLengths, waterTemp, by = "stationYear")
+allLengths$year <- as.numeric(allLengths$year)
+allLengthsEnv <- left_join(allLengths, waterTemp)
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
