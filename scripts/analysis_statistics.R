@@ -7,16 +7,8 @@ library(ggeffects)
 source("scripts/functions/model_simulation.R")
 load("data/allLengthsEnv.rda")
 
-#Environmental indicators table
-#========
-env <- read_xlsx("data/environment.xlsx")
-env.means <- group_by_at(env, vars(year, region)) %>% 
-  summarize(lat = mean(lat), oni = mean(oni), pdo = mean(pdo), npgo = mean(npgo), sst_anom = mean(sst_anom), temp_anom_one.hun = mean(temp_anom_one.hun), temp_anom_two.hun = mean(temp_anom_two.hun), uw_anom = mean(uw_anom))
-formattable(env.means, list(`oni` = color_bar("#FA614B"), `pdo` = color_bar("#71CA97"), `npgo` = color_bar("#FA614B"), `sst_anom` = color_bar("#71CA97"), `temp_anom_one.hun` = color_bar("#FA614B"), `temp_anom_two.hun` = color_bar("#71CA97")))
-#===========
-#Three-Way ANOVA with individual krill as observational units
-#==========
 #Test for normality of each species distribution
+#====
 #structure of all krill lengths
 hist(allLengths$length)
 qqnorm(allLengths$length)
@@ -24,51 +16,10 @@ qqnorm(allLengths$length)
 moments::agostino.test(allLengths$length)
 #Total kurtosis (-3 for excess kurtosis)
 kurtosis(allLengths$length)-3
-
-#All three species have approximately normal length distributions with slight negative skew and are slightly divergent from noraml levels of kurtosis (leptokurtic for EP & TS, platykurtic for ND). Though the distributions are non-normal, the kurtosis is small enough for each species that an ANOVA is appropriate. 
-
-#Make summary table of means for each species
-ep.summ <- summarise(group_by_at(ep, vars(year, region, shore)), mean = mean(length))
-
-#EP ANOVA
-ep.aov <- aov(length~year*region*shore, data = ep)
-summary.aov(ep.aov)
-TukeyHSD(ep.aov, which = "region")
-#ANOVA shows that there is a significant difference in the mean length of krill from different years, regions, and crossshore distributions. All interactions (two-way and three-way) were also significannt. However, looking at the TukeyHSD test statistics for pairwise comparisons reveals that these differences are not very great in magnitude, generally 1-3mm, which is arguably biologically insignificant. However, this should be tested once we have information on krill abundance, from which we can look at biomass rather than length frequency alone. 
-
-#One thing that stands out in the TukeyHSD results is that the north region seems to be different from all of the others across years. All years were different from eachopther except 2018 & 2017 in pairwise comparisons, 2011 seems to be more so and shows the largest differences in all pairwise comparisons with other years. 
-
-#TS ANOVA
-ts.aov <- aov(length~year*region*shore, data = ts)
-summary.aov(ts.aov)
-TukeyHSD(ts.aov, which = "year")
-#Similar takeaways from EP. 2018 is similar to both 2017 and 2012. 2011 means were quite a bit smaller than all other years, as shown in the pairwise comparisons (3-4.5 mm).All regions were different, but not by much, except for south-central. 
-
-#ND ANOVA
-nd.aov <- aov(length~year*region*shore, data = nd)
-summary.aov(nd.aov)
-TukeyHSD(nd.aov, which = "year")
-#All factors and interactions were significant except for region:shore. Less variability across years for NDs, 2011 remains the most different from all years with smaller mean lenghts (1-3.3 mm). The north is different from all other regions, but not by much. Otherwise, regions are similar. Onshore krill are ~0.5mm longer than offshore krill. 
-#==========
-
-#Two-way nested ANOVA with stations as observational units
-#===========
-#EP
-#if you want to include sex as a factor in the final analysis then it needs to be added in the grouping variables below.
-ep.st <- summarize(group_by_at(ep, vars(station, year, sex)), mean.length = mean(length))
-ep.st <- left_join(ep.st, regions, by = "station")
-ep.st.aov <- aov(mean.length~year*region*sex, data = ep.st)
-summary.aov(ep.st.aov)
-
-#TS
-ts.st <- summarize(group_by_at(ts, vars(station, year, sex)), mean.length = mean(length))
-ts.st <- left_join(ts.st, regions, by = "station")
-ts.st.aov <- aov(mean.length~year*region*sex, data = ts.st)
-summary.aov(ts.st.aov)
-#===========
+#=====
 
 #CV by year
-#=========
+#=====
 ep.summ <- summarize(group_by_at(ep, vars(year, region)), cv = cv(length))
 ggplot(ep.summ, aes(x = year, y = cv, color = region))+
   geom_point() + 
@@ -88,36 +39,32 @@ ggplot(nd.summ, aes(x = year, y = cv, color = region))+
   ggtitle("N. difficilis length variability (South & Central Only)")
 #=========
 
-#Multilevel modeling
+#MULTILEVEL MODELING
 #=======
-#use mean length for each station
-epSt <- summarise(group_by_at(ep, vars(station, year, region, sex, shore)), length = mean(length))
-#drop 2011 & 2012 until I can explore Baldo's length choice (SL1/SL2/something else)
-allLengthsRecent <- filter(allLengths, year != "2011", year != "2012")
-epRecent <- filter(ep, year != "2011", year != "2012")
-tsRecent <- filter(ts, year != "2011", year != "2012")
+#Model variation in krill length throughout the heatwave.
+#Change relevant variables to factors for multilevel analysis
+allLengthsEnv$station <- as.factor(allLengthsEnv$station)
+allLengthsEnv$year <- as.factor(allLengthsEnv$year)
+#A full model with all species=
+M1 <- lmer(length ~ year*region + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsEnv)
 
-#A full model with all species
-M1 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allLengthsRecent)
-M2 <- lmer(length ~ year*region + sex*species + species:year + shore + shore:year + (1|station), data = allLengthsRecent)
-M3 <- lmer(length ~ year*region + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengths)
-M4 <- lmer(length ~ year*region + sex + species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsRecent)
+M2 <- lmer(length ~ year*region + sex + species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsEnv)
+
+M3 <- lmer(length ~ year*region + sex + species + species:year + shore + shore:year + (1|station), data = allLengthsEnv)
+
+M4 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allLengthsEnv)
+
+#Model comparison
 AIC(M1, M2, M3, M4)
-summary (M3)
-fixef(M3)
+summary (M1)
 sjPlot::tab_model(M3, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
 sjPlot::plot_model()
 
-#Explore lengthEnv relationships with plots
-lowTemp <- filter(lengthEnv, temp_2<13.5)
-highTemp <- filter(lengthEnv, temp_2>=13.5)
-ggplot(lengthEnv, aes(x = temp_100, y = (length-mean(length)), color = species)) + 
-  geom_point(data = lowTemp, aes(x = temp_2, y = length), alpha = 0.9) +
-  geom_point(data = highTemp, aes(x= temp_2, y = length), alpha = 0.1)
-ggplot(lengthEnv) + 
-  geom_histogram(aes(length, color = species))
+#Visualization
+
+
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
 M6 <- lmer(length ~ temp_2 + temp_100 + temp_2:region + temp_100:region + temp_2:species + temp_100:species + temp_2:species:region + temp_100:species:region + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
