@@ -57,13 +57,30 @@ M4 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allL
 #Model comparison
 AIC(M1, M2, M3, M4)
 summary (M1)
-sjPlot::tab_model(M3, 
+sjPlot::tab_model(M1, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
-sjPlot::plot_model()
+sjPlot::plot_model(M1)
+lattice::dotplot(ranef(M1,condVar=TRUE))
 
 #Visualization
+lengthsWithFit <- select(allLengthsEnv, year, region, sex, species, shore, station, length)
+lengthsWithFit <- filter(lengthsWithFit, region != "NA")
+lengthsWithFit$predict <- predict(M1, re.form = NA)
 
+M1sim <- fsim.glmm(M1, nsim = 1000)
+M1simsum <- simsum(M1sim)
+M1simsum$year <- as.numeric(M1simsum$year)
+sum <- summarize(group_by_at(M1simsum, vars(species, year, region, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+
+ggplot() + 
+  geom_point(data = filter(allLengthsEnv, region != "NA"), aes(x = year, y = length, color = species), alpha = 0.1) + 
+  facet_wrap(vars(region)) +   
+  #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
+  geom_line(data = sum, aes(x = as.numeric(year), y = sim.mean, color = species)) + 
+  geom_rect(data = sum, aes(xmin = 4, xmax = 6, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
+  labs(y = "Length (mm)", x = "Year", title = "Krill lengths during a marine heatwave") +
+  theme(text = element_text(size = 20))
 
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
