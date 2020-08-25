@@ -17,7 +17,7 @@ fsim.glmm <- function(m1, nsim = 1000, cont.pred.expansion = 1, n.sim.vals = 10,
     model.residual.variance <- m1$sig2
   }
   vars <- vars[-which(vars == "list")]
-  y <- vars[1] # resposne variable
+  y <- vars[1] # response variable
   x <- vars[2:length(vars)] # predictor variable(s)
   dpred <- expand.grid(
     sapply(x,
