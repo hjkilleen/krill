@@ -4,6 +4,7 @@
 
 library(lme4)
 library(ggeffects)
+library(e1071)
 source("scripts/functions/model_simulation.R")
 load("data/allLengthsEnv.rda")
 
@@ -55,7 +56,7 @@ M3 <- lmer(length ~ year*region + sex + species + species:year + shore + shore:y
 M4 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allLengthsEnv)
 
 #Model comparison
-AIC(M1, M2, M3, M4)
+anova(M1, M2, M3, M4)
 summary (M1)
 sjPlot::tab_model(M1, 
                   show.re.var= TRUE, 
