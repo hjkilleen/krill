@@ -11,8 +11,12 @@ editor_options:
 ```{r}
 library(tidyverse)
 load("../data/allLengths.rda")
-tally <- as.data.frame(group_by_at(allLengths, vars(year, region, shore, species)) %>% tally())
+tally <- as.data.frame(group_by_at(allLengths, vars(year, region, shore, species, sex)) %>% tally())
 tally <- na.omit(tally)
+tally <- dcast(tally, year+region+shore+species~sex, mean)
+tally$F[is.nan(tally$F)] <- 0
+tally$M[is.nan(tally$M)] <- 0
+tally <- mutate(tally, total = F+M)
 knitr::kable(tally)
 ```
 
