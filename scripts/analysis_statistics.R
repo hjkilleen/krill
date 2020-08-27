@@ -21,11 +21,21 @@ ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length, group = year,
   geom_boxplot(width = 0.1) +
   scale_fill_manual(values = c("#ffffff80", "#00000080", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2015", "2016", "2017", "2018")) +
   facet_wrap(.~species, nrow = 3, ncol = 1, labeller = labeller(species = labs)) + 
-  geom_text(data = summarize(group_by_at(aLE_tally, vars(species, year)), n=mean(n), max = max(length)), aes(x = as.factor(year), y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
-  geom_text(data = summarize(group_by_at(aLE_tally, vars(year, species)), mean = round(mean(length), 1), max = max(length)), aes(x = as.factor(year), y = max + 10, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
-  labs(x = "Year", y = "Length (mm)", title = "Krill lengths by year") + 
+  geom_text(data = summarize(group_by_at(aLE_tally, vars(species, year)), n=mean(n), max = max(length)), aes(x = as.factor(year), y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 4) +
+  geom_text(data = summarize(group_by_at(aLE_tally, vars(year, species)), mean = round(mean(length), 1), max = max(length)), aes(x = as.factor(year), y = max + 10, label = paste("mean=", mean, sep = " ")), color = "black", size = 4) +
+  labs(x = "Year", y = "Length (mm)") + 
   theme(text = element_text(size = 20), legend.position = "none") +
-  ggsave("figures/manuscript/fig1.jpg", width = 9, height = 15)
+  ggsave("figures/manuscript/fig1.jpg", width = 7, height = 9)
+
+#CV by year
+#=====
+ggplot(summarize(group_by_at(allLengthsEnv, vars(year, species)), cv = cv(length)), aes(x = year, y = cv, color = species)) +
+  geom_point(group = "species") + 
+  geom_smooth() + 
+  labs(x = "Year", y = "Coefficient of Variation(CV)") +
+  theme(text = element_text(size = 20)) + 
+  ggsave("figures/manuscript/fig2.jpg", width = 5, height = 5)
+#=========
 
 #Test for normality of each species distribution
 #====
@@ -37,27 +47,6 @@ moments::agostino.test(allLengths$length)
 #Total kurtosis (-3 for excess kurtosis)
 kurtosis(allLengths$length)-3
 #=====
-
-#CV by year
-#=====
-ep.summ <- summarize(group_by_at(ep, vars(year, region)), cv = cv(length))
-ggplot(ep.summ, aes(x = year, y = cv, color = region))+
-  geom_point() + 
-  geom_line(aes(group = region)) + 
-  ggtitle("E. pacifica length variability")
-
-ts.summ <- summarize(group_by_at(filter(ts, region != "south"), vars(year, region)), cv = cv(length))
-ggplot(ts.summ, aes(x = year, y = cv, color = region))+
-  geom_point() + 
-  geom_line(aes(group = region)) + 
-  ggtitle("T. spinifera length variability (no South)")
-
-nd.summ <- summarize(group_by_at(filter(nd, region != "north", region != "north_central"), vars(year, region)), cv = cv(length))
-ggplot(nd.summ, aes(x = year, y = cv, color = region))+
-  geom_point() + 
-  geom_line(aes(group = region)) + 
-  ggtitle("N. difficilis length variability (South & Central Only)")
-#=========
 
 #MULTILEVEL MODELING
 #=======
