@@ -6,7 +6,26 @@ library(lme4)
 library(ggeffects)
 library(e1071)
 source("scripts/functions/model_simulation.R")
+source("scripts/functions/length_frequency.R")
 load("data/allLengthsEnv.rda")
+
+#Removing 2013 until we can get it fixed.
+allLengthsEnv <- filter(allLengthsEnv, year != "2013")
+
+#Histogram of krill lengths by species
+aLE_tally <- add_tally(group_by_at(allLengthsEnv, vars(year, species)))
+labs <- c("E. pacifica", "T. spinifera", "N. difficilis")
+names(labs) <- c("EP", "TS", "ND")
+ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length, group = year, fill = as.factor(year))) +
+  geom_violin() +
+  geom_boxplot(width = 0.1) +
+  scale_fill_manual(values = c("#ffffff80", "#00000080", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2015", "2016", "2017", "2018")) +
+  facet_wrap(.~species, nrow = 3, ncol = 1, labeller = labeller(species = labs)) + 
+  geom_text(data = summarize(group_by_at(aLE_tally, vars(species, year)), n=mean(n), max = max(length)), aes(x = as.factor(year), y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
+  geom_text(data = summarize(group_by_at(aLE_tally, vars(year, species)), mean = round(mean(length), 1), max = max(length)), aes(x = as.factor(year), y = max + 10, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
+  labs(x = "Year", y = "Length (mm)", title = "Krill lengths by year") + 
+  theme(text = element_text(size = 20), legend.position = "none") +
+  ggsave("figures/manuscript/fig1.jpg", width = 9, height = 15)
 
 #Test for normality of each species distribution
 #====
@@ -55,13 +74,15 @@ M3 <- lmer(length ~ year*region + sex + species + species:year + shore + shore:y
 
 M4 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allLengthsEnv)
 
+M5 <- lmer(length ~ year + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsEnv)
+
 #Model comparison
 anova(M1, M2, M3, M4)
 summary (M1)
 sjPlot::tab_model(M1, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
-sjPlot::plot_model(M1)
+sjPlot::plot_model(M5)
 lattice::dotplot(ranef(M1,condVar=TRUE))
 
 #Visualization
