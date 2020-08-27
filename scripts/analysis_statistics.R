@@ -54,25 +54,40 @@ kurtosis(allLengths$length)-3
 #Change relevant variables to factors for multilevel analysis
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
 allLengthsEnv$year <- as.factor(allLengthsEnv$year)
-#A full model with all species=
-M1 <- lmer(length ~ year*region + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsEnv)
+#Heatwave Models
 
-M2 <- lmer(length ~ year*region + sex + species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsEnv)
+#Euphausia pacifica
+Me1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
 
-M3 <- lmer(length ~ year*region + sex + species + species:year + shore + shore:year + (1|station), data = allLengthsEnv)
-
-M4 <- lmer(length ~ year*region + sex*species + shore + (1|station), data = allLengthsEnv)
-
-M5 <- lmer(length ~ year + sex*species + species:year + sex:year + shore + shore:year + (1|station), data = allLengthsEnv)
-
-#Model comparison
-anova(M1, M2, M3, M4)
-summary (M1)
-sjPlot::tab_model(M1, 
+Me2 <- lmer(length ~ year + sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
+#Model evaluation
+anova(Me1, Me2)
+sjPlot::tab_model(Me1, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
-sjPlot::plot_model(M5)
-lattice::dotplot(ranef(M1,condVar=TRUE))
+sjPlot::plot_model(Me1)
+lattice::dotplot(ranef(Me1,condVar=TRUE))
+
+#Thysanoessa spinifera
+Mt1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
+#Model evaluation
+sjPlot::tab_model(Mt1, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
+sjPlot::plot_model(Mt1)
+lattice::dotplot(ranef(Mt1,condVar=TRUE))
+
+#Nematocelis difficilis
+Mn1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="ND"))
+
+Mn2 <- lmer(length ~ year*sex + shore:year + (1|station), data = filter(allLengthsEnv, species =="ND"))
+#Model evaluation
+anova(Mn1, Mn2)
+sjPlot::tab_model(Mn2, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
+sjPlot::plot_model(Mn2)
+lattice::dotplot(ranef(Mn2,condVar=TRUE))
 
 #Visualization
 lengthsWithFit <- select(allLengthsEnv, year, region, sex, species, shore, station, length)
