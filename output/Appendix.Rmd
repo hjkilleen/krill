@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: inline
 ---
 
-#Data Description Table
+##Data Description Table
 ```{r}
 library(tidyverse)
 load("../data/allLengths.rda")
@@ -20,22 +20,49 @@ tally <- mutate(tally, total = F+M)
 knitr::kable(tally)
 ```
 
-#Regional Description Table
+##Regional Description Table
 ```{r}
 regions <- read.csv("../data/regions.csv")
 knitr::kable(regions)
 ```
 
-#Model Summary Output
+##Model Summary Output
+Heatwave model outputs
+ > Euphausia pacifica
+ 
+```{r}
+Me1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
+sjPlot::tab_model(Me1, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and temporal effects on E. pacifica length")
+```
+
+ > Thysanoessa spinifera
+ 
+```{r}
+Mt1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
+sjPlot::tab_model(Mt1, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
+```
+
+ > Nematocelis difficilis
+ 
+```{r}
+Mn2 <- lmer(length ~ year*sex + shore:year + (1|station), data = filter(allLengthsEnv, species =="ND"))
+sjPlot::tab_model(Mn2, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
+```
+ 
+
 Temperature effects model
 ```{r}
-load("M9.rda")
-print(summaryM9)
+
 ```
 
 Year effects model
 ```{r}
-load("M3.rda")
-print(summaryM3)
+
 ```
 
