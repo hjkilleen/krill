@@ -52,6 +52,7 @@ moments::kurtosis(filter(allLengths, species == "ND")$length)-3
 #Change relevant variables to factors for multilevel analysis
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
 allLengthsEnv$year <- as.factor(allLengthsEnv$year)
+allLengthsEnv$species <- as.factor(allLengthsEnv$species)
 #Heatwave Models
 
 #Euphausia pacifica
@@ -160,6 +161,35 @@ sjPlot::tab_model(Ml4,
 sjPlot::plot_model(Ml4)
 lattice::dotplot(ranef(Ml4,condVar=TRUE))
 save(Ml4, file = "output/Ml4.rda")
+
+#explore temp_2 effect with a spline
+library(splines)
+Ms <- lm(length ~ bs(temp_2, degree = 2), data = allLengthsEnv)
+Mes <- lm(length ~ bs(temp_2, degree = 2), data = filter(allLengthsEnv, species == "EP"))
+Mts <- lm(length ~ bs(temp_2, degree = 2), data = filter(allLengthsEnv, species == "TS"))
+Mns <- lm(length ~ bs(temp_2, degree = 2), data = filter(allLengthsEnv, species == "ND"))
+summary(Mns)
+#plot splines
+ep <- filter(allLengthsEnv, species == "EP")
+ts <- filter(allLengthsEnv, species == "TS")
+nd <- filter(allLengthsEnv, species == "ND")
+temp_2_new <- seq(8, 19, by = 0.1)
+plot(ep$temp_2, ep$length, pch = 16)
+lines(temp_2_new, predict(Mes, data.frame(temp_2 = temp_2_new), col = "blue"))
+plot(ts$temp_2, ts$length, pch = 16)
+lines(temp_2_new, predict(Mts, data.frame(temp_2 = temp_2_new), col = "blue"))
+plot(nd$temp_2, nd$length, pch = 16)
+lines(temp_2_new, predict(Mns, data.frame(temp_2 = temp_2_new), col = "blue"))
+summary(Mes)
+summary(Mts)
+summary(Mns)
+
+#all species
+plot(allLengthsEnv$temp_2, allLengthsEnv$length, pch = 16)
+lines(temp_2_new, predict(Ms, data.frame(temp_2 = temp_2_new), col = "blue"))
+summary(Ms)
+
+#Nonlinear analysis seems appropriate for all but TS and the full model
 
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
