@@ -95,24 +95,61 @@ sjPlot::plot_model(Mn2)
 lattice::dotplot(ranef(Mn2,condVar=TRUE))
 save(Mn2, file = "output/Mn2.rda")
 
-#Visualization
-lengthsWithFit <- select(allLengthsEnv, year, region, sex, species, shore, station, length)
-lengthsWithFit <- filter(lengthsWithFit, region != "NA")
-lengthsWithFit$predict <- predict(M1, re.form = NA)
+#Simulation
+Me1sim <- fsim.glmm(Me1, nsim = 1000)
+Mt2sim <- fsim.glmm(Mt2, nsim = 1000)
+Mn2sim <- fsim.glmm(Mn2, nsim = 1000)
 
-M1sim <- fsim.glmm(M1, nsim = 1000)
-M1simsum <- simsum(M1sim)
-M1simsum$year <- as.numeric(M1simsum$year)
-sum <- summarize(group_by_at(M1simsum, vars(species, year, region, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+Me1simsum <- simsum(Me1sim)
+Mt2simsum <- simsum(Mt2sim)
+Mn2simsum <- simsum(Mn2sim)
+
+# Me1simsum$year <- as.numeric(Me1simsum$year)
+# Mt2simsum$year <- as.numeric(Mt2simsum$year)
+# Mn2simsum$year <- as.numeric(Mn2simsum$year)
+
+#sex differences
+Me1sum <- summarize(group_by_at(Me1simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+Mt2sum <- summarize(group_by_at(Mt2simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+Mn2sum <- summarize(group_by_at(Mn2simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
 
 ggplot() + 
-  geom_point(data = filter(allLengthsEnv, region != "NA"), aes(x = year, y = length, color = species), alpha = 0.1) + 
-  facet_wrap(vars(region)) +   
-  #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
-  geom_line(data = sum, aes(x = as.numeric(year), y = sim.mean, color = species)) + 
-  geom_rect(data = sum, aes(xmin = 4, xmax = 6, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
+  geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
+  geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "red") +
+  geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "blue") +
+  geom_line(data = Mn2sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "green") + 
+  # geom_ribbon(data = Me1sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "red", alpha = 0.2) + 
+  # geom_ribbon(data = Mt2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "blue", alpha = 0.2) + 
+  # geom_ribbon(data = Mn2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "green", alpha = 0.2) +
+  #geom_rect(data = Me1sum, aes(xmin = 2015, xmax = 2017, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
   labs(y = "Length (mm)", x = "Year", title = "Krill lengths during a marine heatwave") +
+  ylim(min = 10, max = 35)
   theme(text = element_text(size = 20))
+  
+#shore differences
+  Me1sum <- summarize(group_by_at(Me1simsum, vars(year, shore)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+  Mt2sum <- summarize(group_by_at(Mt2simsum, vars(year, shore)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+  Mn2sum <- summarize(group_by_at(Mn2simsum, vars(year, shore)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+  
+  ggplot() + 
+    geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
+    geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "red") +
+    geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "blue") +
+    geom_line(data = Mn2sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "green") + 
+    # geom_ribbon(data = Me1sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "red", alpha = 0.2) + 
+    # geom_ribbon(data = Mt2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "blue", alpha = 0.2) + 
+    # geom_ribbon(data = Mn2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "green", alpha = 0.2) +
+    #geom_rect(data = Me1sum, aes(xmin = 2015, xmax = 2017, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
+    labs(y = "Length (mm)", x = "Year", title = "Krill lengths during a marine heatwave") +
+    ylim(min = 10, max = 35)
+  theme(text = element_text(size = 20))
+
+  
+  
+  
+  
+  
+  
 
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
