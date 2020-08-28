@@ -6,10 +6,13 @@ output:
 editor_options:
   chunk_output_type: inline
 ---
+```{r}
+library(tidyverse)
+library(reshape2)
+```
 
 ##Data Description Table
 ```{r}
-library(tidyverse)
 load("../data/allLengths.rda")
 tally <- as.data.frame(group_by_at(allLengths, vars(year, region, shore, species, sex)) %>% tally())
 tally <- na.omit(tally)
@@ -31,7 +34,7 @@ Heatwave model outputs
  > Euphausia pacifica
  
 ```{r}
-Me1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
+load("Me1.rda")
 sjPlot::tab_model(Me1, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and temporal effects on E. pacifica length")
@@ -40,7 +43,7 @@ sjPlot::tab_model(Me1,
  > Thysanoessa spinifera
  
 ```{r}
-Mt1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
+load("Mt1.rda")
 sjPlot::tab_model(Mt1, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
@@ -49,7 +52,7 @@ sjPlot::tab_model(Mt1,
  > Nematocelis difficilis
  
 ```{r}
-Mn2 <- lmer(length ~ year*sex + shore:year + (1|station), data = filter(allLengthsEnv, species =="ND"))
+load("Mn2.rda")
 sjPlot::tab_model(Mn2, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
