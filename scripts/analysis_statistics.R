@@ -149,6 +149,21 @@ shore <- ggplot() +
 fig3 <- ggarrange(sex, shore, labels = c("A", "B"), ncol = 2, nrow = 1)
 ggsave(fig3, file = "figures/manuscript/fig3.jpg", width= 12, height = 5)
 
+#Environmental Model
+#Full linear model
+Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + shore + species:shore + (1|station), data = allLengthsEnv)
+Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + species:temp_100 + sex:temp_100 + shore + species:shore + (1|station), data = allLengthsEnv)
+Ml3 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + species:temp_100 + sex:temp_100 + species:shore + (1|station), data = allLengthsEnv)
+Ml4 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + species:temp_100 + species:shore + (1|station), data = allLengthsEnv)
+#model comparison and evaluation
+anova(Ml1, Ml2, Ml3, Ml4)
+sjPlot::tab_model(Ml4, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Environmental Effects on Krill Length", file = "output/Ml4.doc")
+sjPlot::plot_model(Ml4)
+lattice::dotplot(ranef(Ml4,condVar=TRUE))
+save(Ml4, file = "output/Ml4.rda")
+
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
 M6 <- lmer(length ~ temp_2 + temp_100 + temp_2:region + temp_100:region + temp_2:species + temp_100:species + temp_2:species:region + temp_100:species:region + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
