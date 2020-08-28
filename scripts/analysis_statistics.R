@@ -4,14 +4,11 @@
 
 library(lme4)
 library(ggeffects)
-library(e1071)
+library(moments)
 library(ggpubr)
 source("scripts/functions/model_simulation.R")
 source("scripts/functions/length_frequency.R")
 load("data/allLengthsEnv.rda")
-
-#Removing 2013 until we can get it fixed.
-allLengthsEnv <- filter(allLengthsEnv, year != "2013")
 
 #Histogram of krill lengths by species
 aLE_tally <- add_tally(group_by_at(allLengthsEnv, vars(year, species)))
@@ -20,7 +17,7 @@ names(labs) <- c("EP", "TS", "ND")
 ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length, group = year, fill = as.factor(year))) +
   geom_violin() +
   geom_boxplot(width = 0.1) +
-  scale_fill_manual(values = c("#ffffff80", "#00000080", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2015", "2016", "2017", "2018")) +
+  scale_fill_manual(values = c("#ffffff80", "#00000080", "#00ffff80", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2013", "2015", "2016", "2017", "2018")) +
   facet_wrap(.~species, nrow = 3, ncol = 1, labeller = labeller(species = labs)) + 
   geom_text(data = summarize(group_by_at(aLE_tally, vars(species, year)), n=mean(n), max = max(length)), aes(x = as.factor(year), y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 4) +
   geom_text(data = summarize(group_by_at(aLE_tally, vars(year, species)), mean = round(mean(length), 1), max = max(length)), aes(x = as.factor(year), y = max + 10, label = paste("mean=", mean, sep = " ")), color = "black", size = 4) +
@@ -32,7 +29,7 @@ ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length, group = year,
 #=====
 ggplot(summarize(group_by_at(allLengthsEnv, vars(year, species)), cv = cv(length)), aes(x = year, y = cv, color = species)) +
   geom_point(group = "species") + 
-  geom_smooth() + 
+  geom_smooth(se = FALSE) + 
   labs(x = "Year", y = "Coefficient of Variation(CV)") +
   theme(text = element_text(size = 20)) + 
   ggsave("figures/manuscript/fig2.jpg", width = 5, height = 5)
@@ -46,7 +43,7 @@ qqnorm(allLengths$length)
 #Agostino test for normality
 moments::agostino.test(allLengths$length)
 #Total kurtosis (-3 for excess kurtosis)
-kurtosis(allLengths$length)-3
+moments::kurtosis(filter(allLengths, species == "ND")$length)-3
 #=====
 
 #MULTILEVEL MODELING
