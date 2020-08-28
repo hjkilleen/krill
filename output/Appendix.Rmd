@@ -68,8 +68,3 @@ Temperature effects model
 
 ```
 
-Year effects model
-```{r}
-
-```
-
