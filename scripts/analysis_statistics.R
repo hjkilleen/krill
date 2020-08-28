@@ -5,6 +5,7 @@
 library(lme4)
 library(ggeffects)
 library(e1071)
+library(ggpubr)
 source("scripts/functions/model_simulation.R")
 source("scripts/functions/length_frequency.R")
 load("data/allLengthsEnv.rda")
@@ -113,7 +114,7 @@ Me1sum <- summarize(group_by_at(Me1simsum, vars(year, sex)), sim.mean = mean(sim
 Mt2sum <- summarize(group_by_at(Mt2simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
 Mn2sum <- summarize(group_by_at(Mn2simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
 
-ggplot() + 
+sex <- ggplot() + 
   geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
   geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "red") +
   geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "blue") +
@@ -122,8 +123,8 @@ ggplot() +
   # geom_ribbon(data = Mt2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "blue", alpha = 0.2) + 
   # geom_ribbon(data = Mn2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "green", alpha = 0.2) +
   #geom_rect(data = Me1sum, aes(xmin = 2015, xmax = 2017, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
-  labs(y = "Length (mm)", x = "Year", title = "Krill lengths during a marine heatwave") +
-  ylim(min = 10, max = 35)
+  labs(y = "Length (mm)", x = "Year") +
+  ylim(min = 10, max = 35) + 
   theme(text = element_text(size = 20))
   
 #shore differences
@@ -131,25 +132,22 @@ ggplot() +
   Mt2sum <- summarize(group_by_at(Mt2simsum, vars(year, shore)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
   Mn2sum <- summarize(group_by_at(Mn2simsum, vars(year, shore)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
   
-  ggplot() + 
-    geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
-    geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "red") +
-    geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "blue") +
-    geom_line(data = Mn2sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "green") + 
-    # geom_ribbon(data = Me1sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "red", alpha = 0.2) + 
-    # geom_ribbon(data = Mt2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "blue", alpha = 0.2) + 
-    # geom_ribbon(data = Mn2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "green", alpha = 0.2) +
-    #geom_rect(data = Me1sum, aes(xmin = 2015, xmax = 2017, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
-    labs(y = "Length (mm)", x = "Year", title = "Krill lengths during a marine heatwave") +
-    ylim(min = 10, max = 35)
+shore <- ggplot() + 
+  geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
+  geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "red") +
+  geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "blue") +
+  geom_line(data = Mn2sum, aes(x = as.numeric(year), y = sim.mean, linetype = shore), color = "green") + 
+  # geom_ribbon(data = Me1sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "red", alpha = 0.2) + 
+  # geom_ribbon(data = Mt2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "blue", alpha = 0.2) + 
+  # geom_ribbon(data = Mn2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "green", alpha = 0.2) +
+  #geom_rect(data = Me1sum, aes(xmin = 2015, xmax = 2017, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
+  labs(y = "Length (mm)", x = "Year") +
+  ylim(min = 10, max = 35) +
   theme(text = element_text(size = 20))
 
-  
-  
-  
-  
-  
-  
+#Combine plots and save
+fig3 <- ggarrange(sex, shore, labels = c("A", "B"), ncol = 2, nrow = 1)
+ggsave(fig3, file = "figures/manuscript/fig3.jpg", width= 12, height = 5)
 
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
