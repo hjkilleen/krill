@@ -71,13 +71,16 @@ save(Me1, file = "output/Me1.rda")
 
 #Thysanoessa spinifera
 Mt1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
+
+Mt2 <- lmer(length ~ year*sex + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
 #Model evaluation
-sjPlot::tab_model(Mt1, 
+anova(Mt1, Mt2)
+sjPlot::tab_model(Mt2, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
-sjPlot::plot_model(Mt1)
-lattice::dotplot(ranef(Mt1,condVar=TRUE))
-save(Mt1, file = "output/Mt1.rda")
+sjPlot::plot_model(Mt2)
+lattice::dotplot(ranef(Mt2,condVar=TRUE))
+save(Mt2, file = "output/Mt2.rda")
 
 #Nematocelis difficilis
 Mn1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="ND"))

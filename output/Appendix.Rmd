@@ -1,8 +1,11 @@
 ---
 title: "Krill Lengths Appendix"
 output:
-  pdf_document: default
+  html_document:
+    df_print: paged
   html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
 editor_options:
   chunk_output_type: inline
 ---
@@ -31,6 +34,7 @@ knitr::kable(regions)
 
 ##Model Summary Output
 Heatwave model outputs
+
  > Euphausia pacifica
  
 ```{r}
@@ -43,8 +47,8 @@ sjPlot::tab_model(Me1,
  > Thysanoessa spinifera
  
 ```{r}
-load("Mt1.rda")
-sjPlot::tab_model(Mt1, 
+load("Mt2.rda")
+sjPlot::tab_model(Mt2, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
 ```
