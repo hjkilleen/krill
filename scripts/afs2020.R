@@ -1,5 +1,6 @@
 #AFS Figures
 #Figures for presentation given at the American Fisheries Society Annual Meeting in September 2020
+library(reshape2)
 
 # Thu Aug 13 19:30:48 2020 ------------------------------
 summaryM9 <- summary(M9, correlation = FALSE)
@@ -22,28 +23,121 @@ ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length, group = year,
   theme(text = element_text(size = 20), legend.position = "none") +
   ggsave("figures/afs2020/fig1.jpg", width = 7, height = 9)
 
-#Figure 2a - Differences among species in response to surface temperature
-# simM9 <- fsim.glmm(M9)
-# simsumM9 <- simsum(simM9)
-sum <- summarize(group_by_at(simsumM9, vars(species, temp_2)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
-ggplot() + 
-  geom_point(data = allLengthsEnv, aes(x = temp_2, y = length, color = as.factor(species)), alpha = 0.1) + #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
-  #facet_wrap(as.factor(allLengthsEnv$species)) + 
-  geom_smooth(data = sum, aes(x = temp_2, y = sim.mean, color = species)) + 
-  labs(y = "Length (mm)", x = "Temp (C)", title = "Simulated krill lengths by temperature at surface") +
-  theme(text = element_text(size = 20)) + 
-  ggsave("figures/afs2020/fig2a.jpg", width = 9, height = 7)
+#Euphausia pacifica
+Me1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
 
-#Figure 2b - Differences among species in response to temperature at 100 m
-sum <- summarize(group_by_at(simsumM9, vars(species, temp_100)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
-ggplot() + 
-  geom_point(data = allLengthsEnv, aes(x = temp_100, y = length, color = as.factor(species)), alpha = 0.1) + #geom_ribbon(data = sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, fill = species), alpha = 0.2) + 
-  #facet_wrap(as.factor(allLengthsEnv$species)) + 
-  geom_smooth(data = sum, aes(x = temp_100, y = sim.mean, color = species)) + 
-  labs(y = "Length (mm)", x = "Temp (C)", title = "Simulated krill lengths by temperature at 100 m") +
-  theme(text = element_text(size = 20)) + 
-  ggsave("figures/afs2020/fig2b.jpg", width = 9, height = 7)
+Me2 <- lmer(length ~ year + sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
+#Model evaluation
+anova(Me1, Me2)
+sjPlot::tab_model(Me1, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
+sjPlot::plot_model(Me1)
+lattice::dotplot(ranef(Me1,condVar=TRUE))
+save(Me1, file = "output/Me1.rda")
 
+#Thysanoessa spinifera
+Mt1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
+
+Mt2 <- lmer(length ~ year*sex + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
+#Model evaluation
+anova(Mt1, Mt2)
+sjPlot::tab_model(Mt2, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
+sjPlot::plot_model(Mt2)
+lattice::dotplot(ranef(Mt2,condVar=TRUE))
+save(Mt2, file = "output/Mt2.rda")
+
+#Nematocelis difficilis
+Mn1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="ND"))
+
+Mn2 <- lmer(length ~ year*sex + shore:year + (1|station), data = filter(allLengthsEnv, species =="ND"))
+#Model evaluation
+anova(Mn1, Mn2)
+sjPlot::tab_model(Mn2, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Spatial and Temporal Effects on Krill Length", file = "output/Mn2.doc")
+sjPlot::plot_model(Mn2)
+lattice::dotplot(ranef(Mn2,condVar=TRUE))
+save(Mn2, file = "output/Mn2.rda")
+
+#Simulation
+Me1sim <- fsim.glmm(Me1, nsim = 1000)
+Mt2sim <- fsim.glmm(Mt2, nsim = 1000)
+Mn2sim <- fsim.glmm(Mn2, nsim = 1000)
+
+Me1simsum <- simsum(Me1sim)
+Mt2simsum <- simsum(Mt2sim)
+Mn2simsum <- simsum(Mn2sim)
+
+# Me1simsum$year <- as.numeric(Me1simsum$year)
+# Mt2simsum$year <- as.numeric(Mt2simsum$year)
+# Mn2simsum$year <- as.numeric(Mn2simsum$year)
+
+#species differences
+Me1sum <- summarize(group_by_at(Me1simsum, vars(year)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+Mt2sum <- summarize(group_by_at(Mt2simsum, vars(year)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+Mn2sum <- summarize(group_by_at(Mn2simsum, vars(year)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+x <- allLengthsEnv
+x$year <- as.numeric(x$year)
+ggplot() + 
+  geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
+  geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean), color = "red") +
+  geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean), color = "blue") +
+  geom_line(data = Mn2sum, aes(x = as.numeric(year), y = sim.mean), color = "green") + 
+  annotate(geom = "rect", xmin = 3.5, xmax = 5.5, ymin = 10, ymax = Inf, alpha = 0.2, fill = "red") +
+  labs(y = "Length (mm)", x = "Year") +
+  ylim(min = 10, max = 35) + 
+  theme(text = element_text(size = 20)) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  ggsave("figures/afs2020/fig2.jpg", width = 8, height =8)
+
+#sex differences
+Me1sum <- summarize(group_by_at(Me1simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+Mt2sum <- summarize(group_by_at(Mt2simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+Mn2sum <- summarize(group_by_at(Mn2simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+
+ggplot() + 
+  geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
+  geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "red") +
+  geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "blue") +
+  geom_line(data = Mn2sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "green") +
+  annotate(geom = "rect", xmin = 3.5, xmax = 5.5, ymin = 10, ymax = Inf, alpha = 0.2, fill = "red") +
+  labs(y = "Length (mm)", x = "Year") +
+  ylim(min = 10, max = 35) + 
+  theme(text = element_text(size = 20)) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  ggsave("figures/afs2020/fig3.jpg", width = 8, height =8)
+
+#differences plot
+epdiffs <- dcast(Me1sum, year~sex, value.var = "sim.mean", mean)
+epdiffs$diff <- epdiffs$F - epdiffs$M
+epdiffs$prop <- epdiffs$diff/mean(epdiffs$F)
+epdiffs$species <- rep("EP", nrow(epdiffs))
+
+tsdiffs <- dcast(Mt2sum, year~sex, value.var = "sim.mean", mean)
+tsdiffs$diff <- tsdiffs$F - tsdiffs$M
+tsdiffs$prop <- tsdiffs$diff/mean(tsdiffs$F)
+tsdiffs$species <- rep("TS", nrow(tsdiffs))
+
+
+nddiffs <- dcast(Mn2sum, year~sex, value.var = "sim.mean", mean)
+nddiffs$diff <- nddiffs$F - nddiffs$M
+nddiffs$prop <- nddiffs$diff/mean(nddiffs$F)
+nddiffs$species <- rep("ND", nrow(nddiffs))
+
+diffs <- rbind(epdiffs, tsdiffs)
+diffs <- rbind(diffs, nddiffs)
+
+x <- summarize(group_by_at(diffs, vars(year, species)), mean = mean(prop))
+
+ggplot(x) + 
+  geom_line(aes(x = year, y = mean, group = species, color = species)) + 
+  geom_hline(yintercept = 0) + 
+  labs(x = "Year", y = "Size difference F - M (% of mean length)") +
+  theme(text = element_text(size = 20)) +
+  ggsave("figures/afs2020/fig4.jpg", width = 8, height =8)
 #Figure 3a - Model with different effects north and south of PC
 x <- filter(allLengthsEnvDep, latitude >34.4)
 y <- filter(allLengthsEnvDep, latitude <=34.4)
