@@ -7,41 +7,20 @@ summaryM3 <- summary(M3, correlation = FALSE)
 save(summaryM9, file = "output/M9.rda")
 save(summaryM3, file = "output/M3.rda")
   
-#Figure 1a - E. pacfica lengths by year
-#ep <- add_tally(group_by_at(ep, vars(year)))
-ggplot(filter(ep), aes(x = year, y = length, fill = year)) +
+#Figure 1 - Mean species variation by year
+aLE_tally <- add_tally(group_by_at(allLengthsEnv, vars(year, species)))
+labs <- c("E. pacifica", "T. spinifera", "N. difficilis")
+names(labs) <- c("EP", "TS", "ND")
+ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length, group = year, fill = as.factor(year))) +
   geom_violin() +
   geom_boxplot(width = 0.1) +
-  scale_fill_manual(values = c("#ffffff80", "#00000080", "#ffffff50", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2013", "2015", "2016", "2017", "2018")) +
-  geom_text(data = summarize(group_by(ep, year), n=mean(n), max = max(length)), aes(x = year, y = max + 2, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
-  geom_text(data = summarize(group_by(ep, year), mean = round(mean(length), 1), max = max(length)), aes(x = year, y = max + 4, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
-  labs(x = "Year", y = "Length (mm)", title = "E. pacifica lengths by year") + 
-  theme(text = element_text(size = 20)) +
-  ggsave("figures/afs2020/EPbyYear.jpg", width = 9, height = 9)
-
-#Figure 1b - T. spinifera lengths by year
-#ts <- add_tally(group_by_at(ts, vars(year)))
-ggplot(filter(ts), aes(x = year, y = length, fill = year)) +
-  geom_violin() +
-  geom_boxplot(width = 0.1) +
-  scale_fill_manual(values = c("#ffffff80", "#00000080", "#ffffff50", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2013", "2015", "2016", "2017", "2018")) +
-  geom_text(data = summarize(group_by(ts, year), n=mean(n), max = max(length)), aes(x = year, y = max + 2, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
-  geom_text(data = summarize(group_by(ts, year), mean = round(mean(length), 1), max = max(length)), aes(x = year, y = max + 4, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
-  labs(x = "Year", y = "Length (mm)", title = "T. spinifera lengths by year") + 
-  theme(text = element_text(size = 20)) +
-  ggsave("figures/afs2020/TSbyYear.jpg", width = 9, height = 9)
-
-#Figure 1c - N. difficilis lengths by year
-#nd <- add_tally(group_by_at(nd, vars(year)))
-ggplot(filter(nd), aes(x = year, y = length, fill = year)) +
-  geom_violin() +
-  geom_boxplot(width = 0.1) +
-  scale_fill_manual(values = c("#ffffff80", "#00000080", "#ffffff50", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2013", "2015", "2016", "2017", "2018")) +
-  geom_text(data = summarize(group_by(nd, year), n=mean(n), max = max(length)), aes(x = year, y = max + 2, label = paste("n=", n, sep = " ")), color = "black", size = 3) +
-  geom_text(data = summarize(group_by(nd, year), mean = round(mean(length), 1), max = max(length)), aes(x = year, y = max + 4, label = paste("mean=", mean, sep = " ")), color = "black", size = 3) +
-  labs(x = "Year", y = "Length (mm)", title = "N. difficilis lengths by year") + 
-  theme(text = element_text(size = 20)) +
-  ggsave("figures/afs2020/NDbyYear.jpg", width = 9, height = 9)
+  scale_fill_manual(values = c("#ffffff80", "#00000080", "#00ffff80", "#ff000080", "#00ff0080", "#0000ff80", "#ffff0080"), labels = c("2011", "2012", "2013", "2015", "2016", "2017", "2018")) +
+  facet_wrap(.~species, nrow = 3, ncol = 1, labeller = labeller(species = labs)) + 
+  geom_text(data = summarize(group_by_at(aLE_tally, vars(species, year)), n=mean(n), max = max(length)), aes(x = as.factor(year), y = max + 5, label = paste("n=", n, sep = " ")), color = "black", size = 4) +
+  geom_text(data = summarize(group_by_at(aLE_tally, vars(year, species)), mean = round(mean(length), 1), max = max(length)), aes(x = as.factor(year), y = max + 10, label = paste("mean=", mean, sep = " ")), color = "black", size = 4) +
+  labs(x = "Year", y = "Length (mm)") + 
+  theme(text = element_text(size = 20), legend.position = "none") +
+  ggsave("figures/afs2020/fig1.jpg", width = 7, height = 9)
 
 #Figure 2a - Differences among species in response to surface temperature
 # simM9 <- fsim.glmm(M9)
