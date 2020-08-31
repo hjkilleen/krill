@@ -162,6 +162,8 @@ sjPlot::plot_model(Ml4)
 lattice::dotplot(ranef(Ml4,condVar=TRUE))
 save(Ml4, file = "output/Ml4.rda")
 
+Ml4simsum <- fsim.glmm(Ml4)
+
 #explore temp_2 effect with a spline
 library(splines)
 Ms <- lm(length ~ bs(temp_2, degree = 2), data = allLengthsEnv)
@@ -188,8 +190,41 @@ summary(Mns)
 plot(allLengthsEnv$temp_2, allLengthsEnv$length, pch = 16)
 lines(temp_2_new, predict(Ms, data.frame(temp_2 = temp_2_new), col = "blue"))
 summary(Ms)
+#Nonlinear analysis seems appropriate for all but TS and the full model, though nonlinear terms could be added in for species interactions. 
 
-#Nonlinear analysis seems appropriate for all but TS and the full model
+#Nonlinear environment model
+Mnl1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + shore + species:shore + I(temp_2^2) + I(temp_100^2) + (1|station), data = allLengthsEnv)
+Mnl2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + shore + species:shore + I(temp_2^2) + I(temp_100^2) + (1|station), data = allLengthsEnv)
+#model evaluation
+anova(Mnl1)
+sjPlot::tab_model(Mnl2, 
+                  show.re.var= TRUE, 
+                  dv.labels= "Environmental Effects on Krill Length", file = "output/Mnl2.doc")
+sjPlot::plot_model(Mnl1)
+lattice::dotplot(ranef(Mnl2,condVar=TRUE))
+save(Mnl2, file = "output/Mnl2.rda")
+#visualization
+Mnl2sim <- fsim.glmm(Mnl2, nsim = 1000)
+Me1simsum <- simsum(Me1sim)
+Me1sum <- summarize(group_by_at(Me1simsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+
+sex <- ggplot() + 
+  geom_point(data = allLengthsEnv, aes(x = year, y = length, color = species), alpha = 0.1) +
+  geom_line(data = Me1sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "red") +
+  geom_line(data = Mt2sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "blue") +
+  geom_line(data = Mn2sum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "green") + 
+  # geom_ribbon(data = Me1sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "red", alpha = 0.2) + 
+  # geom_ribbon(data = Mt2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "blue", alpha = 0.2) + 
+  # geom_ribbon(data = Mn2sum, aes(x = as.numeric(year), ymin = lower.95, ymax = upper.95, linetype = sex), color = "green", alpha = 0.2) +
+  #geom_rect(data = Me1sum, aes(xmin = 2015, xmax = 2017, ymin = 0, ymax = Inf), alpha = 0.01, fill = "red") +
+  labs(y = "Length (mm)", x = "Year") +
+  ylim(min = 10, max = 35) + 
+  theme(text = element_text(size = 20))
+
+
+
+
+
 
 #A full model with surface and subsurface temperature as fixed effects
 M5 <- lmer(length ~ temp_2 + temp_100 + shore + sex + species + (1|station.x), data = allLengthsRecentEnv)
