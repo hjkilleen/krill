@@ -44,7 +44,7 @@ allLengths$sample <- seq(1:nrow(allLengths))
 #filter to relevant species and sizes
 allLengths <- filter(allLengths, length <50, length >10)
 allLengths <- filter(allLengths, species == "EP" | species == "TS" | species == "ND")
-levels(allLengths$species) <- c("EP", "TS", "ND")
+allLengths$species <- factor(allLengths$species, levels=c("EP", "TS", "ND")) 
 save(allLengths, file = "data/allLengths.rda")
 
 #filter by species
