@@ -157,11 +157,11 @@ anova(Ml1, Ml2, Ml3)
 sjPlot::tab_model(Ml2, 
                   show.re.var= TRUE, 
                   dv.labels= "Environmental Effects on Krill Length", file = "output/Ml2.doc")
-sjPlot::plot_model(Ml4)
-lattice::dotplot(ranef(Ml4,condVar=TRUE))
-save(Ml4, file = "output/Ml4.rda")
+sjPlot::plot_model(Ml2)
+lattice::dotplot(ranef(Ml2,condVar=TRUE))
+save(Ml2, file = "output/Ml2.rda")
 
-Ml4simsum <- fsim.glmm(Ml4)
+Ml2simsum <- fsim.glmm(Ml2)
 
 #explore temp_2 effect with a spline
 library(splines)
@@ -192,8 +192,8 @@ summary(Ms)
 #Nonlinear analysis seems appropriate for all but TS and the full model, though nonlinear terms could be added in for species interactions. 
 
 #Nonlinear environment model
-Mnl1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + shore + species:shore + I(temp_2^2) + I(temp_100^2) + (1|station), data = allLengthsEnv)
-Mnl2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + shore + species:shore + I(temp_2^2) + I(temp_100^2) + (1|station), data = allLengthsEnv)
+Mnl1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + I(temp_2^2) + I(temp_100^2) + (1|station), data = allLengthsEnv)
+Mnl2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + I(temp_2^2) + I(temp_100^2) + (1|station), data = allLengthsEnv)
 #model evaluation
 anova(Mnl1)
 sjPlot::tab_model(Mnl2, 
