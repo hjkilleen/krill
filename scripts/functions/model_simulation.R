@@ -66,7 +66,6 @@ simsum <- function(sim.df){
   simsum.out <- cbind(sim.df$dpred[,1:(ncol(sim.df$dpred) - 3)], simsum.out)
   return(simsum.out)
 }
-
 
 
 plot.simsum <- function(simsum.in, env_predictor){
