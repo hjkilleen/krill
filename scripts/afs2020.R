@@ -248,3 +248,35 @@ ggplot() +
   labs(y = "Length (mm)", x = "Year", title = "Krill lengths during a marine heatwave - shore") +
   theme(text = element_text(size = 20)) + 
   ggsave("figures/afs2020/fig6b.jpg", width = 9, height = 7)
+
+
+
+
+
+#Maps
+world <- ne_countries(scale = "medium", returnclass = "sf")
+states <- st_as_sf(map("state", plot = FALSE, fill = TRUE))
+metadata <- read_csv("data/stationMetadata.csv")
+metadata <- summarize(group_by(metadata, station), lat = mean(station_latitude), lon = mean(station_longitude))
+#2015
+Mel3simsum$station <- as.factor(Mel3simsum$station)
+y <- summarize(group_by(Mel3simsum, station), temp_2 = mean(na.exclude(temp_2)), length = mean(na.exclude(sim.mean)))
+y$station <- as.factor(y$station)
+metadata$station <- as.factor(metadata$station)
+x <- left_join(y, metadata)
+allSites2015 <- na.exclude(c(sites2015$onshore, sites2015$offshore))
+  ggplot(data = world) +
+    geom_sf(color = "black", fill = "bisque2") +
+    geom_sf(data = states, fill = NA) +
+    annotation_scale(location = "bl", width_hint = 0.5) +
+    geom_point(data = i, aes(x = lon, y = lat), size = 2, 
+               shape = 23, fill = "darkred") +
+    geom_label(data = i, aes(x = lon, y = lat, label = station), nudge_y = 0.5) + 
+    annotation_north_arrow(location = "bl", which_north = "true", 
+                           pad_x = unit(0.2, "in"), pad_y = unit(0.3, "in"),
+                           style = north_arrow_fancy_orienteering) +
+    coord_sf(xlim = c(-125.5, -116.75), ylim = c(32.0, 42.30), expand = FALSE) + 
+    theme(text = element_text(size = font_size))
+
+
+
