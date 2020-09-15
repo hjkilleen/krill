@@ -161,7 +161,104 @@ sjPlot::plot_model(Ml2)
 lattice::dotplot(ranef(Ml2,condVar=TRUE))
 save(Ml2, file = "output/Ml2.rda")
 
-Ml2simsum <- fsim.glmm(Ml2)
+Ml2sim <- fsim.glmm(Ml2)
+Ml2simsum <- simsum(Ml2sim)
+
+#EP Model
+ep$year <- as.factor(ep$year)
+ep$station <- as.factor(ep$station)
+Mel1 <- lmer(length ~ year + sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = ep)
+Mel2 <- lmer(length ~ sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = ep)
+Mel3 <- lmer(length ~ temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = ep)
+Mel4 <- lmer(length ~ temp_2 + sex:temp_2 + sex:temp_100 + (1|station), data = ep)
+sjPlot::plot_model(Mel3)
+
+Mel3sim <- fsim.glmm(Mel3)
+Mel3simsum <- simsum(Mel3sim)
+
+
+#TS Model
+ts$year <- as.factor(ts$year)
+ts$station <- as.factor(ts$station)
+
+Mtl1 <- lmer(length ~ year + sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = ts)
+Mtl2 <- lmer(length ~ sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = ts)
+Mtl3 <- lmer(length ~ sex + temp_2 + sex:temp_2 + sex:temp_100 + (1|station), data = ts)
+Mtl4 <- lmer(length ~ sex + temp_2 + sex:temp_2 + (1|station), data = ts)
+
+sjPlot::plot_model(Mtl2)
+
+Mtl2sim <- fsim.glmm(Mtl2)
+Mtl2simsum <- simsum(Mtl2sim)
+
+#ND Model
+nd$year <- as.factor(nd$year)
+nd$station <- as.factor(nd$station)
+
+Mnl1 <- lmer(length ~ year + sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = nd)
+Mnl2 <- lmer(length ~ sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = nd)
+Mnl3 <- lmer(length ~ temp_2 + sex:temp_2 + sex:temp_100 + temp_100 + (1|station), data = nd)
+
+sjPlot::plot_model(Mnl2)
+
+Mnl2sim <- fsim.glmm(Mnl2)
+Mnl2simsum <- simsum(Mnl2sim)
+
+ggplot(allLengthsEnv) + 
+  geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
+  geom_line(data = summarize(group_by(Mel3simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
+  geom_line(data = summarize(group_by(Mtl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") + 
+  geom_line(data = summarize(group_by(Mnl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
+  labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
+  theme(text = element_text(size = 20)) + 
+  guides(colour = guide_legend(override.aes = list(alpha = 1)))
+
+#N vs S same plot
+x <- filter(allLengthsEnv, latitude >34.4)
+y <- filter(allLengthsEnv, latitude <=34.4)
+
+#north simulations
+Mel3 <- lmer(length ~ temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(x, species == "EP"))
+Mtl2 <- lmer(length ~ sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(x, species == "TS"))
+Mnl2 <- lmer(length ~ sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(x, species == "ND"))
+Mel3sim <- fsim.glmm(Mel3)
+Mel3simsum <- simsum(Mel3sim)
+Mtl2sim <- fsim.glmm(Mtl2)
+Mtl2simsum <- simsum(Mtl2sim)
+Mnl2sim <- fsim.glmm(Mnl2)
+Mnl2simsum <- simsum(Mnl2sim)
+
+n <- ggplot(x) + 
+  geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
+  geom_line(data = summarize(group_by(Mel3simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
+  geom_line(data = summarize(group_by(Mtl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") + 
+  geom_line(data = summarize(group_by(Mnl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
+  labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
+  theme(text = element_text(size = 20)) + 
+  guides(colour = guide_legend(override.aes = list(alpha = 1)))
+
+#south simulations
+Mel3 <- lmer(length ~ temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(y, species == "EP"))
+Mtl2 <- lmer(length ~ sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(y, species == "TS"))
+Mnl2 <- lmer(length ~ sex + temp_2 + sex:temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(y, species == "ND"))
+Mel3sim <- fsim.glmm(Mel3)
+Mel3simsum <- simsum(Mel3sim)
+Mtl2sim <- fsim.glmm(Mtl2)
+Mtl2simsum <- simsum(Mtl2sim)
+Mnl2sim <- fsim.glmm(Mnl2)
+Mnl2simsum <- simsum(Mnl2sim)
+
+s <- ggplot(y) + 
+  geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
+  geom_line(data = summarize(group_by(Mel3simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
+  geom_line(data = summarize(group_by(Mnl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
+  labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
+  theme(text = element_text(size = 20)) + 
+  guides(colour = guide_legend(override.aes = list(alpha = 1)))
+
+#together
+plot <- ggarrange(n, s, labels = c("North", "South"), ncol = 2, nrow = 1)
+ggsave(plot, file = "figures/afs2020/nVSs.jpg")
 
 #explore temp_2 effect with a spline
 library(splines)
@@ -219,6 +316,9 @@ sex <- ggplot() +
   labs(y = "Length (mm)", x = "Year") +
   ylim(min = 10, max = 35) + 
   theme(text = element_text(size = 20))
+
+
+
 
 
 
