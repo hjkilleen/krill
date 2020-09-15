@@ -32,9 +32,10 @@ rfYear <- select(rfYear, station, station_longitude, station_latitude, area, bot
 write_csv(rfYear, "data/stationMetadata.csv")
 #Pull out position information for relevant stations
 #for 2015
+allSites2015 <- c(sites2015$onshore, sites2015$offshore)
 jpeg("figures/stationMaps/2015.jpg")
 mapStations(summarize(
-  group_by(filter(rf, station %in% allSites2015), station),
+  group_by(filter(rf, station %in% na.exclude(allSites2015)), station),
   lat = mean(latitude),
   lon = mean(longitude)
 ), font_size = 25)
