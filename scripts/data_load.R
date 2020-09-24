@@ -23,3 +23,4 @@ sites2018 <- read_csv("data/sites2018.csv")
 #====
 lengths <- read_csv("data/lengths.csv")
 lengthsBaldo <- read_csv("data/lengthsBaldo.csv")
+metadata <- read_csv("data/allStationMetadata.csv")
