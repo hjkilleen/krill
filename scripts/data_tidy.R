@@ -51,3 +51,8 @@ save(allLengths, file = "data/allLengths.rda")
 ep <- filter(allLengths, species == "EP")
 ts <- filter(allLengths, species == "TS")
 nd <- filter(allLengths, species == "ND")
+#=====
+#TIDY METADATA
+#====
+metadata <- na.exclude(metadata[,-1])
+save(metadata, file = "data/metadata.rda")
