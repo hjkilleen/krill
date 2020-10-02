@@ -35,8 +35,6 @@ baldo <- read.csv("data/lengthsBaldo.csv")
 
 #2013-2018
 #get dates from first 6 integers
-lengths$date <- as.integer(str_extract(lengths$ID, "\\d{6}"))
-lengths$date <- as.Date(as.character(lengths$date), format = '%y%m%d')
 gp <- summarize(group_by_at(lengths, vars(station, date)), station = mean(station), date = mean(date), year = mean(year))
 
 #2011-2012

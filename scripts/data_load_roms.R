@@ -67,7 +67,7 @@ dat_csv = plyr::ldply(myfiles, read_csv)
 
 #merge with krill length data
 waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
-waterTemp <- select(waterTemp, year, station, temp_2, temp_100)
-allLengths$year <- as.numeric(allLengths$year)
+waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, sep = "/"))
+waterTemp <- select(waterTemp, date, station, temp_2, temp_100)
 allLengthsEnv <- left_join(allLengths, waterTemp)
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")

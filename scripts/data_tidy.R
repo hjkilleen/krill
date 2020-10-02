@@ -7,6 +7,8 @@
 #====
 source("scripts/data_load.R")
 library(tidyverse)
+library(readxl)
+library(lubridate)
 #====
 
 #TIDY LENGTH DATASET
@@ -25,6 +27,8 @@ lengths <- filter(lengths, station %in% regions$station)
 lengths <- left_join(lengths, regions, by = "station")
 lengths <- filter(lengths, species == "EP" | species == "TS" | species == "ND")
 lengths <- filter(lengths, length <50, length >10)
+lengths$date <- as.integer(str_extract(lengths$ID, "\\d{6}"))
+lengths$date <- as.Date(as.character(lengths$date), format = '%y%m%d')
 save(lengths, file = "data/lengths.rda")
 
 #Merge 2011 & 2012 with 2015-2018 dataset
@@ -36,6 +40,20 @@ lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)
 lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))
 #get locational information
 lengthsBaldo <- left_join(lengthsBaldo, regions, by = "station")
+lengthsBaldo$haul <- sub(".*H", "", lengthsBaldo$ID)
+lengthsBaldo$haul <- as.numeric(gsub("([0-9]+).*$", "\\1", lengthsBaldo$haul))
+#add date to 2011-2012 data
+d <- read_xlsx("data/RREASmetadata.xlsx")
+d$year <- as.integer(substring(d$time, 1, 4))
+d$timeUTC <- as_datetime(d$time, tz = "UTC")
+d$time <- as_datetime(d$timeUTC, "America/Los_Angeles")
+d$date <- as_date(d$time)
+d$station <- as.integer(d$station)
+d$haul <- d$haul_no
+d <- select(d, haul, station, year, date)
+lengthsBaldo <- left_join(lengthsBaldo, d)
+lengthsBaldo <- lengthsBaldo[,-17]
+save(lengthsBaldo, file = "data/lengthsBaldo.rda")
 #merge with 2015-2018 dataset and omit na
 lengthsBaldo$year <- as.factor(lengthsBaldo$year)
 allLengths <- rbind(lengths, lengthsBaldo)
