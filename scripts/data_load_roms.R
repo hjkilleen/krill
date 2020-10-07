@@ -84,3 +84,7 @@ allLengthsEnv$temp_100 <- rep(NA, nrow(allLengthsEnv))
 
 #Save length + environment dataset
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
+
+ep <- filter(allLengthsEnv, species == "EP")
+ts <- filter(allLengthsEnv, species == "TS")
+nd <- filter(allLengthsEnv, species == "ND")
