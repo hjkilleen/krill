@@ -1,8 +1,9 @@
-# Tue Jun  9 16:50:59 2020 ------------------------------
+# Wed Oct  7 12:09:28 2020 ------------------------------
 library(dplyr)
 library(stringr)
 library(readr)
 load("data/allLengths.rda")
+source("scripts/functions/length_frequency.R")
 
 #Get data from CenCOOS servers using the virtual sensor tool. 
 #Data are from ROMS/TOMS nowcast (10km), May1-June15 average at 2m and 100m depths. Station locations are taken from the RF_Euphausidae station_lat and _lon. 
@@ -65,9 +66,21 @@ mydir = "data/roms_temperatures/"
 myfiles = list.files(path=mydir, pattern="*.csv", full.names=TRUE)
 dat_csv = plyr::ldply(myfiles, read_csv)
 
-#merge with krill length data
+#Create water temperature data frame
 waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
 waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, sep = "/"))
-waterTemp <- select(waterTemp, date, station, temp_2, temp_100)
-allLengthsEnv <- left_join(allLengths, waterTemp)
+
+#create new length + environmental data frame
+allLengthsEnv <- select(allLengths, station, species, sex, length, year, sites, region, latitude, shore, date)
+allLengthsEnv$temp_2 <- rep(NA, nrow(allLengthsEnv))
+allLengthsEnv$temp_100 <- rep(NA, nrow(allLengthsEnv))
+
+#filter and average across dates prior to sample
+#only run if new data is needed
+#for(i in seq(1:nrow(allLengthsEnv))) {
+#   allLengthsEnv$temp_2[i] <- get.temp.2(allLengthsEnv$station[i], allLengthsEnv$year[i])
+#   allLengthsEnv$temp_100[i] <- get.temp.100(allLengthsEnv$station[i], allLengthsEnv$year[i])
+# }
+
+#Save length + environment dataset
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
