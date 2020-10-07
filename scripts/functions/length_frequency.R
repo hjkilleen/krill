@@ -48,3 +48,17 @@ mapStations <- function(i, font_size = 16) {
 cv <- function(i) {
   (sd(i, na.rm = TRUE)/mean(i, na.rm = TRUE))*100
 }
+
+#Get temperature data over recent intervals
+get.temp.2 <- function(x, y) {
+  end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
+  start.date <- end.date-14
+  temp_2_mean <- mean(filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_2)
+  temp_2_mean
+}
+get.temp.100 <- function(x, y) {
+  end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
+  start.date <- end.date-14
+  temp_100_mean <- mean(filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_100)
+  temp_100_mean
+}
