@@ -5,6 +5,8 @@
 epn <- summarise(group_by_at(ep, vars(station, date, year)), length=mean(as.numeric(length)))
 epn$temp_2 <- rep(NA, nrow(epn))
 epn$temp_100 <- rep(NA, nrow(epn))
+ggplot(epn, aes(x = station, y = length)) + 
+  geom_point()
 
 #alter get temp functions
 get.temp.2t <- function(x, y, z) {
@@ -51,3 +53,18 @@ epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
 ggplot(epdata, aes(x = n, y = r)) + 
   geom_point()
+
+#plots for best fits
+n.a <- 2
+n.b <- 5
+for(i in seq(1:nrow(epn))){
+  epn$temp_2[i] <- get.temp.2t(epn$station[i], epn$year[i], n.a)
+  epn$temp_100[i] <- get.temp.100t(epn$station[i], epn$year[i], n.b)
+}
+ggplot(epn, aes(x = temp_2, y = length)) + 
+  geom_point() + 
+  geom_smooth(method = 'lm')
+
+ggplot(epn, aes(x = temp_100, y = length)) + 
+  geom_point() + 
+  geom_smooth(method = 'lm')
