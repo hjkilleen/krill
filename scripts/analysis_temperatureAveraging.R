@@ -36,7 +36,9 @@ for(i in seq(1:30)){
 epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
 ggplot(epdata, aes(x = n, y = r)) + 
-  geom_point()
+  geom_point() + 
+  ggtitle("Days averaged vs R squared\nfor surface temperature") +
+  ggsave("output/temp_2Averaging.jpg")
 rm(datalist)
 #EP at depth relationship
 datalist = list()
@@ -52,7 +54,9 @@ for(i in seq(1:30)){
 epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
 ggplot(epdata, aes(x = n, y = r)) + 
-  geom_point()
+  geom_point() + 
+  ggtitle("Days averaged vs R squared\nfor 100m temperature") +
+  ggsave("output/temp_100Averaging.jpg")
 
 #plots for best fits
 n.a <- 2
@@ -63,8 +67,12 @@ for(i in seq(1:nrow(epn))){
 }
 ggplot(epn, aes(x = temp_2, y = length)) + 
   geom_point() + 
-  geom_smooth(method = 'lm')
+  geom_smooth(method = 'lm') + 
+  ggtitle("Best temp_2 fit") + 
+  ggsave("output/temp_2Averaging_BestFit.jpg")
 
 ggplot(epn, aes(x = temp_100, y = length)) + 
   geom_point() + 
-  geom_smooth(method = 'lm')
+  geom_smooth(method = 'lm') + 
+  ggtitle("Best temp_100 fit") + 
+  ggsave("output/temp_100Averaging_BestFit.jpg")
