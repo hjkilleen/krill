@@ -2,10 +2,10 @@
 #Script to derive maximum r2 value for temperature length relationship
 
 #set up 
-epn <- summarise(group_by_at(ep, vars(station, date, year)), length=mean(as.numeric(length)))
+epn <- summarise(group_by_at(ep, vars(station, date, year, latitude)), length=mean(as.numeric(length)))
 epn$temp_2 <- rep(NA, nrow(epn))
 epn$temp_100 <- rep(NA, nrow(epn))
-ggplot(epn, aes(x = station, y = length)) + 
+ggplot(epn, aes(x = latitude, y = length)) + 
   geom_point()
 
 #alter get temp functions
@@ -76,3 +76,31 @@ ggplot(epn, aes(x = temp_100, y = length)) +
   geom_smooth(method = 'lm') + 
   ggtitle("Best temp_100 fit") + 
   ggsave("output/temp_100Averaging_BestFit.jpg")
+
+#Fit just for the north
+epnN <- filter(epn, latitude > 34.4)
+epnN$temp_2 <- rep(NA, nrow(epnN))
+epnN$temp_100 <- rep(NA, nrow(epnN))
+datalist = list()
+for(i in seq(1:30)){
+  n <- i
+  for(i in seq(1:nrow(epnN))){
+    epnN$temp_2[i] <- get.temp.2t(epnN$station[i], epnN$year[i], n)
+    m <- lm(length~temp_2, data = epnN)
+    r <- summary(m)$r.squared
+    datalist[[n]] <- c(n, r)
+  }
+}
+epNdata <- as.data.frame(do.call(rbind, datalist))
+names(epNdata) <- c("n", "r")
+ggplot(epNdata, aes(x = n, y = r)) + 
+  geom_point() + 
+  ggtitle("Days averaged vs R squared\nfor surface temperature NORTH") +
+  ggsave("output/temp_2AveragingNorth.jpg")
+rm(datalist)
+
+ggplot(epnN, aes(x = temp_2, y = length)) + 
+  geom_point() + 
+  geom_smooth(method = 'lm') + 
+  ggtitle("Best temp_2 fit NORTH") + 
+  ggsave("output/temp_2Averaging_BestFitNorth.jpg")
