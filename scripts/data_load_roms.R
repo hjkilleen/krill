@@ -74,13 +74,18 @@ waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, 
 allLengthsEnv <- select(allLengths, station, species, sex, length, year, sites, region, latitude, shore, date)
 allLengthsEnv$temp_2 <- rep(NA, nrow(allLengthsEnv))
 allLengthsEnv$temp_100 <- rep(NA, nrow(allLengthsEnv))
+allLengthsEnv$sst_sd <- rep(NA, nrow(allLengthsEnv))
 
-#filter and average across dates prior to sample
-#only run if new data is needed
-#for(i in seq(1:nrow(allLengthsEnv))) {
-#   allLengthsEnv$temp_2[i] <- get.temp.2(allLengthsEnv$station[i], allLengthsEnv$year[i])
-#   allLengthsEnv$temp_100[i] <- get.temp.100(allLengthsEnv$station[i], allLengthsEnv$year[i])
-# }
+# filter and average across dates prior to sample
+for(i in seq(1:nrow(allLengthsEnv))) {
+  allLengthsEnv$temp_2[i] <- get.temp.2(allLengthsEnv$station[i], allLengthsEnv$year[i])
+  allLengthsEnv$temp_100[i] <- get.temp.100(allLengthsEnv$station[i], allLengthsEnv$year[i])
+}
+
+#add sst_sd variable based on prior
+for(i in seq(1:nrow(allLengthsEnv))) {
+  allLengthsEnv$sst_sd[i] <- get.sd(allLengthsEnv$station[i], allLengthsEnv$year[i])
+}
 
 #Save length + environment dataset
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
