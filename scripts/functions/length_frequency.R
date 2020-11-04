@@ -52,13 +52,21 @@ cv <- function(i) {
 #Get temperature data over recent intervals
 get.temp.2 <- function(x, y) {
   end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
-  start.date <- end.date-14
-  temp_2_mean <- mean(filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_2)
+  start.date <- end.date-2
+  temp_2_mean <- mean(dplyr::filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_2)
   temp_2_mean
 }
 get.temp.100 <- function(x, y) {
   end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
-  start.date <- end.date-14
-  temp_100_mean <- mean(filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_100)
+  start.date <- end.date-2
+  temp_100_mean <- mean(dplyr::filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_100)
   temp_100_mean
+}
+
+#Get SST standard deviation
+get.sd <- function(x, y) {
+  end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
+  start.date <- end.date-13
+  sst_sd <- sd(filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_2)
+  sst_sd
 }
