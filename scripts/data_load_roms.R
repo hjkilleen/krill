@@ -70,12 +70,6 @@ dat_csv = plyr::ldply(myfiles, read_csv)
 waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
 waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, sep = "/"))
 
-#create new length + environmental data frame
-allLengthsEnv <- select(allLengths, station, species, sex, length, year, sites, region, latitude, shore, date)
-allLengthsEnv$temp_2 <- rep(NA, nrow(allLengthsEnv))
-allLengthsEnv$temp_100 <- rep(NA, nrow(allLengthsEnv))
-allLengthsEnv$sst_sd <- rep(NA, nrow(allLengthsEnv))
-
 # filter and average across dates prior to sample
 a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year)), temp_2 = NA, temp_100 = NA))
 for(i in seq(1:nrow(a))) {
@@ -90,7 +84,7 @@ for(i in seq(1:nrow(a))) {
 }
 
 #merge new columns with allLengths in a novel df
-allLengthsEnv <- left_join(allLengths, a)
+allLengthsEnv <- left_join(select(allLengths, station, species, sex, length, year, sites, region, latitude, shore, date), a)
 
 #Save length + environment dataset
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
