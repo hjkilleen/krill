@@ -65,7 +65,7 @@ ggplot(allLengthsEnv) +
 ep$station <- as.factor(ep$station)
 Mel1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = ep)
 Mel2 <- lmer(length ~ sex*temp_2 + temp_100 + sst_sd + chla + (1|station), data = ep)
-summary(Mel2)
+summary(Mel1)
 sjPlot::plot_model(Mel2)
 Mel2sim <- fsim.glmm(Mel2)
 Mel2simsum <- simsum(Mel2sim)
@@ -76,7 +76,7 @@ save(Mel2simsum, file = "output/Mel2sim.rda")
 ts$station <- as.factor(ts$station)
 Mtl1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = ts)
 summary(Mtl1)
-sjPlot::plot_model(Mtl2)
+sjPlot::plot_model(Mtl1)
 Mtl1sim <- fsim.glmm(Mtl1)
 Mtl1simsum <- simsum(Mtl1sim)
 rm(Mtl1sim)
@@ -98,8 +98,8 @@ save(Mnl3simsum, file = "output/Mnl3sim.rda")
 ggplot(allLengthsEnv) + 
   geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
   geom_line(data = summarize(group_by(Mel2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
-  geom_line(data = summarize(group_by(Mtl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") + 
-  geom_line(data = summarize(group_by(Mnl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
+  geom_line(data = summarize(group_by(Mtl1simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") + 
+  geom_line(data = summarize(group_by(Mnl3simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
   labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
   theme(text = element_text(size = 20)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
@@ -108,19 +108,19 @@ ggplot(allLengthsEnv) +
 ggplot(allLengthsEnv) + 
   geom_point(aes(x = sst_sd, y = length, color = species), alpha = 0.4) + 
   geom_line(data = summarize(group_by(Mel2simsum, sst_sd), sim.mean = mean(sim.mean)), aes(x= sst_sd, y = sim.mean), color = "red") + 
-  geom_line(data = summarize(group_by(Mtl2simsum, sst_sd), sim.mean = mean(sim.mean)), aes(x= sst_sd, y = sim.mean), color = "blue") + 
-  geom_line(data = summarize(group_by(Mnl2simsum, sst_sd), sim.mean = mean(sim.mean)), aes(x= sst_sd, y = sim.mean), color = "green") + 
+  geom_line(data = summarize(group_by(Mtl1simsum, sst_sd), sim.mean = mean(sim.mean)), aes(x= sst_sd, y = sim.mean), color = "blue") + 
+  geom_line(data = summarize(group_by(Mnl3simsum, sst_sd), sim.mean = mean(sim.mean)), aes(x= sst_sd, y = sim.mean), color = "green") + 
   labs(x = "Sea Surface Temperature Std. Dev.", y = "Length (mm)") +
   theme(text = element_text(size = 20)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
 #plot all three models together for chl a
 ggplot(allLengthsEnv) + 
-  geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
-  geom_line(data = summarize(group_by(Mel2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= chla, y = sim.mean), color = "red") + 
-  geom_line(data = summarize(group_by(Mtl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= chla, y = sim.mean), color = "blue") + 
-  geom_line(data = summarize(group_by(Mnl2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= chla, y = sim.mean), color = "green") + 
-  labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
+  geom_point(aes(x = chla, y = length, color = species), alpha = 0.4) + 
+  geom_line(data = summarize(group_by(Mel2simsum, chla), sim.mean = mean(sim.mean)), aes(x= chla, y = sim.mean), color = "red") + 
+  geom_line(data = summarize(group_by(Mtl1simsum, chla), sim.mean = mean(sim.mean)), aes(x= chla, y = sim.mean), color = "blue") + 
+  geom_line(data = summarize(group_by(Mnl3simsum, chla), sim.mean = mean(sim.mean)), aes(x= chla, y = sim.mean), color = "green") + 
+  labs(x = "Chlorophyll-a Content", y = "Length (mm)") +
   theme(text = element_text(size = 20)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
@@ -129,41 +129,41 @@ x <- filter(allLengthsEnv, latitude >34.4)
 y <- filter(allLengthsEnv, latitude <=34.4)
 
 #north simulations
-Mel2.n <- lmer(length ~  sex + temp_2 + sex:temp_2 + temp_100 + (1|station), data = filter(x, species == "EP"))
-Mtl2.n <- lmer(length ~ sex + temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(x, species == "TS"))
-Mnl2.n <- lmer(length ~ sex + temp_2 + temp_100 + (1|station), data = filter(x, species == "ND"))
+Mel2.n <- lmer(length ~ sex*temp_2 + temp_100 + sst_sd + chla + (1|station), data = filter(x, species == "EP"))
+Mtl1.n <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = filter(x, species == "TS"))
+Mnl3.n <- lmer(length ~ sex + temp_2 + temp_100 + sst_sd + chla + (1|station), data = filter(x, species == "ND"))
 Mel2.n.sim <- fsim.glmm(Mel2.n)
 Mel2.n.simsum <- simsum(Mel2.n.sim)
-Mtl2.n.sim <- fsim.glmm(Mtl2.n)
-Mtl2.n.simsum <- simsum(Mtl2.n.sim)
+Mtl1.n.sim <- fsim.glmm(Mtl1.n)
+Mtl1.n.simsum <- simsum(Mtl1.n.sim)
 Mnl3.n.sim <- fsim.glmm(Mnl3.n)
-Mnl2.n.simsum <- simsum(Mnl2.n.sim)
+Mnl3.n.simsum <- simsum(Mnl3.n.sim)
 
 n <- ggplot(x) + 
   geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
   geom_line(data = summarize(group_by(Mel2.n.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
-  geom_line(data = summarize(group_by(Mtl2.n.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") + 
-  geom_line(data = summarize(group_by(Mnl2.n.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
+  geom_line(data = summarize(group_by(Mtl1.n.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") + 
+  geom_line(data = summarize(group_by(Mnl3.n.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
   labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
   theme(text = element_text(size = 20)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
 #south simulations
-Mel2.s <- lmer(length ~  sex + temp_2 + sex:temp_2 + temp_100 + (1|station), data = filter(y, species == "EP"))
-Mtl2.s <- lmer(length ~ sex + temp_2 + temp_100 + sex:temp_100 + (1|station), data = filter(y, species == "TS"))
-Mnl3.s <- lmer(length ~ sex + temp_2 + temp_100 + (1|station), data = filter(y, species == "ND"))
+Mel2.s <- lmer(length ~ sex*temp_2 + temp_100 + sst_sd + chla + (1|station), data = filter(y, species == "EP"))
+Mtl1.s <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = filter(y, species == "TS"))
+Mnl3.s <- lmer(length ~ sex + temp_2 + temp_100 + sst_sd + chla + (1|station), data = filter(y, species == "ND"))
 Mel2.s.sim <- fsim.glmm(Mel2.s)
 Mel2.s.simsum <- simsum(Mel2.s.sim)
-Mtl2.s.sim <- fsim.glmm(Mtl2.s)
-Mtl2.s.simsum <- simsum(Mtl2.s.sim)
-Mnl2.s.sim <- fsim.glmm(Mnl2.s)
-Mnl2.s.simsum <- simsum(Mnl2.s.sim)
+Mtl1.s.sim <- fsim.glmm(Mtl1.s)
+Mtl1.s.simsum <- simsum(Mtl1.s.sim)
+Mnl3.s.sim <- fsim.glmm(Mnl3.s)
+Mnl3.s.simsum <- simsum(Mnl3.s.sim)
 
 s <- ggplot(y) + 
   geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
   geom_line(data = summarize(group_by(Mel2.s.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
-  geom_line(data = summarize(group_by(Mtl2.s.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") +
-  geom_line(data = summarize(group_by(Mnl2.s.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
+  geom_line(data = summarize(group_by(Mtl1.s.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "blue") +
+  geom_line(data = summarize(group_by(Mnl3.s.simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "green") + 
   labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
   theme(text = element_text(size = 20)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
