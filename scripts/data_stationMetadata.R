@@ -4,6 +4,7 @@ library(dplyr)
 library(lubridate)
 
 #2011-2018 sample dates and locations using RREAS online dataset
+#Accessed here: https://coastwatch.pfeg.noaa.gov/erddap/tabledap/FED_Rockfish_Catch.html
 
 #METADATA
 d <- read_xlsx("data/RREASmetadata.xlsx")
