@@ -77,15 +77,20 @@ allLengthsEnv$temp_100 <- rep(NA, nrow(allLengthsEnv))
 allLengthsEnv$sst_sd <- rep(NA, nrow(allLengthsEnv))
 
 # filter and average across dates prior to sample
-for(i in seq(1:nrow(allLengthsEnv))) {
-  allLengthsEnv$temp_2[i] <- get.temp.2(allLengthsEnv$station[i], allLengthsEnv$year[i])
-  allLengthsEnv$temp_100[i] <- get.temp.100(allLengthsEnv$station[i], allLengthsEnv$year[i])
+a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year)), temp_2 = NA, temp_100 = NA))
+for(i in seq(1:nrow(a))) {
+  a$temp_2[i] <- get.temp.2(a$station[i], a$year[i])
+  a$temp_100[i] <- get.temp.100(a$station[i], a$year[i])
 }
 
 #add sst_sd variable based on prior
-for(i in seq(1:nrow(allLengthsEnv))) {
-  allLengthsEnv$sst_sd[i] <- get.sd(allLengthsEnv$station[i], allLengthsEnv$year[i])
+a$sst_sd <- rep(NA, nrow(a))
+for(i in seq(1:nrow(a))) {
+  a$sst_sd[i] <- get.sd(a$station[i], a$year[i])
 }
+
+#merge new columns with allLengths in a novel df
+allLengthsEnv <- left_join(allLengths, a)
 
 #Save length + environment dataset
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
