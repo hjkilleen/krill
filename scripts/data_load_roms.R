@@ -66,14 +66,14 @@ waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, 
 # filter and average across dates prior to sample
 a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year)), temp_2 = NA, temp_100 = NA))
 for(i in seq(1:nrow(a))) {
-  a$temp_2[i] <- get.temp.2(a$station[i], a$year[i])
-  a$temp_100[i] <- get.temp.100(a$station[i], a$year[i])
+  a$temp_2[i] <- get.temp.2(a$station[i], a$year[i], 2)
+  a$temp_100[i] <- get.temp.100(a$station[i], a$year[i], 2)
 }
 
 #add sst_sd variable based on prior
 a$sst_sd <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))) {
-  a$sst_sd[i] <- get.sd(a$station[i], a$year[i])
+  a$sst_sd[i] <- get.sd(a$station[i], a$year[i], 13)
 }
 
 #merge new columns with allLengths in a novel df
