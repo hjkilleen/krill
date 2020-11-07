@@ -10,6 +10,7 @@ View(ale.na)
 #PROBLEMS
 
 #118(2011), 421(2012), 166(2011) missing everything from site onwards
+View(filter(allLengthsEnv, station == 421, year ==2012))
 #ASKED Keith
 # Fri Nov  6 10:21:59 2020 ------------------------------
 
