@@ -19,7 +19,7 @@ env <- read.csv("data/zoo_selgroups_HadSST_relabundance_5aug2019_plumchrusV_4reg
 str(env)
 #might need to filter to only times w/in 48 hours with UTC adjustment...check with Chelle
 env2 <- summarize(group_by_at(env, .vars = c("station", "time64")), chla = mean(chlor_a, na.rm= TRUE)) 
-env2$date <- mdy(as.character(env2$time64))
+env2$date <- ymd(as.character(env2$time64))
 
 allLengthsEnv <- left_join(allLengthsEnv, env2)
 
