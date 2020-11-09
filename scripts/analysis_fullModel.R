@@ -15,8 +15,32 @@ load("data/allLengthsEnv.rda")
 str(allLengthsEnv)
 
 env <- read.csv("data/zoo_selgroups_HadSST_relabundance_5aug2019_plumchrusV_4regions_final_satsstall.csv")
-
 str(env)
+#==========
+#See how well analyze_sst aligns with ROMS/TOMS temp_2
+d <- env
+d$date <- as_date(d$time64)
+d$temp <- d$analysed_sst-273.15#convert temperature to Celsius
+d1 <- filter(d, dtime == 0)
+d2 <- filter(d, dtime == -1)
+d1$roms <- rep(NA, nrow(d1))#ROMS day x = sattelite day x
+d2$roms <- rep(NA, nrow(d2))#ROMS day x = sattelite day x-1
+for (i in seq(1:nrow(d1))) {#get roms temp for d1
+  d1$roms[i] <- filter(waterTemp, date == d1$date[i], station == d1$station[i])$temp_2
+}
+for (i in seq(1:nrow(d2))) {#get roms temp for d2
+  d2$roms[i] <- filter(waterTemp, date == d2$date[i], station == d2$station[i])$temp_2
+}
+#Plot d1 and d2 roms vs satellite sst
+plot(d1$temp, d1$roms)
+plot(d2$temp, d2$roms)
+m1 <- lm(temp~roms, d1)
+m2 <- lm(temp~roms, d2)
+summary(m1)
+summary(m2)
+#pretty strong ~85% correlation, a bit stronger (1-2%) for d2. So ROMS day x = sattelite day x-1. Will refrain from using analyse_sst in the full model because it is roughly similar to ROMS data, but presents issues with inconsistent spatial resolution across the domain. 
+#========
+
 #might need to filter to only times w/in 48 hours with UTC adjustment...check with Chelle
 env2 <- summarize(group_by_at(env, .vars = c("station", "time64")), chla = mean(chlor_a, na.rm= TRUE)) 
 env2$date <- ymd(as.character(env2$time64))
