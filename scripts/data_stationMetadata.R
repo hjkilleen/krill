@@ -19,17 +19,6 @@ d$haul <- d$haul_no
 #group metadata by dates and stations, locational data will be averaged over hauls
 ds <- summarize(group_by_at(d, vars(station, date)), latitude = mean(station_latitude), longitude = mean(station_longitude), bottom_depth = mean(station_bottom_depth), tdr_depth = mean(tdr_depth))
 
-s15 <- read.csv("data/sites2015.csv")
-s16 <- read.csv("data/sites2016.csv")
-s17 <- read.csv("data/sites2017.csv")
-s18 <- read.csv("data/sites2018.csv")
-
-s2015 <- na.exclude(c(s15$onshore, s15$offshore))
-s2016 <- na.exclude(c(s16$onshore, s16$offshore))
-s2017 <- na.exclude(c(s17$onshore, s17$offshore))
-s2018 <- na.exclude(c(s18$onshore, s18$offshore))
-
-
 #DATA
 load("data/lengths.rda")
 baldo <- read.csv("data/lengthsBaldo.csv")
