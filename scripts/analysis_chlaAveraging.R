@@ -5,7 +5,7 @@
 epn <- summarise(group_by_at(ep, vars(station, date, year, latitude)), length=mean(as.numeric(length)))
 epn$chla <- rep(NA, nrow(epn))
 env$date <- as.POSIXct(env$time64)
-env$year <- as.factor(substring(env$date, 1, 4))
+env$year <- as.character(substring(env$date, 1, 4))
 env <- filter(env, dtime != 0)#get rid of zero day (UTC correction)
 
 #get chlA functions
