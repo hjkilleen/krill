@@ -6,7 +6,6 @@ epn <- summarise(group_by_at(ep, vars(station, date, year, latitude)), length=me
 epn$chla <- rep(NA, nrow(epn))
 env$date <- as.POSIXct(env$time64)
 env$year <- as.factor(substring(env$date, 1, 4))
-plot(log(chla)~latitude, epn)#log transform chlorophyll to make distribution normal
 env <- filter(env, dtime != 0)#get rid of zero day (UTC correction)
 
 #get chlA functions
@@ -14,7 +13,7 @@ get.chla <- function(x, y, z) {
   end.date <- 0
   start.date <- end.date-z
   chla_mean <- mean(filter(env, station == x, year == y, dtime >= start.date, dtime <= end.date)$chlor_a, na.rm = TRUE)
-  chla_log <- log(chla_mean)
+  chla_log <- log(chla_mean)#log transform chlorophyll to make distribution normal
   chla_log
 }
 #EP length~chlorophyll relationship
