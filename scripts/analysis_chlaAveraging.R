@@ -1,6 +1,6 @@
 # Thu Oct  8 16:47:40 2020 ------------------------------
 #Script to derive maximum r2 value for chlorophyll length relationship
-
+source("scripts/functions/length_frequency.R")
 #set up 
 epn <- summarise(group_by_at(ep, vars(station, date, year, latitude)), length=mean(as.numeric(length)))
 epn$chla <- rep(NA, nrow(epn))
@@ -8,14 +8,6 @@ env$date <- as.POSIXct(env$time64)
 env$year <- as.character(substring(env$date, 1, 4))
 env <- filter(env, dtime != 0)#get rid of zero day (UTC correction)
 
-#get chlA functions
-get.chla <- function(x, y, z) {
-  end.date <- 0
-  start.date <- end.date-z
-  chla_mean <- mean(filter(env, station == x, year == y, dtime >= start.date, dtime <= end.date)$chlor_a, na.rm = TRUE)
-  chla_log <- log(chla_mean)#log transform chlorophyll to make distribution normal
-  chla_log
-}
 #EP length~chlorophyll relationship
 datalist = list()
 for(i in seq(1:30)){

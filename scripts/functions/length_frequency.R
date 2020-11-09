@@ -70,3 +70,12 @@ get.sd <- function(x, y, z) {
   sst_sd <- sd(filter(waterTemp, station == x, year == y, date >= start.date, date <= end.date)$temp_2)
   sst_sd
 }
+
+#Get chlA functions
+get.chla <- function(x, y, z) {
+  end.date <- 0
+  start.date <- end.date-z
+  chla_mean <- mean(filter(env, station == x, year == y, dtime >= start.date, dtime <= end.date)$chlor_a, na.rm = TRUE)
+  chla_log <- log(chla_mean)#log transform chlorophyll to make distribution normal
+  chla_log
+}
