@@ -70,7 +70,7 @@ for(i in seq(1:nrow(a))) {
   a$temp_100[i] <- get.temp.100(a$station[i], a$year[i], 2)
 }
 
-#add sst_sd variable based on prior
+#add sst_sd variable based on prior two weeks
 a$sst_sd <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))) {
   a$sst_sd[i] <- get.sd(a$station[i], a$year[i], 13)
