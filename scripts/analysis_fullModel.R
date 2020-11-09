@@ -41,25 +41,24 @@ summary(m2)
 #pretty strong ~85% correlation, a bit stronger (1-2%) for d2. So ROMS day x = sattelite day x-1. Will refrain from using analyse_sst in the full model because it is roughly similar to ROMS data, but presents issues with inconsistent spatial resolution across the domain. 
 #========
 
-#might need to filter to only times w/in 48 hours with UTC adjustment...check with Chelle
-env2 <- summarize(group_by_at(env, .vars = c("station", "time64")), chla = mean(chlor_a, na.rm= TRUE)) 
-env2$date <- ymd(as.character(env2$time64))
+#add chlorophyll variable based on prior 3, 8, 13 days
+a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year)), chla = NA))
 
-allLengthsEnv <- left_join(allLengthsEnv, env2)
+for(i in seq(1:nrow(a))){
+  if(get.chla(a$station[i], a$year[i], 3) != "NaN"){
+    a$chla[i] <- get.chla(a$station[i], a$year[i], 3)
+  } else if(get.chla(a$station[i], a$year[i], 8) != "NaN"){
+    a$chla[i] <- get.chla(a$station[i], a$year[i], 8)
+  } else a$chla[i] <- get.chla(a$station[i], a$year[i], 13)
+}
+
+allLengthsEnv <- left_join(allLengthsEnv, a)
 
 #MODEL
-library(tidyverse)
-library(lme4)
-library(ggeffects)
-library(moments)
-library(ggpubr)
-source("scripts/functions/model_simulation.R")
-source("scripts/functions/length_frequency.R")
-load("data/allLengthsEnv.rda")
-
 
 #Environmental Model
 #Full linear model
+allLengthsEnv$station <- as.factor(allLengthsEnv$station)
 Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
 Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
 
