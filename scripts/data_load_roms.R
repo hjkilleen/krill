@@ -6,7 +6,7 @@ load("data/allLengths.rda")
 source("scripts/functions/length_frequency.R")
 
 #Get data from CenCOOS servers using the virtual sensor tool. 
-#Data are from ROMS/TOMS nowcast (10km), May1-June15 average at 2m and 100m depths. Station locations are taken from the RF_Euphausidae station_lat and _lon. 
+#Data are from ROMS/TOMS nowcast (10km), May1-June15 average at 2m and 100m depths. Station locations are taken from the RF_Euphausidae station_lat and _lon. https://data.cencoos.org/#module-metadata/0ac0326a-a2c6-11e2-9dc2-00219bfe5678
 #Note that I shifted station 132 and 481 location ~2 km onshore. The original location (-122.65, -117.7500 respectively) was on a grid boundary and returned an error. I also moved station 183 ~1 km offshore as the nearshore location (-123.2333) was outside the model boundary.
 #I do not have station information for station 166, 421, and 118. These need to be added to urls and ROMS data from the most recent RF dataset (or ask Keith). 
 stations <- read.csv("data/stationMetadata.csv")
