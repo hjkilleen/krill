@@ -40,6 +40,7 @@ allLengthsEnv <- left_join(allLengthsEnv, a)
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
 Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
 Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
+summary(Ml1)
 
 #all species model comparison and evaluation
 anova(Ml1)
@@ -61,7 +62,15 @@ ggplot(allLengthsEnv) +
   theme(text = element_text(size = 20)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
-
+#Look at group level variation
+groups <- data.frame(
+  station = as.numeric(row.names(ranef(Ml1)$station)),
+  intercept = ranef(Ml1)$station$'(Intercept)'
+)
+groups <- left_join(groups, regions)
+ggplot(groups) +
+  geom_point(aes(x = latitude, y = intercept, color = shore)) + 
+  geom_hline(aes(yintercept = 0))
 
 #EP Model
 ep$station <- as.factor(ep$station)
