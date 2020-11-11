@@ -73,7 +73,7 @@ for(i in seq(1:nrow(a))) {
 #add sst_sd variable based on prior two weeks
 a$sst_sd <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))) {
-  a$sst_sd[i] <- get.sd(a$station[i], a$year[i], 13)
+  a$sst_sd[i] <- get.sd(a$station[i], a$year[i], 17)
 }
 
 #merge new columns with allLengths in a novel df
