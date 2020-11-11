@@ -79,6 +79,9 @@ for(i in seq(1:nrow(a))) {
 #merge new columns with allLengths in a novel df
 allLengthsEnv <- left_join(select(allLengths, station, species, sex, length, year, sites, region, latitude, shore, date), a)
 
+#round latitude
+allLengthsEnv$latitude.round <- round(allLengthsEnv$latitude, 0)
+
 #Save length + environment dataset
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
 
