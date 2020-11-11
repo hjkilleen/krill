@@ -80,6 +80,14 @@ get.chla <- function(x, y, z) {
   chla_log
 }
 
+#Get sla
+get.sla <- function(x, y, z) {
+  end.date <- 0
+  start.date <- end.date-z
+  sla_mean <- mean(filter(env, station == x, year == y, dtime >= start.date, dtime <= end.date)$sla, na.rm = TRUE)
+  sla_mean
+}
+
 #Get beuti 
 get.beuti <- function(x, y, z) {
   end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
