@@ -71,11 +71,20 @@ get.sd <- function(x, y, z) {
   sst_sd
 }
 
-#Get chlA functions
+#Get chlA
 get.chla <- function(x, y, z) {
   end.date <- 0
   start.date <- end.date-z
   chla_mean <- mean(filter(env, station == x, year == y, dtime >= start.date, dtime <= end.date)$chlor_a, na.rm = TRUE)
   chla_log <- log(chla_mean)#log transform chlorophyll to make distribution normal
   chla_log
+}
+
+#Get beuti 
+get.beuti <- function(x, y, z) {
+  end.date <- filter(epn, station == x, year == y)$date
+  lat <- filter(epn, station == x, year == y)$latitude.round
+  start.date <- end.date-z
+  beuti.val <- mean(filter(beuti, latitude.round == lat, year == y, date >= start.date, date <= end.date)$beuti)
+  beuti.val
 }
