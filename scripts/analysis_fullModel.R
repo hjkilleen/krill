@@ -33,12 +33,21 @@ for(i in seq(1:nrow(a))){
 
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
+#add beuti averaged over past 13 days
+a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), beuti = NA))
+
+for(i in seq(1:nrow(a))){
+  a$beuti[i] <- get.beuti(a$station[i], a$year[i], 13)
+}
+
+allLengthsEnv <- left_join(allLengthsEnv, a)
+
 #MODEL
 
 #Environmental Model
 #Full linear model
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
-Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
+Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + (1|station), data = allLengthsEnv)
 Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
 summary(Ml1)
 
