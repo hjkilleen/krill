@@ -69,7 +69,7 @@ ggplot(epn, aes(x = chla, y = length)) +
   geom_point() + 
   geom_smooth(method = 'lm') + 
   ggtitle("Best chla fit") + 
-  ggsave("output/chlaAveraging.jpg")
+  ggsave("output/chlaAveragingBestFit.jpg")
 
 #Fit just for the north
 epnN <- filter(epn, latitude > 36)
