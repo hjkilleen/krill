@@ -34,6 +34,13 @@ for(i in seq(1:nrow(a))){
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
 #add beuti averaged over past 13 days
+beuti <- read_csv("data/BEUTI_daily.csv")#load beuti data, PST day
+beuti <- filter(beuti, year>2010, year <2019)
+beuti$date <- ymd(paste(beuti$year, beuti$month, beuti$day, sep = "-"))
+beuti <- melt(beuti, id.vars = c("year", "month", "day", "date"))#long form data
+beuti <- rename(beuti, beuti = value)
+beuti$latitude.round <- as.numeric(str_sub(as.character(beuti$variable), 1, 2))
+
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), beuti = NA))
 
 for(i in seq(1:nrow(a))){
@@ -42,12 +49,49 @@ for(i in seq(1:nrow(a))){
 
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
+#add sla averaged over past 13 days
+a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), sla = NA))
+
+for(i in seq(1:nrow(a))){
+  a$sla[i] <- get.sla(a$station[i], a$year[i], 1)
+}
+
+allLengthsEnv <- left_join(allLengthsEnv, a)
+
+#add spring moci
+moci <- read_csv("data/CaliforniaMOCI_JFM1991-JAS2020.csv")#load MOCI data
+moci <- rename(moci, year = Year)
+
+a <- summarise(group_by_at(allLengthsEnv, vars(station, date, year, latitude)))
+a$year <- as.numeric(a$year)
+
+aN <- filter(a, latitude >=38)
+aC <- filter(a, latitude >=34.5, latitude <38)
+aS <- filter(a, latitude >=32, latitude <34.5)
+
+krillList <- list(aN, aC, aS)
+mociList <- list(moci[,1:4], moci[,c(1:3, 5)], moci[,c(1:3,6)])
+
+for(i in 1:3){#get spring and winter moci values for each region
+  b <- filter(mociList[[i]], Season == "AMJ")
+  krillList[[i]] <- left_join(krillList[[i]], b, by = "year")
+  krillList[[i]] <- rename(krillList[[i]], moci_spring = names(krillList[[i]])[7])
+  krillList[[i]] <- select(krillList[[i]], station, date, year, latitude, moci_spring)
+}
+
+a <- bind_rows(krillList)#bind all regions into one df
+a$year <- as.character(a$year)
+allLengthsEnv <- left_join(allLengthsEnv, a)
+
+#Center parameters
+
+
 #MODEL
 
 #Environmental Model
 #Full linear model
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
-Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + (1|station), data = allLengthsEnv)
+Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = allLengthsEnv)
 Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
 summary(Ml1)
 
