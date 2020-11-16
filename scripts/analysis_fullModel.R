@@ -50,6 +50,22 @@ for(i in seq(1:nrow(a))){
 
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
+#add cuti averaged over past 13 days
+cuti <- read_csv("data/cuti_daily.csv")#load cuti data, PST day
+cuti <- filter(cuti, year>2010, year <2019)
+cuti$date <- ymd(paste(cuti$year, cuti$month, cuti$day, sep = "-"))
+cuti <- melt(cuti, id.vars = c("year", "month", "day", "date"))#long form data
+cuti <- rename(cuti, cuti = value)
+cuti$latitude.round <- as.numeric(str_sub(as.character(cuti$variable), 1, 2))
+
+a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), cuti = NA))
+
+for(i in seq(1:nrow(a))){
+  a$cuti[i] <- get.cuti(a$station[i], a$year[i], 13)
+}
+
+allLengthsEnv <- left_join(allLengthsEnv, a)
+
 #add sla averaged over past 13 days
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), sla = NA))
 
@@ -97,6 +113,7 @@ allLengthsEnv$chla_z <- scale(allLengthsEnv$chla)
 allLengthsEnv$beuti_z <- scale(allLengthsEnv$beuti)
 allLengthsEnv$moci_spring_z <- scale(allLengthsEnv$moci_spring)
 allLengthsEnv$sla_z <- scale(allLengthsEnv$sla)
+allLengthsEnv$cuti_z <- scale(allLengthsEnv$cuti)
 
 
 #MODEL
