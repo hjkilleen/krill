@@ -121,10 +121,15 @@ allLengthsEnv$cuti_z <- scale(allLengthsEnv$cuti)
 #Environmental Model
 #Full linear model
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
-Ml1 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + sex:temp_2_z + temp_100_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + (1|station), data = allLengthsEnv)
+Ml1 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + sex:temp_2_z + temp_100_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = allLengthsEnv)
 Ml2 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + sex:temp_2_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + (1|station), data = allLengthsEnv)
 Ml3 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + (1|station), data = allLengthsEnv)
+Ml4 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + moci_spring_z + cuti + (1|station), data = allLengthsEnv)#no sla or beuti
+Ml5 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = allLengthsEnv)#all
+
 summary(Ml3)
+summary(Ml4)
+AIC(Ml3, Ml4, Ml5)
 
 #all species model comparison and evaluation
 anova(Ml3)
@@ -147,9 +152,10 @@ ggplot(allLengthsEnv) +
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
 #Look at group level variation
+regions <- read_csv("data/regions.csv")
 groups <- data.frame(
-  station = as.numeric(row.names(ranef(Ml3)$station)),
-  intercept = ranef(Ml3)$station$'(Intercept)'
+  station = as.numeric(row.names(ranef(Ml5)$station)),
+  intercept = ranef(Ml5)$station$'(Intercept)'
 )
 groups <- left_join(groups, regions)
 ggplot(groups) +
