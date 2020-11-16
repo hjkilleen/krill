@@ -9,6 +9,7 @@ library(ggeffects)
 library(moments)
 library(ggpubr)
 library(lubridate)
+library(reshape2)
 source("scripts/functions/model_simulation.R")
 source("scripts/functions/length_frequency.R")
 load("data/allLengthsEnv.rda")
@@ -21,7 +22,7 @@ env <- filter(env, dtime != 0)#get rid of zero day (UTC correction)
 str(env)
 
 #add chlorophyll variable based on prior 3, 8, 13 days
-a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year)), chla = NA))
+a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year)), chla = NA))
 
 for(i in seq(1:nrow(a))){
   if(get.chla(a$station[i], a$year[i], 3) != "NaN"){
@@ -83,6 +84,11 @@ a <- bind_rows(krillList)#bind all regions into one df
 a$year <- as.character(a$year)
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
+save(allLengthsEnv, file = "data/allLengthsEnv.rda")
+ep <- filter(allLengthsEnv, species == "EP")
+ts <- filter(allLengthsEnv, species == "TS")
+nd <- filter(allLengthsEnv, species == "ND")
+
 #Center parameters
 
 
@@ -92,33 +98,34 @@ allLengthsEnv <- left_join(allLengthsEnv, a)
 #Full linear model
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
 Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = allLengthsEnv)
-Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = allLengthsEnv)
-summary(Ml1)
+Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = allLengthsEnv)
+Ml3 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = allLengthsEnv)
+summary(Ml3)
 
 #all species model comparison and evaluation
-anova(Ml1)
-sjPlot::tab_model(Ml1, 
+anova(Ml3)
+sjPlot::tab_model(Ml3, 
                   show.re.var= TRUE, 
-                  dv.labels= "Environmental Effects on Krill Length", file = "output/Ml1.doc")
-sjPlot::plot_model(Ml1)
-lattice::dotplot(ranef(Ml1,condVar=TRUE))
-save(Ml1, file = "output/Ml1.rda")
+                  dv.labels= "Environmental Effects on Krill Length", file = "output/Ml3.doc")
+sjPlot::plot_model(Ml3)
+lattice::dotplot(ranef(Ml3,condVar=TRUE))
+save(Ml3, file = "output/Ml3.rda")
 
-
-Ml2sim <- fsim.glmm(Ml2)
-Ml2simsum <- simsum(Ml2sim)
+load("output/Ml3.rda")
+Ml3sim <- fsim.glmm(Ml3)
+Ml3simsum <- simsum(Ml3sim)
 
 ggplot(allLengthsEnv) + 
   geom_point(aes(x = temp_2, y = length, color = species), alpha = 0.4) + 
-  geom_line(data = summarize(group_by(Ml2simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
+  geom_line(data = summarize(group_by(Ml3simsum, temp_2), sim.mean = mean(sim.mean)), aes(x= temp_2, y = sim.mean), color = "red") + 
   labs(x = "Sea Surface Temperature (C)", y = "Length (mm)") +
   theme(text = element_text(size = 20)) + 
   guides(colour = guide_legend(override.aes = list(alpha = 1)))
 
 #Look at group level variation
 groups <- data.frame(
-  station = as.numeric(row.names(ranef(Ml1)$station)),
-  intercept = ranef(Ml1)$station$'(Intercept)'
+  station = as.numeric(row.names(ranef(Ml3)$station)),
+  intercept = ranef(Ml3)$station$'(Intercept)'
 )
 groups <- left_join(groups, regions)
 ggplot(groups) +
@@ -127,10 +134,8 @@ ggplot(groups) +
 
 #EP Model
 ep$station <- as.factor(ep$station)
-Mel1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = ep)
-Mel2 <- lmer(length ~ sex*temp_2 + temp_100 + sst_sd + chla + (1|station), data = ep)
-summary(Mel1)
-sjPlot::plot_model(Mel2)
+Mel1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = ep)
+sjPlot::plot_model(Mel1)
 Mel2sim <- fsim.glmm(Mel2)
 Mel2simsum <- simsum(Mel2sim)
 rm(Mel2sim)
@@ -138,7 +143,7 @@ save(Mel2simsum, file = "output/Mel2sim.rda")
 
 #TS Model
 ts$station <- as.factor(ts$station)
-Mtl1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = ts)
+Mtl1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = ts)
 summary(Mtl1)
 sjPlot::plot_model(Mtl1)
 Mtl1sim <- fsim.glmm(Mtl1)
@@ -148,10 +153,10 @@ save(Mtl1simsum, file = "output/Mtl1sim.rda")
 
 #ND Model
 nd$station <- as.factor(nd$station)
-Mnl1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = nd)
+Mnl1 <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = nd)
 Mnl2 <- lmer(length ~ sex + temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + (1|station), data = nd)
 Mnl3 <- lmer(length ~ sex + temp_2 + temp_100 + sst_sd + chla + (1|station), data = nd)
-summary(Mnl3)
+summary(Mnl1)
 sjPlot::plot_model(Mnl2)
 Mnl3sim <- fsim.glmm(Mnl3)
 Mnl3simsum <- simsum(Mnl3sim)
