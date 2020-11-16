@@ -89,7 +89,14 @@ ep <- filter(allLengthsEnv, species == "EP")
 ts <- filter(allLengthsEnv, species == "TS")
 nd <- filter(allLengthsEnv, species == "ND")
 
-#Center parameters
+#Scale parameters
+allLengthsEnv$temp_2_z <- scale(allLengthsEnv$temp_2)
+allLengthsEnv$temp_100_z <- scale(allLengthsEnv$temp_100)
+allLengthsEnv$sst_sd_z <- scale(allLengthsEnv$sst_sd)
+allLengthsEnv$chla_z <- scale(allLengthsEnv$chla)
+allLengthsEnv$beuti_z <- scale(allLengthsEnv$beuti)
+allLengthsEnv$moci_spring_z <- scale(allLengthsEnv$moci_spring)
+allLengthsEnv$sla_z <- scale(allLengthsEnv$sla)
 
 
 #MODEL
@@ -97,9 +104,9 @@ nd <- filter(allLengthsEnv, species == "ND")
 #Environmental Model
 #Full linear model
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
-Ml1 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + temp_100 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = allLengthsEnv)
-Ml2 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + sex:temp_2 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = allLengthsEnv)
-Ml3 <- lmer(length ~ species*sex + temp_2 + species:temp_2 + species:temp_100 + sex:temp_100 + sst_sd + chla + beuti + sla + moci_spring + sst_sd + (1|station), data = allLengthsEnv)
+Ml1 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + sex:temp_2_z + temp_100_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + (1|station), data = allLengthsEnv)
+Ml2 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + sex:temp_2_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + (1|station), data = allLengthsEnv)
+Ml3 <- lmer(length ~ species*sex + temp_2_z + species:temp_2_z + species:temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + (1|station), data = allLengthsEnv)
 summary(Ml3)
 
 #all species model comparison and evaluation
