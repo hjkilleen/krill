@@ -96,3 +96,12 @@ get.beuti <- function(x, y, z) {
   beuti.val <- mean(filter(beuti, latitude.round == lat, year == y, date >= start.date, date <= end.date)$beuti)
   beuti.val
 }
+
+#Get cuti 
+get.cuti <- function(x, y, z) {
+  end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
+  lat <- filter(allLengthsEnv, station == x, year == y)$latitude.round[1]
+  start.date <- end.date-z
+  cuti.val <- mean(filter(cuti, latitude.round == lat, year == y, date >= start.date, date <= end.date)$cuti)
+  cuti.val
+}
