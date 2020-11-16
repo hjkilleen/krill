@@ -16,7 +16,7 @@ load("data/allLengthsEnv.rda")
 
 #set up
 env <- read.csv("data/zoo_selgroups_HadSST_relabundance_5aug2019_plumchrusV_4regions_final_satsstall.csv")
-env$date <- as.POSIXct(env$time64)
+env$date <- mdy(env$time64)
 env$year <- as.character(substring(env$date, 1, 4))
 env <- filter(env, dtime != 0)#get rid of zero day (UTC correction)
 str(env)
