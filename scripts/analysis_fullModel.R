@@ -166,14 +166,12 @@ ggplot(groups) +
 
 #EP Model
 ep$station <- as.factor(ep$station)
-Mel1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
-Mel2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
-Mel3 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
-Mel4 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
-Mel5 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
-Mel6 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + (1|station), data = ep)
+Mel1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
+Mel2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
+Mel3 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
+Mel4 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
 
-summary(Mel6)
+summary(Mel4)
 sjPlot::plot_model(Mel6)
 Mel2sim <- fsim.glmm(Mel2)
 Mel2simsum <- simsum(Mel2sim)
@@ -182,10 +180,10 @@ save(Mel2simsum, file = "output/Mel2sim.rda")
 
 #TS Model
 ts$station <- as.factor(ts$station)
-Mtl1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
-Mtl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ts)
-Mtl3 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ts)
-Mtl4 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ts)
+Mtl1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
+Mtl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
+Mtl3 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
+Mtl4 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
 
 summary(Mtl4)
 sjPlot::plot_model(Mtl4)
