@@ -1,25 +1,44 @@
 ---
 title: "R Notebook"
-output: html_notebook
-editor_options: 
+output:
+  pdf_document: default
+  html_notebook: default
+editor_options:
   chunk_output_type: console
 ---
+
+```{r, results=FALSE, message=FALSE}
+library(lme4)
+library(dplyr)
+library(ggplot2)
+library(readr)
+```
+
+```{r, results=FALSE, warning=FALSE, message=FALSE}
+load("../data/allLengthsEnv.rda")
+regions <- read_csv("../data/regions.csv")
+ep <- filter(allLengthsEnv, species=="EP")
+ts <- filter(allLengthsEnv, species=="TS")
+nd <- filter(allLengthsEnv, species=="ND")
+```
+
 
 # Euphausia pacifica
 
 ## Model
-```{r}
-Mel6 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + (1|station), data = ep)
+```{r, results=FALSE, warning=FALSE}
+options(width = 60)
+Mel4 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ep)
 
-summary(Mel6)
-sjPlot::plot_model(Mel6)
+summary(Mel4)
+sjPlot::plot_model(Mel4)
 ```
 
 ## Fixed Effects
 
 > SST stands out as a particularly important variable with a positive impact on overall EP size. However, this appears to be mostly driven by Southern California.
 
-```{r}
+```{r, results=FALSE, warning=FALSE, message=FALSE}
 epg <- summarize(group_by_at(ep, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
 ggplot(epg, aes(x = temp_2_z, y = length)) + 
   geom_point(aes(color = sites)) + 
@@ -28,30 +47,34 @@ ggplot(epg, aes(x = temp_2_z, y = length)) +
 
 > When Southern CA (San Diego) is removed from the data, the relationship is still positive, but looks more asymptotic. This is consistent with the N vs S change in temp~length relationship. 
 
-```{r}
+```{r, results=FALSE, warning=FALSE, message=FALSE}
 ggplot(filter(epg, sites != "SouthernCA"), aes(x = temp_2_z, y = length)) + 
   geom_point(aes(color = sites)) + 
   geom_smooth(method = "lm", formula = y ~ splines::bs(x, 2), se = T)
 ```
 
 
-```{r}
+```{r, results=FALSE, warning=FALSE, message=FALSE}
 ggplot(epg, aes(x = sst_sd_z, y = length)) + 
   geom_point(aes(color = sites)) + 
   geom_smooth(method = "lm")
 ```
 
 
-> SST_SD and MOCI had a positive effect on size, but weaker than SST. BEUTI, SLA, and Chl-a had a weak negative impact on body size. There is also some indication that males and females responded differently to temperature and SLA fluctuations.
+> SST_SD, MOCI, and subsurface temperature had a positive effect on size, but weaker than SST. SLA, CUTI, and Chl-a had a weak negative impact on body size. 
+
+### Interactions
+
+>There is some indication that males and females responded differently to temperature and SLA fluctuations, and perhaps to MOCI as well.
 
 ## Random Effects
 
 > Sites in the north have larger individuals than sites in the south. Onshore EP tend to be larger than offshore counterparts. San Diego offshore are very very small. 
 
-```{r}
+```{r, results=FALSE, warning=FALSE, message=FALSE}
 groups <- data.frame(
-  station = as.numeric(row.names(ranef(Mel6)$station)),
-  intercept = ranef(Mel6)$station$'(Intercept)'
+  station = as.numeric(row.names(ranef(Mel4)$station)),
+  intercept = ranef(Mel4)$station$'(Intercept)'
 )
 groups <- left_join(groups, regions)
 ggplot(groups) +
@@ -64,12 +87,82 @@ ggplot(groups) +
 
 ## Model
 
-```{r}
-Mtl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + moci_spring_z + cuti_z + (1|station), data = ts)
+```{r, results=FALSE, warning=FALSE}
+options(width = 60)
+Mtl4 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + sex:moci_spring_z + cuti_z + (1|station), data = ts)
 
-summary(Mtl2)
-sjPlot::plot_model(Mtl2)
+summary(Mtl4)
+sjPlot::plot_model(Mtl4)
 ```
 
 ## Fixed Effects
 
+> SST, SST_SD, and, to a lesser extent, CUTI all have a positive impact on krill body size. 
+
+> Southern CA and Channel Islands are outliers in the SST effect, but seem to indicate an asymptotic relationship for temperature~length at very high temperatures. 
+
+```{r, results=FALSE, warning=FALSE, message=FALSE}
+tsg <- summarize(group_by_at(ts, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
+ggplot(tsg, aes(x = temp_2_z, y = length)) + 
+  geom_point(aes(color = sites)) + 
+  geom_smooth(method = 'lm')
+```
+
+
+### Interactions 
+
+> SLA, Chl-a, SST, subsurface temperature, and moci all appear to have interactions with sex. The largest difference in interaction is for SLA (+ for males, - for females), but effect magnitude is not large. 
+
+```{r, results=FALSE, warning=FALSE, message=FALSE}
+tsg <- summarize(group_by_at(ts, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z, sex)), length = mean(length))
+ggplot(tsg, aes(x = sla_z, y = length, color = sex)) + 
+  geom_point() + 
+  geom_smooth(method = 'lm')
+```
+
+## Random Effects
+
+> Site differences in length do not have as great a latitudinal component for TS as did for EP. Largest individuals tend to be found in the central coast area. Interesting to note that onshore individuals tend to be closer to the overall mean than offshore individuals, which tend to be larger or smaller than their counterparts. Southern CA sites are close to the overall average, except the Channel Islands, which are extremely variable. 
+
+```{r, results=FALSE, warning=FALSE, message=FALSE}
+groups <- data.frame(
+  station = as.numeric(row.names(ranef(Mtl4)$station)),
+  intercept = ranef(Mtl4)$station$'(Intercept)'
+)
+groups <- left_join(groups, regions)
+ggplot(groups) +
+  geom_point(aes(x = latitude, y = intercept, color = sites, shape = shore), size = 3) + 
+  geom_hline(aes(yintercept = 0))
+```
+
+# Nematocelis difficilis
+
+```{r, results=FALSE, warning=FALSE}
+Mnl6 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd_z + chla_z + sex:chla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = nd)
+
+summary(Mnl6)
+sjPlot::plot_model(Mnl6)
+```
+
+## Fixed Effects
+
+> MOCI, subsurface temperature, CUTI, Chl-a, and SST_SD had a positive impact on ND length. All but the first two effects were relatively weak. SST had a strongly negative impact of ND length. 
+
+### Interactions
+
+> Males were more strongly, and positively impacted by MOCI, Chl-a, and CUTI than females. 
+
+## Random Effects
+
+> ND found in their primary range (south of Point Conception) are larger than their more northerly counterparts. This is partly why the SST estimate looks so different from the pattern suggested by the raw data. ND north of PC tend to be uniformly smaller, indicating two populations rather than a gradient as observed in EP. Onshore ND south of PC tend to be larger than offshore individuals, but this pattern does not hold north of PC, where ND are rarely found onshore. 
+
+```{r, results=FALSE, warning=FALSE, message=FALSE}
+groups <- data.frame(
+  station = as.numeric(row.names(ranef(Mnl6)$station)),
+  intercept = ranef(Mnl6)$station$'(Intercept)'
+)
+groups <- left_join(groups, regions)
+ggplot(groups) +
+  geom_point(aes(x = latitude, y = intercept, color = sites, shape = shore), size = 3) + 
+  geom_hline(aes(yintercept = 0))
+```
