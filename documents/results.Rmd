@@ -1,0 +1,75 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: console
+---
+
+# Euphausia pacifica
+
+## Model
+```{r}
+Mel6 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + (1|station), data = ep)
+
+summary(Mel6)
+sjPlot::plot_model(Mel6)
+```
+
+## Fixed Effects
+
+> SST stands out as a particularly important variable with a positive impact on overall EP size. However, this appears to be mostly driven by Southern California.
+
+```{r}
+epg <- summarize(group_by_at(ep, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
+ggplot(epg, aes(x = temp_2_z, y = length)) + 
+  geom_point(aes(color = sites)) + 
+  geom_smooth(method = 'lm', formula = y ~ splines::bs(x, 2), se = T)
+```
+
+> When Southern CA (San Diego) is removed from the data, the relationship is still positive, but looks more asymptotic. This is consistent with the N vs S change in temp~length relationship. 
+
+```{r}
+ggplot(filter(epg, sites != "SouthernCA"), aes(x = temp_2_z, y = length)) + 
+  geom_point(aes(color = sites)) + 
+  geom_smooth(method = "lm", formula = y ~ splines::bs(x, 2), se = T)
+```
+
+
+```{r}
+ggplot(epg, aes(x = sst_sd_z, y = length)) + 
+  geom_point(aes(color = sites)) + 
+  geom_smooth(method = "lm")
+```
+
+
+> SST_SD and MOCI had a positive effect on size, but weaker than SST. BEUTI, SLA, and Chl-a had a weak negative impact on body size. There is also some indication that males and females responded differently to temperature and SLA fluctuations.
+
+## Random Effects
+
+> Sites in the north have larger individuals than sites in the south. Onshore EP tend to be larger than offshore counterparts. San Diego offshore are very very small. 
+
+```{r}
+groups <- data.frame(
+  station = as.numeric(row.names(ranef(Mel6)$station)),
+  intercept = ranef(Mel6)$station$'(Intercept)'
+)
+groups <- left_join(groups, regions)
+ggplot(groups) +
+  geom_point(aes(x = latitude, y = intercept, color = sites, shape = shore), size = 3) + 
+  geom_hline(aes(yintercept = 0))
+```
+
+
+# Thysanoessa spinifera
+
+## Model
+
+```{r}
+Mtl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + moci_spring_z + cuti_z + (1|station), data = ts)
+
+summary(Mtl2)
+sjPlot::plot_model(Mtl2)
+```
+
+## Fixed Effects
+
