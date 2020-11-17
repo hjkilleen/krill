@@ -194,13 +194,16 @@ save(Mtl1simsum, file = "output/Mtl1sim.rda")
 
 #ND Model
 nd$station <- as.factor(nd$station)
-Mel1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
-Mnl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = nd)
-Mnl3 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = nd)
-Mnl4 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd + chla_z + beuti_z + moci_spring_z + cuti_z + (1|station), data = nd)
-Mnl5 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd + chla_z + moci_spring_z + cuti_z + (1|station), data = nd)
+Mnl1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = nd)
+Mnl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = nd)
+Mnl3 <- lmer(length ~ sex + temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = nd)
+Mnl4 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = nd)
+Mnl5 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd_z + chla_z + sex:chla_z + sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = nd)
+Mnl6 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd_z + chla_z + sex:chla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = nd)
 
-summary(Mnl5)
+
+
+summary(Mnl6)
 sjPlot::plot_model(Mnl5)
 Mnl5sim <- fsim.glmm(Mnl5)
 Mnl3simsum <- simsum(Mnl3sim)
