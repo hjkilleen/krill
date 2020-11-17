@@ -182,10 +182,13 @@ save(Mel2simsum, file = "output/Mel2sim.rda")
 
 #TS Model
 ts$station <- as.factor(ts$station)
-Mtl1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = ts)
-Mtl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + moci_spring_z + cuti_z + (1|station), data = ts)
-summary(Mtl2)
-sjPlot::plot_model(Mtl2)
+Mtl1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
+Mtl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ts)
+Mtl3 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ts)
+Mtl4 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + chla_z + sex:chla_z + beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + (1|station), data = ts)
+
+summary(Mtl4)
+sjPlot::plot_model(Mtl4)
 Mtl1sim <- fsim.glmm(Mtl1)
 Mtl1simsum <- simsum(Mtl1sim)
 rm(Mtl1sim)
@@ -193,7 +196,7 @@ save(Mtl1simsum, file = "output/Mtl1sim.rda")
 
 #ND Model
 nd$station <- as.factor(nd$station)
-Mnl1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = nd)
+Mel1 <- lmer(length ~ sex*temp_2_z + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + beuti_z + sex:beuti_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ep)
 Mnl2 <- lmer(length ~ sex*temp_2_z + temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = nd)
 Mnl3 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd + chla_z + beuti_z + sla + moci_spring_z + cuti_z + (1|station), data = nd)
 Mnl4 <- lmer(length ~ sex + temp_2_z + temp_100_z + sst_sd + chla_z + beuti_z + moci_spring_z + cuti_z + (1|station), data = nd)
