@@ -110,9 +110,13 @@ allLengthsEnv$moci_spring_z <- scale(allLengthsEnv$moci_spring)
 allLengthsEnv$sla_z <- scale(allLengthsEnv$sla)
 allLengthsEnv$cuti_z <- scale(allLengthsEnv$cuti)
 
+#Only include samples with that exceed minimum count requirements
+allLengthsEnv <- add_tally(group_by_at(allLengthsEnv, vars(year, station, species)))
+allLengthsEnv <- filter(allLengthsEnv, n>=40)
+
 #save datafile
 
-save(allLengthsEnv, file = "data/allLengthsEnv.rda")
+save(allLengthsEnv, file = "krill/data/allLengthsEnv.rda")
 ep <- filter(allLengthsEnv, species == "EP")
 ts <- filter(allLengthsEnv, species == "TS")
 nd <- filter(allLengthsEnv, species == "ND")
