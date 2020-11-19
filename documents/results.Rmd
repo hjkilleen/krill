@@ -38,10 +38,10 @@ sjPlot::plot_model(ep.model)
 > SST stands out as a particularly important variable with a positive impact on overall EP size. However, this appears to be mostly driven by Southern California.
 
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
-epg <- summarize(group_by_at(ep, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
+epg <- summarize(group_by_at(ep, vars(sites, chla, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
 ggplot(epg, aes(x = temp_2_z, y = length)) + 
   geom_point(aes(color = sites)) + 
-  geom_smooth(method = 'lm', formula = y ~ splines::bs(x, 2), se = T)
+  geom_smooth(method = 'lm')
 ```
 
 > When Southern CA (San Diego) is removed from the data, the relationship is still positive, but looks more asymptotic. This is consistent with the N vs S change in temp~length relationship. 
@@ -52,23 +52,17 @@ ggplot(filter(epg, sites != "SouthernCA"), aes(x = temp_2_z, y = length)) +
   geom_smooth(method = "lm", formula = y ~ splines::bs(x, 2), se = T)
 ```
 
-
-```{r, results=FALSE, warning=FALSE, message=FALSE}
-ggplot(epg, aes(x = sst_sd_z, y = length)) + 
-  geom_point(aes(color = sites)) + 
-  geom_smooth(method = "lm")
-```
-
-
-> SST_SD, MOCI, and subsurface temperature had a positive effect on size, but weaker than SST. SLA, CUTI, and Chl-a had a weak negative impact on body size. 
+> SST_SD, subsurface temperature, and MOCI had a positive effect on size, but weaker than SST. Chl-a, and SLA had a negative impact on body size. The chla relationship could be driven by Southern CA as very low chla values tend to occur in Southern CA along with very high temperature values. 
 
 ### Interactions
 
->There is some indication that males and females responded differently to temperature and SLA fluctuations, and perhaps to MOCI as well.
+>There is some indication that males and females responded differently to temperature and SLA fluctuations, and perhaps to MOCI as well, but the magnitude is small.
 
 ## Random Effects
 
-> Sites in the north have larger individuals than sites in the south. Onshore EP tend to be larger than offshore counterparts. San Diego offshore are very very small. 
+> Sites in the north have larger individuals than sites in the south. Onshore EP tend to be larger than offshore counterparts. San Diego offshore are very very small. Trend in random intercepts indicates a gradient in EP size increasing as you move north along the coast. Onshore EP were larger throughout the range. 
+
+> EP north of Point Conception tended to respond positively to elevated SST, while thoose to the south responded negatively. 
 
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
 groups <- data.frame(
@@ -88,7 +82,7 @@ groups <- left_join(groups, regions)
 b <- ggplot(groups) +
   geom_point(aes(x = latitude, y = intercept, color = sites, shape = shore), size = 3) + 
   geom_hline(aes(yintercept = 0))
-gridExtra::grid.arrange(a, b, ncol = 2, nrow =)
+gridExtra::grid.arrange(a, b, ncol = 2, nrow =1)
 ```
 
 
@@ -97,7 +91,6 @@ gridExtra::grid.arrange(a, b, ncol = 2, nrow =)
 ## Model
 
 ```{r, results=FALSE, warning=FALSE}
-options(width = 60)
 ts.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + (1 + temp_2_z | station) + chla_z:sex + sex:sla_z + sex:sst_sd_z + sex:temp_100_z + sex:temp_2_z, data = ts)
 
 summary(ts.model)
@@ -108,40 +101,46 @@ sjPlot::plot_model(ts.model)
 
 > SST, SST_SD, and, to a lesser extent, CUTI all have a positive impact on krill body size. 
 
-> Southern CA and Channel Islands are outliers in the SST effect, but seem to indicate an asymptotic relationship for temperature~length at very high temperatures. 
+> Southern CA and Channel Islands are outliers in the SST effect, but seem to indicate an asymptotic relationship for temperature~length at very high temperatures. These sites were also negatively impacted by temperature more strongly than other sites (see random effects).
 
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
 tsg <- summarize(group_by_at(ts, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
 ggplot(tsg, aes(x = temp_2_z, y = length)) + 
   geom_point(aes(color = sites)) + 
-  geom_smooth(method = 'lm')
+  geom_smooth(method = 'lm', formula = y ~ splines::bs(x, 2), se = T)
 ```
 
+> Chla, MOCI, subsurface temperature, and SLA all had a negative impact on TS size. Like EP, the chla effect could be related to temperature. High chla values are tied to low chla values. 
 
 ### Interactions 
 
-> SLA, Chl-a, SST, subsurface temperature, and moci all appear to have interactions with sex. The largest difference in interaction is for SLA (+ for males, - for females), but effect magnitude is not large. 
-
-```{r, results=FALSE, warning=FALSE, message=FALSE}
-tsg <- summarize(group_by_at(ts, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z, sex)), length = mean(length))
-ggplot(tsg, aes(x = sla_z, y = length, color = sex)) + 
-  geom_point() + 
-  geom_smooth(method = 'lm')
-```
+> SLA, Chl-a, SST, and subsurface temperature all appear to have interactions with sex. The largest difference in interaction is for SLA (+ for males, - for females). 
 
 ## Random Effects
 
-> Site differences in length do not have as great a latitudinal component for TS as did for EP. Largest individuals tend to be found in the central coast area. Interesting to note that onshore individuals tend to be closer to the overall mean than offshore individuals, which tend to be larger or smaller than their counterparts. Southern CA sites are close to the overall average, except the Channel Islands, which are extremely variable. 
+> Site differences in length do not have as great a latitudinal component for TS as did for EP. Largest individuals tend to be found in the central coast area and in the Channel Islands. Interesting to note that onshore individuals tend to be closer to the overall mean than offshore individuals, which tend to be larger or smaller than their onshore counterparts. Also surprising, north coast TS are smaller than average. 
+
+> According to random slopes, central and north-central coast TS were positive impacted by elevated temperatures, while southern and north coast TS were negatively impacted by elevated temperatures. 
 
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
 groups <- data.frame(
-  station = as.numeric(row.names(ranef(Mtl4)$station)),
-  intercept = ranef(Mtl4)$station$'(Intercept)'
+  station = as.numeric(row.names(ranef(ts.model)$station)),
+  slope = ranef(ts.model)$station$'temp_2_z'
 )
 groups <- left_join(groups, regions)
-ggplot(groups) +
+a <- ggplot(groups) +
+  geom_point(aes(x = latitude, y = slope, color = sites, shape = shore), size = 3) + 
+  geom_hline(aes(yintercept = 0))
+
+groups <- data.frame(
+  station = as.numeric(row.names(ranef(ts.model)$station)),
+  intercept = ranef(ts.model)$station$'(Intercept)'
+)
+groups <- left_join(groups, regions)
+b <- ggplot(groups) +
   geom_point(aes(x = latitude, y = intercept, color = sites, shape = shore), size = 3) + 
   geom_hline(aes(yintercept = 0))
+gridExtra::grid.arrange(a, b, ncol = 2, nrow =1)
 ```
 
 # Nematocelis difficilis
@@ -155,16 +154,11 @@ sjPlot::plot_model(nd.model)
 
 ## Fixed Effects
 
-> MOCI, subsurface temperature, CUTI, Chl-a, and SST_SD had a positive impact on ND length. All but the first two effects were relatively weak. SST had a strongly negative impact of ND length. 
+> All fixed effects estimates have larger confidence intervals than estimates for TS and EP. 
 
-```{r}
-ndg <- summarize(group_by_at(nd, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z, latitude)), length = mean(length))
+> MOCI, subsurface temperature, SST_SD, SLA, and CUTI had a positive impact on ND length. Chla appears to have a negative impact on ND length. 
 
-ggplot(ndg, aes(x = temp_2_z, y = length)) + 
-  geom_point(aes(color = latitude)) + 
-  geom_smooth(method = "lm", formula = y ~ splines::bs(x, 2), se = T)
-```
-
+> SST was not found to have a substantial impact on ND lengths, with impacts accruing at the site level. However, fixed effects show that the shape of the relationship between temperature and length at the site level is quadratic (asymptotic).
 
 ### Interactions
 
@@ -172,7 +166,9 @@ ggplot(ndg, aes(x = temp_2_z, y = length)) +
 
 ## Random Effects
 
-> ND found in their primary range (south of Point Conception) are larger than their more northerly counterparts. This is partly why the SST estimate looks so different from the pattern suggested by the raw data. ND north of PC tend to be uniformly smaller, indicating two populations rather than a gradient as observed in EP. Onshore ND south of PC tend to be larger than offshore individuals, but this pattern does not hold north of PC, where ND are rarely found onshore. 
+> ND found in their primary range (south of Point Conception) are larger than their more northerly counterparts (except in Monterey Bay). ND north of PC tend to be uniformly smaller, indicating two populations rather than a gradient as observed in EP. Onshore ND south of PC tend to be larger than offshore individuals, but this pattern does not hold north of PC, where ND are rarely found onshore. 
+
+> ND throughout the range were similarly impacted by elevated temperature (nonlinear). 
 
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
 groups <- data.frame(
