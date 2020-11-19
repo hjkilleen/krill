@@ -79,7 +79,6 @@ nd.top.model
 
 
 #top model with full dataset with random slope and intercept for SST
-nd.model <- lmer(scale(length) ~ chla_z + sex + sla_z + sst_sd_z + temp_100_z +  
-                   temp_2_z + (1 + temp_2_z | station), data = nd)
+nd.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + I(temp_2_z^2) + (1 + temp_2_z | station) + chla_z:sex + cuti_z:sex + moci_spring_z:sex, data = nd)
 lattice::dotplot(ranef(nd.model,condVar=TRUE))
 sjPlot::plot_model(nd.model)
