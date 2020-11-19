@@ -53,9 +53,11 @@ ts.top.model
 
 
 #top model with full dataset with random slope and intercept for SST
-ts.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + (1 + temp_2_z | station) + chla_z:sex + sex:sla_z + sex:sst_sd_z + sex:temp_100_z + sex:temp_2_z, data = ts)
+ts.model <- lmer(scale(length) ~ chla_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + I(temp_2_z^2) + (1 + temp_2_z | station) + chla_z:sex + sex:sla_z + sex:sst_sd_z + sex:temp_100_z + sex:temp_2_z, data = ts)
 lattice::dotplot(ranef(ts.model,condVar=TRUE))
 sjPlot::plot_model(ts.model)
+
+
 
 #Nematocelis difficilis
 ndc <- nd[complete.cases(nd),]#filter to only complete cases
@@ -65,11 +67,10 @@ nd.int <- lmer(scale(length) ~ sex*temp_2_z + I(temp_2_z^2) + temp_100_z + sex:t
 
 nd.intSlope <- lmer(scale(length) ~ sex*temp_2_z + I(temp_2_z^2) + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1+temp_2_z|station), data = ndc, na.action = na.fail, REML = FALSE)#model with random intercept and slope
 
-anova(nd.int, nd.intSlope)#compare models with different random effect structure
-#Slope intercept is the optimal random effects structure
+#Random slope and intercept model is singular fit. Use random intercept model as global model. 
 
 #Optimize fixed effect structure using AIC
-nd.global.model <- lmer(scale(length) ~ sex*temp_2_z + I(temp_2_z^2) + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1+temp_2_z|station), data = ndc, na.action = na.fail, REML = FALSE)
+nd.global.model <- lmer(scale(length) ~ sex*temp_2_z + I(temp_2_z^2) + temp_100_z + sex:temp_100_z + sst_sd_z + sex:sst_sd_z + chla_z + sex:chla_z + sla_z + sex:sla_z + moci_spring_z + sex:moci_spring_z + cuti_z + sex:cuti_z + (1|station), data = ndc, na.action = na.fail, REML = FALSE)
 
 nd.model.set <- dredge(nd.global.model)
 
@@ -79,6 +80,6 @@ nd.top.model
 
 
 #top model with full dataset with random slope and intercept for SST
-nd.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + I(temp_2_z^2) + (1 + temp_2_z | station) + chla_z:sex + cuti_z:sex + moci_spring_z:sex, data = nd)
+nd.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + temp_100_z + temp_2_z + I(temp_2_z^2) + (1 | station) + cuti_z:sex + moci_spring_z:sex, data = nd)
 lattice::dotplot(ranef(nd.model,condVar=TRUE))
 sjPlot::plot_model(nd.model)
