@@ -15,8 +15,8 @@ library(readr)
 ```
 
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
-load("../data/allLengthsEnv.rda")
-regions <- read_csv("../data/regions.csv")
+load("data/allLengthsEnv.rda")
+regions <- read_csv("data/regions.csv")
 ep <- filter(allLengthsEnv, species=="EP")
 ts <- filter(allLengthsEnv, species=="TS")
 nd <- filter(allLengthsEnv, species=="ND")
@@ -38,7 +38,7 @@ sjPlot::plot_model(ep.model)
 > SST stands out as a particularly important variable with a positive impact on overall EP size. However, this appears to be mostly driven by Southern California.
 
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
-epg <- summarize(group_by_at(ep, vars(sites, chla, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
+epg <- summarize(group_by_at(ep, vars(sites, chla, year, region, temp_2, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
 ggplot(epg, aes(x = temp_2_z, y = length)) + 
   geom_point(aes(color = sites)) + 
   geom_smooth(method = 'lm')
@@ -53,6 +53,24 @@ ggplot(filter(epg, sites != "SouthernCA"), aes(x = temp_2_z, y = length)) +
 ```
 
 > SST_SD, subsurface temperature, and MOCI had a positive effect on size, but weaker than SST. Chl-a, and SLA had a negative impact on body size. The chla relationship could be driven by Southern CA as very low chla values tend to occur in Southern CA along with very high temperature values. 
+
+### North vs South
+
+```{r}
+epN <- filter(ep, latitude >= 34.5)
+epS <- filter(ep, latitude < 34.5)
+
+epN.model <- lmer(scale(length) ~ chla_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + (1 + temp_2_z | station) + moci_spring_z:sex + sex:sla_z + sex:temp_100_z, data = epN)
+epS.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + (1 | station) + sex:sst_sd_z, data = epS)
+
+sjPlot::plot_models(epN.model, epS.model)
+```
+
+```{r}
+#Plot
+ggplot(aes(x = temp))
+```
+
 
 ### Interactions
 
@@ -91,7 +109,7 @@ gridExtra::grid.arrange(a, b, ncol = 2, nrow =1)
 ## Model
 
 ```{r, results=FALSE, warning=FALSE}
-ts.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + (1 + temp_2_z | station) + chla_z:sex + sex:sla_z + sex:sst_sd_z + sex:temp_100_z + sex:temp_2_z, data = ts)
+ts.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_2_z + (1 + temp_2_z | station) + chla_z:sex + sex:sla_z + sex:temp_2_z, data = ts)
 
 summary(ts.model)
 sjPlot::plot_model(ts.model)
@@ -99,18 +117,20 @@ sjPlot::plot_model(ts.model)
 
 ## Fixed Effects
 
-> SST, SST_SD, and, to a lesser extent, CUTI all have a positive impact on krill body size. 
-
-> Southern CA and Channel Islands are outliers in the SST effect, but seem to indicate an asymptotic relationship for temperature~length at very high temperatures. These sites were also negatively impacted by temperature more strongly than other sites (see random effects).
-
 ```{r, results=FALSE, warning=FALSE, message=FALSE}
-tsg <- summarize(group_by_at(ts, vars(sites, year, region, temp_2_z, sla_z, sst_sd_z)), length = mean(length))
-ggplot(tsg, aes(x = temp_2_z, y = length)) + 
-  geom_point(aes(color = sites)) + 
-  geom_smooth(method = 'lm', formula = y ~ splines::bs(x, 2), se = T)
+tsg <- summarize(group_by_at(ts, vars(sites, year, region, temp_2, chla_z, temp_2_z, sla_z, sst_sd_z, moci_spring_z, latitude)), length = mean(length))
+ggplot(epg, aes(x = temp_2, y = length)) + 
+  geom_point(aes(color=sites))
 ```
 
-> Chla, MOCI, subsurface temperature, and SLA all had a negative impact on TS size. Like EP, the chla effect could be related to temperature. High chla values are tied to low chla values. 
+> Without southern CA, no real change in estimates. 
+
+```{r}
+tsg.nosc <- lmer(scale(length) ~ chla_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + I(temp_2_z^2) + (1 + temp_2_z | station) + chla_z:sex + sex:sla_z + sex:sst_sd_z + sex:temp_100_z + sex:temp_2_z, data = filter(ts, sites != "SouthernCA", sites != "MidChannelIslands"))
+
+sjPlot::plot_model(tsg.nosc)
+```
+
 
 ### Interactions 
 
@@ -146,7 +166,7 @@ gridExtra::grid.arrange(a, b, ncol = 2, nrow =1)
 # Nematocelis difficilis
 
 ```{r, results=FALSE, warning=FALSE}
-nd.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + I(temp_2_z^2) + (1 + temp_2_z | station) + chla_z:sex + cuti_z:sex + moci_spring_z:sex, data = nd)
+nd.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sla_z + sst_sd_z + temp_100_z + temp_2_z + (1 | station) + cuti_z:sex + moci_spring_z:sex, data = nd)
 
 summary(nd.model)
 sjPlot::plot_model(nd.model)
