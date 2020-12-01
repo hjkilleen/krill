@@ -59,22 +59,27 @@ allLengthsEnv$species <- as.factor(allLengthsEnv$species)
 Me1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
 
 Me2 <- lmer(length ~ year + sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="EP"))
+
+Me3 <- lmer(length ~ year + sex + year:sex + (1|station), data = ep)
 #Model evaluation
 anova(Me1, Me2)
-sjPlot::tab_model(Me1, 
+anova(Me3)
+sjPlot::tab_model(Me3, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
-sjPlot::plot_model(Me1)
-lattice::dotplot(ranef(Me1,condVar=TRUE))
+sjPlot::plot_model(Me3)
+lattice::dotplot(ranef(Me3,condVar=TRUE))
 save(Me1, file = "output/Me1.rda")
 
 #Thysanoessa spinifera
 Mt1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
 
 Mt2 <- lmer(length ~ year*sex + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="TS"))
+
+Mt3 <- lmer(length ~ year + sex + year:sex + (1|station), data = ts)
 #Model evaluation
 anova(Mt1, Mt2)
-sjPlot::tab_model(Mt2, 
+sjPlot::tab_model(Mt3, 
                   show.re.var= TRUE, 
                   dv.labels= "Spatial and Temporal Effects on Krill Length")
 sjPlot::plot_model(Mt2)
@@ -85,11 +90,13 @@ save(Mt2, file = "output/Mt2.rda")
 Mn1 <- lmer(length ~ year*sex + shore + shore:year + shore:sex + (1|station), data = filter(allLengthsEnv, species =="ND"))
 
 Mn2 <- lmer(length ~ year*sex + shore:year + (1|station), data = filter(allLengthsEnv, species =="ND"))
+
+Mn3 <- lmer(length ~ year + sex + year:sex + (1|station), data = nd)
 #Model evaluation
 anova(Mn1, Mn2)
-sjPlot::tab_model(Mn2, 
+sjPlot::tab_model(Mn3, 
                   show.re.var= TRUE, 
-                  dv.labels= "Spatial and Temporal Effects on Krill Length", file = "output/Mn2.doc")
+                  dv.labels= "Spatial and Temporal Effects on Krill Length")
 sjPlot::plot_model(Mn2)
 lattice::dotplot(ranef(Mn2,condVar=TRUE))
 save(Mn2, file = "output/Mn2.rda")
