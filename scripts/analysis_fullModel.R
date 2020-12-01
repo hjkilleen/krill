@@ -100,9 +100,13 @@ a <- bind_rows(krillList)#bind all regions into one df
 a$year <- as.character(a$year)
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
+#Create temp^2 variable
+allLengthsEnv$temp_2nl <- allLengthsEnv$temp_2^2
+
 #Scale parameters
 allLengthsEnv$temp_2_z <- scale(allLengthsEnv$temp_2)
 allLengthsEnv$temp_100_z <- scale(allLengthsEnv$temp_100)
+allLengthsEnv$temp_2nl_z <- scale(allLengthsEnv$temp_2nl)
 allLengthsEnv$sst_sd_z <- scale(allLengthsEnv$sst_sd)
 allLengthsEnv$chla_z <- scale(allLengthsEnv$chla)
 allLengthsEnv$beuti_z <- scale(allLengthsEnv$beuti)
@@ -116,7 +120,7 @@ allLengthsEnv <- filter(allLengthsEnv, n>=40)
 
 #save datafile
 
-save(allLengthsEnv, file = "krill/data/allLengthsEnv.rda")
+save(allLengthsEnv, file = "data/allLengthsEnv.rda")
 ep <- filter(allLengthsEnv, species == "EP")
 ts <- filter(allLengthsEnv, species == "TS")
 nd <- filter(allLengthsEnv, species == "ND")
