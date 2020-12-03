@@ -40,8 +40,13 @@ a <- ggplot(augment(epg2), aes(temp_2, length))+
 
   
 #Nematocelis difficilis
+#Set Up
+Asym <- 2
+r0 <- 0
+lrc <- -1
+b <- .5
 #Model testing
-nd1 <- lm(length~temp_2, nd)#linear
+nd1 <- lm(scale(length)~scale(temp_100), nd)#linear
 nd2 <- nls(length ~ SSasymp(temp_100, Asym, r0, lrc), data = nd)#monomolecular growth/von Bertalanffy
 nd3 <- nls(length ~ SSgompertz(temp_2, Asym, r0, b), data = nd)#Gompertz
 AIC(nd1, nd2, nd3)
