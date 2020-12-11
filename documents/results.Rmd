@@ -31,6 +31,7 @@ ep.model <- lmer(scale(length) ~ chla_z + moci_spring_z + sex + sst_sd_z + temp_
 
 summary(ep.model)
 sjPlot::plot_model(ep.model)
+sjPlot::tab_model(ep.model)
 ```
 
 ## Fixed Effects
@@ -113,6 +114,7 @@ ts.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + sst_sd_
 
 summary(ts.model)
 sjPlot::plot_model(ts.model)
+sjPlot::tab_model(ts.model)
 ```
 
 ## Fixed Effects
@@ -170,6 +172,7 @@ nd.model <- lmer(scale(length) ~ chla_z + cuti_z + moci_spring_z + sex + temp_10
 
 summary(nd.model)
 sjPlot::plot_model(nd.model)
+sjPlot::tab_model(nd.model)
 ```
 
 ## Fixed Effects
