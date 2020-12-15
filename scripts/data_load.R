@@ -4,25 +4,27 @@
 
 # Fri Dec 11 14:11:23 2020 ------------------------------
 
-#LIBRARIES & SOURCES
+#LIBRARIES
 #====
 library(readr)
+library(readxl)
 #====
+
 #LOAD METADATA
 #====
 #Load station metadata (lats are from mean latitude of corresponding "area" in NMFS 2015 MWT dataset, except for San Mateo, which I estimated on google maps, and Monterey, which is an average value of all the MWT Monterey sites)
-regions <- read_csv("data/regions.csv")
-stations <- read.csv("data/stationMetadata.csv")
-
-
+regions <- read_csv("data/regions.csv")#load station metadata
+stations <- read.csv("data/stationMetadata.csv")#load stations included in length frequency analysis and associated metadata
+d <- read_xlsx("data/RREASmetadata.xlsx")#load NMFS metadata
 #====
+
 #LOAD LENGTH DATA
 #====
-lengths <- read_csv("data/lengths.csv")
-lengthsBaldo <- read_csv("data/lengthsBaldo.csv")
-metadata <- read_csv("data/allStationMetadata.csv")
-
+lengths <- read_csv("data/lengths.csv")#2015-2018 data
+lengthsBaldo <- read_csv("data/lengthsBaldo.csv")#2011-2013 data
+metadata <- read_csv("data/allStationMetadata.csv")#metadata
 #====
+
 #LOAD PHYSICAL DATA
 #====
 env <- read.csv("data/zoo_selgroups_HadSST_relabundance_5aug2019_plumchrusV_4regions_final_satsstall.csv")#remote sensing data
