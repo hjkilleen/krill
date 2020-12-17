@@ -14,12 +14,6 @@ source("scripts/functions/model_simulation.R")
 source("scripts/functions/length_frequency.R")
 load("data/allLengthsEnv.rda")
 
-#set up
-env <- read.csv("data/zoo_selgroups_HadSST_relabundance_5aug2019_plumchrusV_4regions_final_satsstall.csv")
-env$date <- mdy(env$time64)
-env$year <- as.character(substring(env$date, 1, 4))
-env <- filter(env, dtime != 0)#get rid of zero day (UTC correction)
-str(env)
 
 #add chlorophyll variable based on prior 3, 8, 13 days
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year)), chla = NA))
@@ -35,7 +29,7 @@ for(i in seq(1:nrow(a))){
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
 #add beuti averaged over past 13 days
-beuti <- read_csv("data/BEUTI_daily.csv")#load beuti data, PST day
+#load beuti data, PST day
 beuti <- filter(beuti, year>2010, year <2019)
 beuti$date <- ymd(paste(beuti$year, beuti$month, beuti$day, sep = "-"))
 beuti <- melt(beuti, id.vars = c("year", "month", "day", "date"))#long form data
@@ -51,7 +45,7 @@ for(i in seq(1:nrow(a))){
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
 #add cuti averaged over past 13 days
-cuti <- read_csv("data/cuti_daily.csv")#load cuti data, PST day
+#load cuti data, PST day
 cuti <- filter(cuti, year>2010, year <2019)
 cuti$date <- ymd(paste(cuti$year, cuti$month, cuti$day, sep = "-"))
 cuti <- melt(cuti, id.vars = c("year", "month", "day", "date"))#long form data
@@ -113,10 +107,6 @@ allLengthsEnv$beuti_z <- scale(allLengthsEnv$beuti)
 allLengthsEnv$moci_spring_z <- scale(allLengthsEnv$moci_spring)
 allLengthsEnv$sla_z <- scale(allLengthsEnv$sla)
 allLengthsEnv$cuti_z <- scale(allLengthsEnv$cuti)
-
-#Only include samples with that exceed minimum count requirements
-allLengthsEnv <- add_tally(group_by_at(allLengthsEnv, vars(year, station, species)))
-allLengthsEnv <- filter(allLengthsEnv, n>=40)
 
 #save datafile
 
