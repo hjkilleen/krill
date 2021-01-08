@@ -4,7 +4,6 @@
 #LIBRARIES & SOURCES
 #====
 library(lubridate)
-source("scripts/data_load.R")
 #====
 
 #TIDY SATTELITE DATA
