@@ -1,9 +1,13 @@
-# Fri Nov  6 14:23:48 2020 ------------------------------
+#Tidy ROMS data
+# Wed Dec 16 16:47:18 2020 ------------------------------
+
+#LIBRARIES & SOURCES
+#====
+source("scripts/data_tidy_lengths.R")
 library(dplyr)
 library(stringr)
 library(readr)
-load("data/allLengths.rda")
-source("scripts/functions/length_frequency.R")
+#====
 
 #Get data from CenCOOS servers using the virtual sensor tool. 
 #Data are from ROMS/TOMS nowcast (10km), May1-June15 average at 2m and 100m depths. Station locations are taken from the RF_Euphausidae station_lat and _lon. https://data.cencoos.org/#module-metadata/0ac0326a-a2c6-11e2-9dc2-00219bfe5678
