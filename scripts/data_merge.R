@@ -6,3 +6,10 @@
 source("scripts/data_load.R")
 #====
 
+#Filter by species and save as .RDA
+ep <- filter(allLengths, species == "EP")
+ts <- filter(allLengths, species == "TS")
+nd <- filter(allLengths, species == "ND")
+save(ep, file = "data/allLengthsEP.rda")
+save(ts, file = "data/allLengthsTS.rda")
+save(nd, file = "data/allLengthsND.rda")
