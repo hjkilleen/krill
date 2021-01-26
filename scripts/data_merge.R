@@ -45,13 +45,13 @@ for(i in seq(1:nrow(a))){
 #UPWELLING
 #====
 #Get BEUTI averaged over past 13 days, PST day
-a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), beuti = NA))
+a$beuti <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))){
   a$beuti[i] <- get.beuti(a$station[i], a$year[i], 13)
 }
 
 #Get CUTI averaged over past 13 days, PST day
-a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), cuti = NA))
+a$cuti <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))){
   a$cuti[i] <- get.cuti(a$station[i], a$year[i], 13)
 }
