@@ -6,6 +6,7 @@
 source("scripts/data_tidy_environment.R")
 source("scripts/data_tidy_satellite.R")
 source("scripts/functions/length_frequency.R")
+load("data/allLengths.rda")
 #====
 
 #SET UP

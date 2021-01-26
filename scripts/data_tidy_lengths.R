@@ -70,7 +70,7 @@ lengthsBaldo <- filter(lengthsBaldo, length <50, length >10)#no unrealistically 
 lengthsBaldo <- filter(lengthsBaldo, n>=40)#n per station must be greater than 40
 
 #Add site-level metadata
-lengthsBaldo <- left_join(lengthsBaldo, metadata[,-1], by = c("station", "date"))#add station metadata
+lengthsBaldo <- left_join(lengthsBaldo, select(metadata, station, date, latitude, longitude, bottom_depth, tdr_depth), by = c("station", "date"))#add station metadata
 lengthsBaldo <- lengthsBaldo[,-14]#drop haul variable
 #====
 
