@@ -11,8 +11,9 @@ View(ale.na)
 
 #118(2011), 421(2012), 166(2011) missing everything from site onwards
 View(filter(allLengthsEnv, station == 421, year ==2012))
-#ASKED Keith
+#ASKED Keith Sakuma
 # Fri Nov  6 10:21:59 2020 ------------------------------
+#Stations are legacy, Keith sent metadata for these stations, added manually to URLs and metadata dfs. 
 
 #110(2012), 454(2011)  missing date and chla
 load("data/allLengths.rda")
