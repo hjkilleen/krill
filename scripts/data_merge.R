@@ -60,7 +60,7 @@ for(i in seq(1:nrow(a))){
 #OTHER
 #====
 #Get SLA averaged over past 13 days
-a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), sla = NA))
+a$sla <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))){
   a$sla[i] <- get.sla(a$station[i], a$year[i], 1)
 }
