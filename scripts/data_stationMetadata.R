@@ -1,13 +1,20 @@
+#Metadata
+#Script to gather relevant metadata for stations sampled
+#2011-2018 sample dates and locations using RREAS online dataset
+#All dates are in PST.
+#Accessed here: https://coastwatch.pfeg.noaa.gov/erddap/tabledap/FED_Rockfish_Catch.html
+# Fri Jan  8 16:38:17 2021 ------------------------------
+
+#LIBRARIES & SOURCES
+#====
 library(readxl)
 library(stringr)
 library(dplyr)
 library(lubridate)
-
-#2011-2018 sample dates and locations using RREAS online dataset
-#All dates are in PST.
-#Accessed here: https://coastwatch.pfeg.noaa.gov/erddap/tabledap/FED_Rockfish_Catch.html
+#====
 
 #METADATA
+#====
 d <- read_xlsx("data/RREASmetadata.xlsx")
 
 d$year <- as.integer(substring(d$time, 1, 4))
@@ -25,8 +32,7 @@ load("data/lengths.rda")
 baldo <- read.csv("data/lengthsBaldo.csv")
 
 #2013-2018
-#get dates from first 6 integers
-gp <- summarize(group_by_at(lengths, vars(station, date)), station = mean(station), date = mean(date), year = mean(year))
+gp <- summarize(group_by_at(lengths, vars(station, date, year)))
 
 #2011-2012
 #extract haul and year from photo ID string
@@ -34,7 +40,7 @@ baldo$haul <- sub(".*H", "", baldo$Photo.ID)
 baldo$haul <- as.numeric(gsub("([0-9]+).*$", "\\1", baldo$haul))
 baldo$year <- as.integer(paste("20", str_extract(baldo$Photo.ID, "\\d{2}"), sep = ""))
 baldo$station <- baldo$Station..
-gpb <- summarize(group_by_at(baldo, vars(station, year, haul)), station = mean(station), year = mean(year), haul = mean(haul))
+gpb <- summarize(group_by_at(baldo, vars(station, year, haul)))
 
 #Join data subsets with metadata
 #2013-2018
@@ -46,7 +52,7 @@ late[28, 4:7] <- late[29,4:7]
 late[77, 4:7] <- late[76,4:7]
 late[46, 4:7] <- late[45,4:7]
 late[82, 4:7] <- late[83,4:7]
-#this last sample appears to have been mislabeled as 170. According to the RREAS metadata sheet it should be 171
+#this last sample appears to have been mislabeled in the field as 170. According to the RREAS metadata sheet it should be 171
 late[91, 4:7] <- late[12,4:7]
 late[91,1] <- 171
 
