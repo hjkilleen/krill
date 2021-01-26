@@ -1,16 +1,26 @@
+#FIX NA VALUES WHERE APPROPRIATE
+
+#Script to work through rows with NA values for metadata or environmental predictors
+#Begin with date and work to the right through columns of allLengthEnv columns
+
+# Tue Jan 26 10:02:17 2021 ------------------------------
+
+#LIBRARIES & SOURCES
+#====
 load("data/allLengthsEnv.rda")
+#====
 
-ale.na <- allLengthsEnv[,-12][!complete.cases(allLengthsEnv[,-12]),]
+#SET UP
+#====
+ale.na <- allLengthsEnv[!complete.cases(allLengthsEnv[,]),]
 str(ale.na)
-
-#1,437 incomplete cases (not including temp_100 which has a real reason to be NA)
-
+#6,508 incomplete cases
 View(ale.na)
+#=====
 
-#PROBLEMS
-
-#118(2011), 421(2012), 166(2011) missing everything from site onwards
-View(filter(allLengthsEnv, station == 421, year ==2012))
+#MISSING DATES
+#====
+#118(2011), 421(2012), 166(2011) missing everything from date onwards
 #ASKED Keith Sakuma
 # Fri Nov  6 10:21:59 2020 ------------------------------
 #Stations are legacy, Keith sent metadata for these stations, added manually to URLs and metadata dfs. 

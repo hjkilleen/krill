@@ -56,12 +56,21 @@ d$haul <- d$haul_no
 d <- select(d, haul, station, year, date)
 lengthsBaldo <- left_join(lengthsBaldo, d)
 
+#add haul and date for legacy stations (see data/na.fixes) from Keith
+d <- select(legacySites, haul, station, year, date)
+legacyKrill <- filter(lengthsBaldo, station %in% c(118, 421, 166))
+legacyKrill <- legacyKrill[,-c(14, 15)]
+legacyKrill <- left_join(legacyKrill, d, by = c("station", "year"))
+legacyKrill$date <- mdy(legacyKrill$date)
+notLegacy <- filter(lengthsBaldo, !station %in% c(118, 421, 166))
+lengthsBaldo <- rbind(notLegacy, legacyKrill)
+
 #Filter out individuals that do not meet length or numbers necessary
 lengthsBaldo <- filter(lengthsBaldo, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
 lengthsBaldo <- filter(lengthsBaldo, n>=40)#n per station must be greater than 40
 
 #Add site-level metadata
-lengthsBaldo <- left_join(lengthsBaldo, metadata[,-1], by = c("station", "year", "date"))#add station metadata
+lengthsBaldo <- left_join(lengthsBaldo, metadata[,-1], by = c("station", "date"))#add station metadata
 lengthsBaldo <- lengthsBaldo[,-14]#drop haul variable
 #====
 
