@@ -88,38 +88,31 @@ a$year <- as.character(a$year)
 
 #MERGE
 #====
-#merge new columns with allLengths in a novel df
-allLengthsEnv <- left_join(select(allLengths, station, species, sex, length, year, sites, region, latitude, shore, date), a)
-
+allLengthsEnv <- left_join(select(allLengths, station, date, year, species, sex, latitude, longitude, length), a)#merge new columns with allLengths in a novel df
+allLengthsEnv <- left_join(allLengthsEnv, select(regions, station, sites, region, shore), by = 'station')#merge with regional and site identifiers
 
 #SCALE PARAMETERS
 #====
 #Scale parameters
-allLengthsEnv$temp_2_z <- scale(allLengthsEnv$temp_2)
-allLengthsEnv$temp_100_z <- scale(allLengthsEnv$temp_100)
-allLengthsEnv$temp_2nl_z <- scale(allLengthsEnv$temp_2nl)
-allLengthsEnv$sst_sd_z <- scale(allLengthsEnv$sst_sd)
-allLengthsEnv$chla_z <- scale(allLengthsEnv$chla)
-allLengthsEnv$beuti_z <- scale(allLengthsEnv$beuti)
-allLengthsEnv$moci_spring_z <- scale(allLengthsEnv$moci_spring)
-allLengthsEnv$sla_z <- scale(allLengthsEnv$sla)
-allLengthsEnv$cuti_z <- scale(allLengthsEnv$cuti)
+allLengthsEnv$temp_2 <- scale(allLengthsEnv$temp_2)
+allLengthsEnv$temp_100 <- scale(allLengthsEnv$temp_100)
+allLengthsEnv$sst_sd <- scale(allLengthsEnv$sst_sd)
+allLengthsEnv$chla <- scale(allLengthsEnv$chla)
+allLengthsEnv$beuti <- scale(allLengthsEnv$beuti)
+allLengthsEnv$moci_spring <- scale(allLengthsEnv$moci_spring)
+allLengthsEnv$sla <- scale(allLengthsEnv$sla)
+allLengthsEnv$cuti <- scale(allLengthsEnv$cuti)
 #====
 
 #SAVE
 #====
 #save datafile
-
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
+#Filter by species and save as .RDA
 ep <- filter(allLengthsEnv, species == "EP")
 ts <- filter(allLengthsEnv, species == "TS")
 nd <- filter(allLengthsEnv, species == "ND")
-#Save length + environment dataset
-save(allLengthsEnv, file = "data/allLengthsEnv.rda")
-#Filter by species and save as .RDA
-ep <- filter(allLengths, species == "EP")
-ts <- filter(allLengths, species == "TS")
-nd <- filter(allLengths, species == "ND")
-save(ep, file = "data/allLengthsEP.rda")
-save(ts, file = "data/allLengthsTS.rda")
-save(nd, file = "data/allLengthsND.rda")
+save(ep, file = "data/allLengthsEnvEP.rda")
+save(ts, file = "data/allLengthsEnvTS.rda")
+save(nd, file = "data/allLengthsEnvND.rda")
+#====
