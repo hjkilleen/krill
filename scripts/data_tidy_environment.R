@@ -23,5 +23,12 @@ dat_csv = plyr::ldply(myfiles, read_csv)
 #Create water temperature data frame
 waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
 waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, sep = "/"))#add date column
+
+#BEUTI data
+beuti <- filter(beuti, year>2010, year <2019)
+beuti$date <- ymd(paste(beuti$year, beuti$month, beuti$day, sep = "-"))
+beuti <- melt(beuti, id.vars = c("year", "month", "day", "date"))#long form data
+beuti <- rename(beuti, beuti = value)
+beuti$latitude.round <- as.numeric(str_sub(as.character(beuti$variable), 1, 2))
 #====
 
