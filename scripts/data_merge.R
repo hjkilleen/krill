@@ -46,32 +46,26 @@ for(i in seq(1:nrow(a))){
 #====
 #Get BEUTI averaged over past 13 days, PST day
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), beuti = NA))
-
 for(i in seq(1:nrow(a))){
   a$beuti[i] <- get.beuti(a$station[i], a$year[i], 13)
 }
 
-allLengthsEnv <- left_join(allLengthsEnv, a)
-
 #Get CUTI averaged over past 13 days, PST day
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), cuti = NA))
-
 for(i in seq(1:nrow(a))){
   a$cuti[i] <- get.cuti(a$station[i], a$year[i], 13)
 }
+#====
 
-allLengthsEnv <- left_join(allLengthsEnv, a)
-
-#add sla averaged over past 13 days
+#OTHER
+#====
+#Get SLA averaged over past 13 days
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), sla = NA))
-
 for(i in seq(1:nrow(a))){
   a$sla[i] <- get.sla(a$station[i], a$year[i], 1)
 }
 
-allLengthsEnv <- left_join(allLengthsEnv, a)
-
-#add spring moci
+#Get spring MOCI
 moci <- read_csv("data/CaliforniaMOCI_JFM1991-JAS2020.csv")#load MOCI data
 moci <- rename(moci, year = Year)
 
@@ -95,14 +89,16 @@ for(i in 1:3){#get spring and winter moci values for each region
 a <- bind_rows(krillList)#bind all regions into one df
 a$year <- as.character(a$year)
 allLengthsEnv <- left_join(allLengthsEnv, a)
+#====
 
-#Create temp^2 variable
-allLengthsEnv$temp_2nl <- allLengthsEnv$temp_2^2
-
-
+#MERGE
+#====
 #merge new columns with allLengths in a novel df
 allLengthsEnv <- left_join(select(allLengths, station, species, sex, length, year, sites, region, latitude, shore, date), a)
 
+
+#SCALE PARAMETERS
+#====
 #Scale parameters
 allLengthsEnv$temp_2_z <- scale(allLengthsEnv$temp_2)
 allLengthsEnv$temp_100_z <- scale(allLengthsEnv$temp_100)
@@ -113,7 +109,10 @@ allLengthsEnv$beuti_z <- scale(allLengthsEnv$beuti)
 allLengthsEnv$moci_spring_z <- scale(allLengthsEnv$moci_spring)
 allLengthsEnv$sla_z <- scale(allLengthsEnv$sla)
 allLengthsEnv$cuti_z <- scale(allLengthsEnv$cuti)
+#====
 
+#SAVE
+#====
 #save datafile
 
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
