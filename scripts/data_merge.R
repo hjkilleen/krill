@@ -11,7 +11,7 @@ source("scripts/functions/length_frequency.R")
 #SET UP
 #====
 allLengths$latitude.round <- round(allLengths$latitude, 0)#rounded latitude variable to index with CUIT/BEUTI
-a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year, latitude.round)), temp_2 = NA, temp_100 = NA))#list of stations and years
+a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year, latitude, latitude.round)), temp_2 = NA, temp_100 = NA))#list of stations and years
 #====
 
 #TEMPERATURE
@@ -66,10 +66,9 @@ for(i in seq(1:nrow(a))){
 }
 
 #Get spring MOCI
-a <- summarise(group_by_at(allLengthsEnv, vars(station, date, year, latitude)))
-a$year <- as.numeric(a$year)
+a$year <- as.numeric(a$year)#year as numeric for indexing with MOCI
 
-aN <- filter(a, latitude >=38)
+aN <- filter(a, latitude >=38)#create regional dataframes to match with MOCI data structure (divided into N, C, and S CA)
 aC <- filter(a, latitude >=34.5, latitude <38)
 aS <- filter(a, latitude >=32, latitude <34.5)
 
@@ -79,13 +78,12 @@ mociList <- list(moci[,1:4], moci[,c(1:3, 5)], moci[,c(1:3,6)])
 for(i in 1:3){#get spring and winter moci values for each region
   b <- filter(mociList[[i]], Season == "AMJ")
   krillList[[i]] <- left_join(krillList[[i]], b, by = "year")
-  krillList[[i]] <- rename(krillList[[i]], moci_spring = names(krillList[[i]])[7])
-  krillList[[i]] <- select(krillList[[i]], station, date, year, latitude, moci_spring)
+  krillList[[i]] <- rename(krillList[[i]], moci_spring = names(krillList[[i]])[14])
+  krillList[[i]] <- krillList[[i]][,-c(12:13)]
 }
 
 a <- bind_rows(krillList)#bind all regions into one df
 a$year <- as.character(a$year)
-allLengthsEnv <- left_join(allLengthsEnv, a)
 #====
 
 #MERGE
