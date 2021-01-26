@@ -13,16 +13,15 @@ library(readxl)
 #LOAD METADATA
 #====
 #Load station metadata (lats are from mean latitude of corresponding "area" in NMFS 2015 MWT dataset, except for San Mateo, which I estimated on google maps, and Monterey, which is an average value of all the MWT Monterey sites)
-regions <- read_csv("data/regions.csv")#load station metadata
-stations <- read.csv("data/stationMetadata.csv")#load stations included in length frequency analysis and associated metadata
+regions <- read_csv("data/regions.csv")#load experimental design metadata
 d <- read_xlsx("data/RREASmetadata.xlsx")#load NMFS metadata
+metadata <- read_csv("data/allStationMetadata.csv")#station metadata
 #====
 
 #LOAD LENGTH DATA
 #====
 lengths <- read_csv("data/lengths.csv")#2015-2018 data
 lengthsBaldo <- read_csv("data/lengthsBaldo.csv")#2011-2013 data
-metadata <- read_csv("data/allStationMetadata.csv")#metadata
 #====
 
 #LOAD PHYSICAL DATA
