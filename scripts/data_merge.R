@@ -66,9 +66,6 @@ for(i in seq(1:nrow(a))){
 }
 
 #Get spring MOCI
-moci <- read_csv("data/CaliforniaMOCI_JFM1991-JAS2020.csv")#load MOCI data
-moci <- rename(moci, year = Year)
-
 a <- summarise(group_by_at(allLengthsEnv, vars(station, date, year, latitude)))
 a$year <- as.numeric(a$year)
 

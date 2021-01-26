@@ -38,5 +38,8 @@ beuti$date <- ymd(paste(beuti$year, beuti$month, beuti$day, sep = "-"))
 beuti <- melt(beuti, id.vars = c("year", "month", "day", "date"))#long form data
 beuti <- rename(beuti, beuti = value)
 beuti$latitude.round <- as.numeric(str_sub(as.character(beuti$variable), 1, 2))
+
+#MOCI data
+moci <- rename(moci, year = Year)
 #====
 
