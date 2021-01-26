@@ -1,5 +1,5 @@
 #Tidy ROMS data
-# Fri Jan  8 15:24:30 2021 ------------------------------
+# Mon Jan 25 16:57:20 2021 ------------------------------
 
 #LIBRARIES & SOURCES
 #====
@@ -23,6 +23,13 @@ dat_csv = plyr::ldply(myfiles, read_csv)
 #Create water temperature data frame
 waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
 waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, sep = "/"))#add date column
+
+#CUTI data
+cuti <- filter(cuti, year>2010, year <2019)
+cuti$date <- ymd(paste(cuti$year, cuti$month, cuti$day, sep = "-"))
+cuti <- melt(cuti, id.vars = c("year", "month", "day", "date"))#long form data
+cuti <- rename(cuti, cuti = value)
+cuti$latitude.round <- as.numeric(str_sub(as.character(cuti$variable), 1, 2))
 
 #BEUTI data
 beuti <- filter(beuti, year>2010, year <2019)

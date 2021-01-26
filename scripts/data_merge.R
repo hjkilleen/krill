@@ -1,5 +1,5 @@
 #Merge krill lengths and environmental data into one dataset
-# Fri Dec 11 16:15:42 2020 ------------------------------
+# Mon Jan 25 16:57:29 2021 ------------------------------
 
 #LIBRARIES & SOURCES
 #====
@@ -45,8 +45,6 @@ for(i in seq(1:nrow(a))){
 #UPWELLING
 #====
 #Get BEUTI averaged over past 13 days, PST day
-
-
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), beuti = NA))
 
 for(i in seq(1:nrow(a))){
@@ -55,14 +53,7 @@ for(i in seq(1:nrow(a))){
 
 allLengthsEnv <- left_join(allLengthsEnv, a)
 
-#add cuti averaged over past 13 days
-#load cuti data, PST day
-cuti <- filter(cuti, year>2010, year <2019)
-cuti$date <- ymd(paste(cuti$year, cuti$month, cuti$day, sep = "-"))
-cuti <- melt(cuti, id.vars = c("year", "month", "day", "date"))#long form data
-cuti <- rename(cuti, cuti = value)
-cuti$latitude.round <- as.numeric(str_sub(as.character(cuti$variable), 1, 2))
-
+#Get CUTI averaged over past 13 days, PST day
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude.round)), cuti = NA))
 
 for(i in seq(1:nrow(a))){
