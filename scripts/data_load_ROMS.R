@@ -4,7 +4,10 @@
 
 #LIBRARIES
 #====
-
+library(stringr)
+library(lubridate)
+library(tidyverse)
+#====
 
 #LOAD DATA ACCESS POINTS
 #====
@@ -19,7 +22,7 @@ urls <- read.csv("data/urls.csv")#URLs to ROMS virtual sensor tool to access tem
 #====
 for(i in seq(1:nrow(urls))) {#for loop to access URLs and tidy resulting dataframe
   temporary <- tempfile()#download file and read data
-  download.file(as.character(urls$url[27]),temporary)
+  download.file(as.character(urls$url[i]),temporary)
   tempData <- read.csv(unz(temporary, "temp.csv"))
   unlink(temporary)
   tempNames <- names(tempData[,6:ncol(tempData)])#tidy dataframe
