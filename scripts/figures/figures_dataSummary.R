@@ -21,12 +21,6 @@ grouped$name <- paste(grouped$species, grouped$sex, grouped$region, sep = ".")
 
 grouped <- dcast(grouped, year~name, value.var = "n")
 
-grouped$ND.F.north <- rep(0,nrow(grouped))#add columns for missing combinations of region, sex, species
-grouped$ND.M.north <- rep(0,nrow(grouped))
-grouped$ND.M.north_central <- rep(0,nrow(grouped))
-grouped$ND.M.central <- rep(0,nrow(grouped))
-grouped$ND.M.south <- rep(0,nrow(grouped))
-
 col_order <- c("year", "EP.F.north", "EP.F.north_central", "EP.F.central", "EP.F.south", "EP.M.north", "EP.M.north_central", "EP.M.central", "EP.M.south", "TS.F.north", "TS.F.north_central", "TS.F.central", "TS.F.south", "TS.M.north", "TS.M.north_central", "TS.M.central", "TS.M.south", "ND.F.north", "ND.F.north_central", "ND.F.central", "ND.F.south", "ND.M.north", "ND.M.north_central", "ND.M.central", "ND.M.south")
 
 grouped2 <- grouped[,col_order]

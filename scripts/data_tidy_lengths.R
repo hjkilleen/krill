@@ -22,6 +22,7 @@ rm(vars)
 lengths <- mutate(lengths, length = pixels/scale)#add lengths variable multiplying pixels by scale measure
 lengths <- mutate(lengths, year = as.integer(paste("20", str_extract(lengths$ID, "\\d{2}"), sep = "")))#add year
 lengths <- as.data.frame(add_tally(group_by_at(lengths, vars(year, station, species, sex))))#add variable for number of observations for each station/year/species/sex
+lengths <- as.data.frame(add_tally(group_by_at(lengths, vars(year, station, species))))#add variable for number of observations for each station/year/species
 lengths$date <- as.integer(str_extract(lengths$ID, "\\d{6}"))#add date column
 lengths$date <- as.Date(as.character(lengths$date), format = '%y%m%d')
 
@@ -31,9 +32,7 @@ lengths <- filter(lengths, species == "EP" | species == "TS" | species == "ND")#
 
 #Filter out individuals that do not meet length or numbers necessary
 lengths <- filter(lengths, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
-notND <- filter(lengths, species != "ND", n>=40)#n per station must be greater than 40 for TS and EP
-ND <- filter(lengths, species == "ND", n>=30)#n per station must be greater than 30 for ND
-lengths <- rbind(notND, ND)#rebind data
+lengths <- filter(lengths, nn>=40)
 #====
 
 #TIDY 2011-2013 LENGTH DATASET
@@ -48,6 +47,7 @@ lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)#add length variable 
 lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))#add year
 lengthsBaldo <- mutate(lengthsBaldo, haul = as.integer(str_extract(lengthsBaldo$ID, "(?<=H)[0-9]*")))#add haul
 lengthsBaldo <- as.data.frame(add_tally(group_by_at(lengthsBaldo, vars(year, station, species, sex))))#add variable for number of observations for each station/year/species/sex
+lengthsBaldo <- as.data.frame(add_tally(group_by_at(lengthsBaldo, vars(year, station, species))))#add variable for number of observations for each station/year/species
 #add haul and date from from NMFS data
 d$year <- as.integer(substring(d$time, 1, 4))
 d$timeUTC <- as_datetime(d$time, tz = "UTC")
@@ -61,7 +61,7 @@ lengthsBaldo <- left_join(lengthsBaldo, d)
 #add haul and date for legacy stations (see data/na.fixes) from Keith
 d <- select(legacySites, haul, station, year, date)
 legacyKrill <- filter(lengthsBaldo, station %in% c(118, 421, 166))
-legacyKrill <- legacyKrill[,-15]
+legacyKrill <- legacyKrill[,-16]#drop date
 legacyKrill <- left_join(legacyKrill, d, by = c("station", "year", "haul"))
 legacyKrill$date <- mdy(legacyKrill$date)
 notLegacy <- filter(lengthsBaldo, !station %in% c(118, 421, 166))
@@ -70,9 +70,7 @@ lengthsBaldo <- lengthsBaldo[,-13]#drop haul variable
 
 #Filter out individuals that do not meet length or numbers necessary
 lengthsBaldo <- filter(lengthsBaldo, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
-notND <- filter(lengthsBaldo, species != "ND", n>=40)#n per station must be greater than 40 for TS and EP
-ND <- filter(lengthsBaldo, species == "ND", n>=30)#n per station must be greater than 30 for ND
-lengthsBaldo <- rbind(notND, ND)#rebind data
+lengthsBaldo <- filter(lengths, nn >= 40)
 #====
 
 #MERGE & SAVE DATASETS
