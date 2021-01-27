@@ -89,7 +89,7 @@ a$year <- as.character(a$year)
 
 #MERGE
 #====
-allLengthsEnv <- left_join(select(allLengths, station, date, year, species, sex, latitude, longitude, length), a)#merge new columns with allLengths in a novel df
+allLengthsEnv <- left_join(allLengths, a)#merge new columns with allLengths in a novel df
 
 #SCALE PARAMETERS
 #====
