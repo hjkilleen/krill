@@ -45,9 +45,9 @@ View(x)
 #There were three stations with depth>100m that had missing subsurface temp values, 422, 421, and 453. All three were in areas of deep nearshore shelf, too close to shore for ROMS resolution. 
 #====
 
-#MISSING CHLOROPHYLL
+#MISSING CHLOROPHYLL & SEA LEVEL ANOMALY
 #====
-#114, 167, 421, 170, 165 all had missing chla values in various years. This was because no data was available within 13 days of sampling. 
+#114, 167, 421, 170, 165 all had missing chla and sla values in various years. This was because no data was available within 13 days of sampling. 
 #====
 
 
