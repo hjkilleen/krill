@@ -31,7 +31,9 @@ lengths <- filter(lengths, species == "EP" | species == "TS" | species == "ND")#
 
 #Filter out individuals that do not meet length or numbers necessary
 lengths <- filter(lengths, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
-lengths <- filter(lengths, n>=40)#n per station must be greater than 40
+notND <- filter(lengths, species != "ND", n>=40)#n per station must be greater than 40 for TS and EP
+ND <- filter(lengths, species == "ND", n>=30)#n per station must be greater than 30 for ND
+lengths <- rbind(notND, ND)#rebind data
 #====
 
 #TIDY 2011-2013 LENGTH DATASET
@@ -68,7 +70,9 @@ lengthsBaldo <- lengthsBaldo[,-13]#drop haul variable
 
 #Filter out individuals that do not meet length or numbers necessary
 lengthsBaldo <- filter(lengthsBaldo, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
-lengthsBaldo <- filter(lengthsBaldo, n>=40)#n per station must be greater than 40
+notND <- filter(lengthsBaldo, species != "ND", n>=40)#n per station must be greater than 40 for TS and EP
+ND <- filter(lengthsBaldo, species == "ND", n>=30)#n per station must be greater than 30 for ND
+lengthsBaldo <- rbind(notND, ND)#rebind data
 #====
 
 #MERGE & SAVE DATASETS
