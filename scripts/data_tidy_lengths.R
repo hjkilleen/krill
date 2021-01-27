@@ -45,6 +45,7 @@ rm(vars)
 #Add derived variables
 lengthsBaldo <- mutate(lengthsBaldo, length = pixels/scale)#add length variable by multiplying scale and pixels
 lengthsBaldo <- mutate(lengthsBaldo, year = as.integer(paste("20", str_extract(lengthsBaldo$ID, "\\d{2}"), sep = "")))#add year
+lengthsBaldo <- mutate(lengthsBaldo, haul = as.integer(str_extract(lengthsBaldo$ID, "(?<=H)[0-9]*")))#add haul
 lengthsBaldo <- as.data.frame(add_tally(group_by_at(lengthsBaldo, vars(year, station, species, sex))))#add variable for number of observations for each station/year/species/sex
 #add haul and date from from NMFS data
 d$year <- as.integer(substring(d$time, 1, 4))
@@ -71,7 +72,7 @@ lengthsBaldo <- filter(lengthsBaldo, n>=40)#n per station must be greater than 4
 
 #Add site-level metadata
 lengthsBaldo <- left_join(lengthsBaldo, select(metadata, station, date, latitude, longitude, bottom_depth, tdr_depth), by = c("station", "date"))#add station metadata
-lengthsBaldo <- lengthsBaldo[,-14]#drop haul variable
+lengthsBaldo <- lengthsBaldo[,-13]#drop haul variable
 #====
 
 #MERGE & SAVE DATASETS

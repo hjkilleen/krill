@@ -24,6 +24,12 @@ View(ale.na)
 #ASKED Keith Sakuma
 # Fri Nov  6 10:21:59 2020 ------------------------------
 #Stations are legacy, Keith sent metadata for these stations, added manually to URLs and metadata dfs. 
+#====
+
+#MISSING LAT LON
+#====
+#482 (2018), 421 (2015), 114 (2012), 116 (2012), 152 (2012), 124 (2012), 138 (2012), 139 (2012), 131 (2012), 132 (2012).......
+
 
 #110(2012), 454(2011)  missing date and chla
 load("data/allLengths.rda")
