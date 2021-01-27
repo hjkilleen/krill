@@ -32,6 +32,12 @@ x <- allLengths[is.na(allLengths$latitude),]
 x <- summarize(group_by_at(x, vars(station, year)))
 View(x)
 #stations were missing in metadata file, added manually
+#====
+
+#MISSING SST
+#====
+#118, 421, 166
+#load legacy ROMS data using positions provided by Keith
 
 #110(2012), 454(2011)  missing date and chla
 load("data/allLengths.rda")
