@@ -28,8 +28,10 @@ View(ale.na)
 
 #MISSING LAT LON
 #====
-#482 (2018), 421 (2015), 114 (2012), 116 (2012), 152 (2012), 124 (2012), 138 (2012), 139 (2012), 131 (2012), 132 (2012).......
-
+x <- allLengths[is.na(allLengths$latitude),]
+x <- summarize(group_by_at(x, vars(station, year)))
+View(x)
+#stations were missing in metadata file, added manually
 
 #110(2012), 454(2011)  missing date and chla
 load("data/allLengths.rda")

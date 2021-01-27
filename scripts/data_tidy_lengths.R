@@ -60,27 +60,28 @@ lengthsBaldo <- left_join(lengthsBaldo, d)
 #add haul and date for legacy stations (see data/na.fixes) from Keith
 d <- select(legacySites, haul, station, year, date)
 legacyKrill <- filter(lengthsBaldo, station %in% c(118, 421, 166))
-legacyKrill <- legacyKrill[,-c(14, 15)]
-legacyKrill <- left_join(legacyKrill, d, by = c("station", "year"))
+legacyKrill <- legacyKrill[,-15]
+legacyKrill <- left_join(legacyKrill, d, by = c("station", "year", "haul"))
 legacyKrill$date <- mdy(legacyKrill$date)
 notLegacy <- filter(lengthsBaldo, !station %in% c(118, 421, 166))
 lengthsBaldo <- rbind(notLegacy, legacyKrill)
+lengthsBaldo <- lengthsBaldo[,-13]#drop haul variable
 
 #Filter out individuals that do not meet length or numbers necessary
 lengthsBaldo <- filter(lengthsBaldo, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
 lengthsBaldo <- filter(lengthsBaldo, n>=40)#n per station must be greater than 40
-
-#Add site-level metadata
-lengthsBaldo <- left_join(lengthsBaldo, select(metadata, station, date, latitude, longitude, bottom_depth, tdr_depth), by = c("station", "date"))#add station metadata
-lengthsBaldo <- lengthsBaldo[,-13]#drop haul variable
 #====
 
 #MERGE & SAVE DATASETS
 #====
-#merge 2011-2013 dataset with 2015-2018 dataset
-lengthsBaldo$year <- as.factor(lengthsBaldo$year)
-allLengths <- as.data.frame(rbind(lengths, lengthsBaldo))
+lengthsBaldo$year <- as.factor(lengthsBaldo$year)#merge 2011-2013 dataset with 2015-2018 dataset
+allLengths <- as.data.frame(rbind(lengths, lengthsBaldo))#merge all lengths
 
-#Save as .RDA file
-save(allLengths, file = "data/allLengths.rda")
+allLengths <- allLengths[,-c(1, 5:10)]#get rid of unneccessary notes
+
+metadata$date <- mdy(metadata$date)#add regional and site identifiers and metadata
+allLengths <- left_join(allLengths, select(metadata, station, date, latitude, longitude, bottom_depth, tdr_depth), by = c("station", "date"))#add station metadata
+allLengths <- left_join(allLengths, select(regions, station, sites, region, shore), by = 'station')#merge with regional and site identifiers
+
+save(allLengths, file = "data/allLengths.rda")#save as .RDA file
 #====
