@@ -28,7 +28,6 @@ lengths$date <- as.Date(as.character(lengths$date), format = '%y%m%d')
 #Add site-level metadata
 lengths <- filter(lengths, station %in% metadata$station)#only LF analysis stations
 lengths <- filter(lengths, species == "EP" | species == "TS" | species == "ND")#filter to only EP, TS, and ND
-lengths <- left_join(lengths, metadata[,-1], by = c("station", "year", "date"))#add metadata for stations
 
 #Filter out individuals that do not meet length or numbers necessary
 lengths <- filter(lengths, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
