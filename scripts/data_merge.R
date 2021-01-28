@@ -102,6 +102,8 @@ allLengthsEnv$beuti <- scale(allLengthsEnv$beuti)
 allLengthsEnv$moci_spring <- scale(allLengthsEnv$moci_spring)
 allLengthsEnv$sla <- scale(allLengthsEnv$sla)
 allLengthsEnv$cuti <- scale(allLengthsEnv$cuti)
+#Scale lengths
+allLengthsEnv$length <- scale(allLengthsEnv$length)
 #====
 
 #SAVE
