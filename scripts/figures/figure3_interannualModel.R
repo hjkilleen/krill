@@ -31,15 +31,16 @@ epsum <- summarize(group_by_at(epsimsum, vars(year, sex)), sim.mean = mean(sim.m
 tssum <- summarize(group_by_at(tssimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
 ndsum <- summarize(group_by_at(ndsimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
 
-ggplot() + 
-  geom_line(data = pmsum, aes(x = as.numeric(year), y = sim.mean), color = "grey", size = 2) +
-  geom_line(data = epsum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "#E69F00", size = 2) +
-  geom_line(data = tssum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "#56B4E9", size = 2) +
-  geom_line(data = ndsum, aes(x = as.numeric(year), y = sim.mean, linetype = sex), color = "#009E73", size = 2) + 
+b <- ggplot() + 
+  geom_line(data = pmsum, aes(x = as.numeric(as.character(year)), y = sim.mean, color = "grey"), size = 2) +
+  geom_line(data = epsum, aes(x = as.numeric(as.character(year)), y = sim.mean, linetype = sex, color = "#E69F00"), size = 2) +
+  geom_line(data = tssum, aes(x = as.numeric(as.character(year)), y = sim.mean, linetype = sex, color = "#56B4E9"), size = 2) +
+  geom_line(data = ndsum, aes(x = as.numeric(as.character(year)), y = sim.mean, linetype = sex, color = "#009E73"), size = 2) + 
   labs(y = "Length (mm)", x = "Year", linetype = "Sex") +
   ylim(min = 18, max = 30) + 
-  theme(text = element_text(size = 20),
-        legend.position = c(0.8, 0.82))
+  scale_linetype_discrete(guide = guide_legend(override.aes = list(size = 1, color = "black"))) + 
+  scale_color_identity(guide = "legend", labels = c("N. difficilis", "T. spinifera", "E. pacifica", "Pooled"), name = "Species") +
+  theme(text = element_text(size = 20))
 #====
 
 #SUBFIGURE C - SEXUAL DIMORPHISM
