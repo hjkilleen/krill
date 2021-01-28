@@ -19,6 +19,10 @@ source("scripts/functions/model_simulation.R")
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
 allLengthsEnv$year <- as.factor(allLengthsEnv$year)
 allLengthsEnv$species <- as.factor(allLengthsEnv$species)
+
+#Drop 2011-2013 N. difficilis due to limited sampling
+# allLengthsEnv <- allLengthsEnv[!(allLengthsEnv$species == "ND" & allLengthsEnv$year %in% c("2011", "2012", "2013")),]
+# nd <- nd[!(nd$year %in% c("2011", "2012", "2013")),]
 #====
 
 #MULTILEVEL MODELING
