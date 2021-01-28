@@ -109,6 +109,9 @@ allLengthsEnv$sla <- scale(allLengthsEnv$sla)
 allLengthsEnv$cuti <- scale(allLengthsEnv$cuti)
 #Scale lengths
 allLengthsEnv$length <- scale(allLengthsEnv$length)
+#Save scale parameters to transform lengths for plotting
+aleScale <- allLengthsEnv$length
+save(aleScale, file = "output/aleScale.rda")
 
 #Scale parameters for EP
 ep$temp_2 <- scale(ep$temp_2)
@@ -123,6 +126,7 @@ ep$cuti <- scale(ep$cuti)
 ep$length <- scale(ep$length)
 #Save scale parameters to transform lengths for plotting
 epScale <- ep$length
+save(epScale, file = "output/epScale.rda")
 
 #Scale parameters for TS
 ts$temp_2 <- scale(ts$temp_2)
@@ -137,6 +141,7 @@ ts$cuti <- scale(ts$cuti)
 ts$length <- scale(ts$length)
 #Save scale parameters to transform lengths for plotting
 tsScale <- ts$length
+save(tsScale, file = "output/tsScale.rda")
 
 #Scale parameters for ND
 nd$temp_2 <- scale(nd$temp_2)
@@ -151,6 +156,7 @@ nd$cuti <- scale(nd$cuti)
 nd$length <- scale(nd$length)
 #Save scale parameters to transform lengths for plotting
 ndScale <- nd$length
+save(ndScale, file = "output/ndScale.rda")
 #====
 
 #SAVE
