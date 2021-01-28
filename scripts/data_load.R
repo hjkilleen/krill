@@ -31,5 +31,5 @@ env <- read.csv("data/zoo_selgroups_HadSST_relabundance_5aug2019_plumchrusV_4reg
 beuti <- read_csv("data/BEUTI_daily.csv")#Mike Jacox BEUTI data
 cuti <- read_csv("data/cuti_daily.csv")#Mike Jacox CUTI data
 moci <- read_csv("data/CaliforniaMOCI_JFM1991-JAS2020.csv")#Farallon Institute MOCI data
-
+#====
 

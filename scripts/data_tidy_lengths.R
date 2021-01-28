@@ -70,7 +70,7 @@ lengthsBaldo <- lengthsBaldo[,-13]#drop haul variable
 
 #Filter out individuals that do not meet length or numbers necessary
 lengthsBaldo <- filter(lengthsBaldo, length <50, length >10)#no unrealistically large individuals or individuals that are too small to be accurately sampled
-lengthsBaldo <- filter(lengths, nn >= 40)
+lengthsBaldo <- filter(lengthsBaldo, nn >= 40)
 #====
 
 #MERGE & SAVE DATASETS
