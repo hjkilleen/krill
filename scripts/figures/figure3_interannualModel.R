@@ -7,15 +7,15 @@
 #====
 library(tidyverse)
 library(ggpubr)
-load("data/interannualPooled.rda")
-load("data/interannualEP.rda")
-load("data/interannualTS.rda")
-load("data/interannualND.rda")
+load("output/interannualPooled.rda")
+load("output/interannualEP.rda")
+load("output/interannualTS.rda")
+load("output/interannualND.rda")
 load("output/aleScale.rda")
 load("output/epScale.rda")
 load("output/tsScale.rda")
 load("output/ndScale.rda")
-load("data/interannualCoefficients.rda")
+load("output/interannualCoefficients.rda")
 #====
 
 #SETUP

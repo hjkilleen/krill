@@ -1,5 +1,5 @@
-#Interannual model
-# Wed Jan 27 17:54:48 2021 ------------------------------
+#Environmental model
+# Thu Jan 28 15:15:57 2021 ------------------------------
 
 #LIBRARIES & SOURCES
 #====
@@ -41,7 +41,7 @@ tsc <- data.frame(predictor = attr(fixef(tsm), "names"),
 ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
                   coefficient = as.vector(fixef(ndm)))
 interannualCoefficients <- list(pmc, epc, tsc, ndc)#merge as list
-save(interannualCoefficients, file = "output/interannualCoefficients.rda")#save list
+save(interannualCoefficients, file = "data/interannualCoefficients.rda")#save list
 #====
 
 #SIMULATION
@@ -56,8 +56,8 @@ epsimsum <- simsum(epsim)
 tssimsum <- simsum(tssim)
 ndsimsum <- simsum(ndsim)
 
-save(pmsimsum, file = "output/interannualPooled.rda")#save rda for simulated data
-save(epsimsum, file = "output/interannualEP.rda")
-save(tssimsum, file = "output/interannualTS.rda")
-save(ndsimsum, file = "output/interannualND.rda")
+save(pmsimsum, file = "data/interannualPooled.rda")#save rda for simulated data
+save(epsimsum, file = "data/interannualEP.rda")
+save(tssimsum, file = "data/interannualTS.rda")
+save(ndsimsum, file = "data/interannualND.rda")
 #====
