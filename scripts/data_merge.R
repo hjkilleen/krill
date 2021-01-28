@@ -93,7 +93,12 @@ allLengthsEnv <- left_join(allLengths, a)#merge new columns with allLengths in a
 
 #SCALE PARAMETERS
 #====
-#Scale parameters
+#Filter by species
+ep <- filter(allLengthsEnv, species == "EP")
+ts <- filter(allLengthsEnv, species == "TS")
+nd <- filter(allLengthsEnv, species == "ND")
+
+#Scale parameters for allLengthsEnv
 allLengthsEnv$temp_2 <- scale(allLengthsEnv$temp_2)
 allLengthsEnv$temp_100 <- scale(allLengthsEnv$temp_100)
 allLengthsEnv$sst_sd <- scale(allLengthsEnv$sst_sd)
@@ -104,16 +109,54 @@ allLengthsEnv$sla <- scale(allLengthsEnv$sla)
 allLengthsEnv$cuti <- scale(allLengthsEnv$cuti)
 #Scale lengths
 allLengthsEnv$length <- scale(allLengthsEnv$length)
+
+#Scale parameters for EP
+ep$temp_2 <- scale(ep$temp_2)
+ep$temp_100 <- scale(ep$temp_100)
+ep$sst_sd <- scale(ep$sst_sd)
+ep$chla <- scale(ep$chla)
+ep$beuti <- scale(ep$beuti)
+ep$moci_spring <- scale(ep$moci_spring)
+ep$sla <- scale(ep$sla)
+ep$cuti <- scale(ep$cuti)
+#Scale lengths
+ep$length <- scale(ep$length)
+#Save scale parameters to transform lengths for plotting
+epScale <- ep$length
+
+#Scale parameters for TS
+ts$temp_2 <- scale(ts$temp_2)
+ts$temp_100 <- scale(ts$temp_100)
+ts$sst_sd <- scale(ts$sst_sd)
+ts$chla <- scale(ts$chla)
+ts$beuti <- scale(ts$beuti)
+ts$moci_spring <- scale(ts$moci_spring)
+ts$sla <- scale(ts$sla)
+ts$cuti <- scale(ts$cuti)
+#Scale lengths
+ts$length <- scale(ts$length)
+#Save scale parameters to transform lengths for plotting
+tsScale <- ts$length
+
+#Scale parameters for ND
+nd$temp_2 <- scale(nd$temp_2)
+nd$temp_100 <- scale(nd$temp_100)
+nd$sst_sd <- scale(nd$sst_sd)
+nd$chla <- scale(nd$chla)
+nd$beuti <- scale(nd$beuti)
+nd$moci_spring <- scale(nd$moci_spring)
+nd$sla <- scale(nd$sla)
+nd$cuti <- scale(nd$cuti)
+#Scale lengths
+nd$length <- scale(nd$length)
+#Save scale parameters to transform lengths for plotting
+ndScale <- nd$length
 #====
 
 #SAVE
 #====
-#save datafile
+#save datafiles
 save(allLengthsEnv, file = "data/allLengthsEnv.rda")
-#Filter by species and save as .RDA
-ep <- filter(allLengthsEnv, species == "EP")
-ts <- filter(allLengthsEnv, species == "TS")
-nd <- filter(allLengthsEnv, species == "ND")
 save(ep, file = "data/allLengthsEnvEP.rda")
 save(ts, file = "data/allLengthsEnvTS.rda")
 save(nd, file = "data/allLengthsEnvND.rda")
