@@ -108,5 +108,3 @@ environmentalCoefficients <- left_join(environmentalCoefficients, tsc, by = "pre
 environmentalCoefficients <- left_join(environmentalCoefficients, ndc, by = "predictor")
 save(environmentalCoefficients, file = "output/environmentalCoefficients.rda")#save list
 #====
-
-str(confint(ndm,level = 0.95))#get confidence intervals for parameter estimates (only 97.5
