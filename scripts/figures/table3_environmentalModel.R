@@ -15,20 +15,30 @@ load("output/environmentalCoefficients.rda")
 #====
 envCoef <- dplyr::select(environmentalCoefficients, "Ecoefficient", "Tcoefficient", "Ncoefficient", "Pcoefficient")
 rownames(envCoef) <- environmentalCoefficients$predictor
-envCoef <- envCoef[-c(1:2),]#remove intercept score
-envCoef <- as.matrix(envCoef)
+names(envCoef) <- c("E. pacifica", "T. spinifera", "N. difficilis", "Pooled")
+envCoef <- arrange(envCoef, -row_number())#reverse row order
+
+envCoef <- envCoef[-c(12:13),]#remove intercept score
+vals <- envCoef#copy
+vals[is.na(vals)] <- 0#make matrix of coefficient values
+
+ecMat <- as.matrix(envCoef)#transform to matrix for heatmap
+vals <- as.matrix(vals)
 #====
 
 #TABLE
 #====
-superheat(envCoef, heat.pal = c("#b35806", "white", "#542788"))
+t <- superheat(ecMat, 
+          heat.pal = c("#b35806", "white", "#542788"), 
+          X.text = round(vals, 3), 
+          heat.na.col = "black",
+          row.title = "Environmental Predictor",
+          row.title.size = 10)
 #====
 
-#SUBFIGURE B - SEXUAL DIMORPHISM
+#SAVE 
 #====
-
-#====
-
-#MERGE FIGURES
-#====
+png("figures/manuscript/table3_environmentalModel.png", height = 900, width = 800)
+t
+dev.off()
 #====
