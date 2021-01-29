@@ -41,6 +41,7 @@ anova(p.int, p.intSlope)#compare models with different random effect structure
 p.model.set <- dredge(p.intSlope)
 
 p.top.model <- get.models(p.model.set, subset = 1)
+pm <- p.top.model[[1]]
 
 #Euphausia pacifica
 #Optimize random effects structure using maximum likelihood
@@ -55,6 +56,7 @@ anova(ep.int, ep.intSlope)#compare models with different random effect structure
 ep.model.set <- dredge(ep.intSlope)
 
 ep.top.model <- get.models(ep.model.set, subset = 1)
+epm <- ep.top.model[[1]]
 
 #Thysanoessa spinifera
 #Optimize random effects structure using maximum likelihood
@@ -69,6 +71,7 @@ anova(ts.int, ts.intSlope)#compare models with different random effect structure
 ts.model.set <- dredge(ts.intSlope)
 
 ts.top.model <- get.models(ts.model.set, subset = 1)
+tsm <- ts.top.model[[1]]
 
 #Nematocelis difficilis
 #Optimize random effects structure using maximum likelihood
@@ -82,9 +85,10 @@ nd.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex
 nd.model.set <- dredge(nd.int)
 
 nd.top.model <- get.models(nd.model.set, subset = 1)
+ndm <- nd.top.model[[1]]
 
 #Extract model coefficients for fixed effects
-pmc <- data.frame(predictor = attr(fixef(p.top.model), "names"),#extract fixed effects coefficients
+pmc <- data.frame(predictor = attr(fixef(pm), "names"),#extract fixed effects coefficients
                   coefficient = as.vector(fixef(pm)))
 epc <- data.frame(predictor = attr(fixef(epm), "names"),
                   coefficient = as.vector(fixef(epm)))
@@ -92,8 +96,8 @@ tsc <- data.frame(predictor = attr(fixef(tsm), "names"),
                   coefficient = as.vector(fixef(tsm)))
 ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
                   coefficient = as.vector(fixef(ndm)))
-interannualCoefficients <- list(pmc, epc, tsc, ndc)#merge as list
-save(interannualCoefficients, file = "data/interannualCoefficients.rda")#save list
+environmentalCoefficients <- list(pmc, epc, tsc, ndc)#merge as list
+save(environmentalCoefficients, file = "output/environmentalCoefficients.rda")#save list
 #====
 
 #SIMULATION
@@ -108,8 +112,8 @@ epsimsum <- simsum(epsim)
 tssimsum <- simsum(tssim)
 ndsimsum <- simsum(ndsim)
 
-save(pmsimsum, file = "data/interannualPooled.rda")#save rda for simulated data
-save(epsimsum, file = "data/interannualEP.rda")
-save(tssimsum, file = "data/interannualTS.rda")
-save(ndsimsum, file = "data/interannualND.rda")
+save(pmsimsum, file = "output/environmentalPooled.rda")#save rda for simulated data
+save(epsimsum, file = "output/environmentalEP.rda")
+save(tssimsum, file = "output/environmentalTS.rda")
+save(ndsimsum, file = "output/environmentalND.rda")
 #====
