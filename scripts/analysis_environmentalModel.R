@@ -33,15 +33,9 @@ ndc <- nd[complete.cases(nd),]#filter to only complete cases
 p.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
 
 p.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_2|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
-
 anova(p.int, p.intSlope)#compare models with different random effect structure
 #Slope intercept is the optimal random effects structure
-
-#Optimize fixed effect structure using AIC
-p.model.set <- dredge(p.intSlope)
-
-p.top.model <- get.models(p.model.set, subset = 1)
-pm <- p.top.model[[1]]
+pm <- p.intSlope
 
 #Euphausia pacifica
 #Optimize random effects structure using maximum likelihood
