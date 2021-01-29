@@ -28,15 +28,6 @@ ndc <- nd[complete.cases(nd),]#filter to only complete cases
 
 #MULTILEVEL MODELING
 #====
-#Pooled species
-#Optimize random effects structure using maximum likelihood
-p.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
-
-p.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_2|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
-anova(p.int, p.intSlope)#compare models with different random effect structure
-#Slope intercept is the optimal random effects structure
-pm <- p.intSlope
-
 #Euphausia pacifica
 #Optimize random effects structure using maximum likelihood
 ep.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = epc, na.action = na.fail, REML = FALSE) #model with random intercept 
@@ -51,6 +42,7 @@ ep.model.set <- dredge(ep.intSlope)
 
 ep.top.model <- get.models(ep.model.set, subset = 1)
 epm <- ep.top.model[[1]]
+epci <- as.data.frame(confint(epm))
 
 #Thysanoessa spinifera
 #Optimize random effects structure using maximum likelihood
@@ -66,6 +58,7 @@ ts.model.set <- dredge(ts.intSlope)
 
 ts.top.model <- get.models(ts.model.set, subset = 1)
 tsm <- ts.top.model[[1]]
+tsci <- as.data.frame(confint(tsm))
 
 #Nematocelis difficilis
 #Optimize random effects structure using maximum likelihood
@@ -80,16 +73,40 @@ nd.model.set <- dredge(nd.int)
 
 nd.top.model <- get.models(nd.model.set, subset = 1)
 ndm <- nd.top.model[[1]]
+ndci <- as.data.frame(confint(ndm))
+
+#Pooled species
+#Optimize random effects structure using maximum likelihood
+#Terms that did not appear in species models removed from global model. 
+p.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + moci_spring + cuti + (1|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
+
+p.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + chla + moci_spring + cuti + (1+temp_2|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
+anova(p.int, p.intSlope)#compare models with different random effect structure
+#Slope intercept is the optimal random effects structure
+pm <- p.intSlope
+pci <- as.data.frame(confint(pm))
 
 #Extract model coefficients for fixed effects
 pmc <- data.frame(predictor = attr(fixef(pm), "names"),#extract fixed effects coefficients
-                  coefficient = as.vector(fixef(pm)))
+                  Pcoefficient = as.vector(fixef(pm)),
+                  PLCL = pci[-c(1:4),]$`2.5 %`,
+                  PUCL = pci[-c(1:4),]$`97.5 %`)
 epc <- data.frame(predictor = attr(fixef(epm), "names"),
-                  coefficient = as.vector(fixef(epm)))
+                  Ecoefficient = as.vector(fixef(epm)),
+                  ELCL = epci[-c(1:4),]$`2.5 %`,
+                  EUCL = epci[-c(1:4),]$`97.5 %`)
 tsc <- data.frame(predictor = attr(fixef(tsm), "names"),
-                  coefficient = as.vector(fixef(tsm)))
+                  Tcoefficient = as.vector(fixef(tsm)),
+                  TLCL = tsci[-c(1:4),]$`2.5 %`,
+                  TUCL = tsci[-c(1:4),]$`97.5 %`)
 ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
-                  coefficient = as.vector(fixef(ndm)))
-environmentalCoefficients <- list(pmc, epc, tsc, ndc)#merge as list
+                  Ncoefficient = as.vector(fixef(ndm)),
+                  NLCL = ndci[-c(1:2),]$`2.5 %`,
+                  NUCL = ndci[-c(1:2),]$`97.5 %`)
+environmentalCoefficients <- left_join(pmc, epc, by = "predictor")#merge as list
+environmentalCoefficients <- left_join(environmentalCoefficients, tsc, by = "predictor")
+environmentalCoefficients <- left_join(environmentalCoefficients, ndc, by = "predictor")
 save(environmentalCoefficients, file = "output/environmentalCoefficients.rda")#save list
 #====
+
+str(confint(ndm,level = 0.95))#get confidence intervals for parameter estimates (only 97.5
