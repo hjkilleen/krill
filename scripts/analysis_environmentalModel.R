@@ -1,10 +1,13 @@
 #Environmental model
+#Model environmental drivers of krill length
 # Thu Jan 28 15:15:57 2021 ------------------------------
 
 #LIBRARIES & SOURCES
 #====
 library(lme4)
 library(tidyverse)
+library(arm)
+library(MuMIn)
 load("data/allLengthsEnv.rda")
 load("data/allLengthsEnvEP.rda")
 load("data/allLengthsEnvND.rda")
@@ -14,25 +17,74 @@ source("scripts/functions/model_simulation.R")
 
 #SETUP
 #=======
-#Model variation in krill length throughout the heatwave.
-#Change relevant variables to factors for multilevel analysis
-allLengthsEnv$station <- as.factor(allLengthsEnv$station)
-allLengthsEnv$year <- as.factor(allLengthsEnv$year)
+allLengthsEnv$station <- as.factor(allLengthsEnv$station)#Change relevant variables to factors for multilevel analysis
 allLengthsEnv$species <- as.factor(allLengthsEnv$species)
 
-#Drop 2011-2013 N. difficilis due to limited sampling
-# allLengthsEnv <- allLengthsEnv[!(allLengthsEnv$species == "ND" & allLengthsEnv$year %in% c("2011", "2012", "2013")),]
-# nd <- nd[!(nd$year %in% c("2011", "2012", "2013")),]
+pc <- allLengthsEnv[complete.cases(allLengthsEnv),]#filter to only complete cases
+epc <- ep[complete.cases(ep),]#filter to only complete cases
+tsc <- ts[complete.cases(ts[,-18]),]#filter to only complete cases, but drop temp_100 column
+ndc <- nd[complete.cases(nd),]#filter to only complete cases
 #====
 
 #MULTILEVEL MODELING
 #====
-pm <- lmer(length ~ year + sex + year:sex + (1|station), data = allLengthsEnv)#Pooled species model
-epm <- lmer(length ~ year + sex + year:sex + (1|station), data = ep)#EP
-tsm <- lmer(length ~ year + sex + year:sex + (1|station), data = ts)#TS
-ndm <- lmer(length ~ year + sex + year:sex + (1|station), data = nd)#ND
+#Pooled species
+#Optimize random effects structure using maximum likelihood
+p.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
 
-pmc <- data.frame(predictor = attr(fixef(pm), "names"),#extract fixed effects coefficients
+p.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_2|station), data = pc, na.action = na.fail, REML = FALSE) #model with random intercept 
+
+anova(p.int, p.intSlope)#compare models with different random effect structure
+#Slope intercept is the optimal random effects structure
+
+#Optimize fixed effect structure using AIC
+p.model.set <- dredge(p.intSlope)
+
+p.top.model <- get.models(p.model.set, subset = 1)
+
+#Euphausia pacifica
+#Optimize random effects structure using maximum likelihood
+ep.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = epc, na.action = na.fail, REML = FALSE) #model with random intercept 
+
+ep.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_2|station), data = epc, na.action = na.fail, REML = FALSE) #model with random intercept 
+
+anova(ep.int, ep.intSlope)#compare models with different random effect structure
+#Slope intercept is the optimal random effects structure
+
+#Optimize fixed effect structure using AIC
+ep.model.set <- dredge(ep.intSlope)
+
+ep.top.model <- get.models(ep.model.set, subset = 1)
+
+#Thysanoessa spinifera
+#Optimize random effects structure using maximum likelihood
+ts.int <- lmer(length ~ sex*temp_2  + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = tsc, na.action = na.fail, REML = FALSE) #model with random intercept 
+
+ts.intSlope <- lmer(length ~ sex*temp_2 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_2|station), data = tsc, na.action = na.fail, REML = FALSE) #model with random intercept 
+
+anova(ts.int, ts.intSlope)#compare models with different random effect structure
+#Slope intercept is the optimal random effects structure
+
+#Optimize fixed effect structure using AIC
+ts.model.set <- dredge(ts.intSlope)
+
+ts.top.model <- get.models(ts.model.set, subset = 1)
+
+#Nematocelis difficilis
+#Optimize random effects structure using maximum likelihood
+nd.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = ndc, na.action = na.fail, REML = FALSE) #model with random intercept 
+
+nd.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_2|station), data = ndc, na.action = na.fail, REML = FALSE) #model with random intercept 
+#Singular fit
+#Slope intercept is the optimal random effects structure
+
+#Optimize fixed effect structure using AIC
+nd.model.set <- dredge(nd.int)
+
+nd.top.model <- get.models(nd.model.set, subset = 1)
+
+#Extract model coefficients for fixed effects
+pmc <- data.frame(predictor = attr(fixef(p.top.model), "names"),#extract fixed effects coefficients
                   coefficient = as.vector(fixef(pm)))
 epc <- data.frame(predictor = attr(fixef(epm), "names"),
                   coefficient = as.vector(fixef(epm)))
