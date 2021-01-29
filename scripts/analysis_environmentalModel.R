@@ -85,7 +85,15 @@ anova(p.int, p.intSlope)#compare models with different random effect structure
 #Slope intercept is the optimal random effects structure
 pm <- p.intSlope
 pci <- as.data.frame(confint(pm))
+#Save models
+save(epm, file = "output/environmentalEP.rda")
+save(tsm, file = "output/environmentalTS.rda")
+save(ndm, file = "output/environmentalND.rda")
+save(pm, file = "output/environmentalPooled.rda")
+#====
 
+#EXTRACT SUMMARY STATISTICS
+#====
 #Extract model coefficients for fixed effects
 pmc <- data.frame(predictor = attr(fixef(pm), "names"),#extract fixed effects coefficients
                   Pcoefficient = as.vector(fixef(pm)),
