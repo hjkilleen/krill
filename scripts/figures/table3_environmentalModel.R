@@ -7,7 +7,6 @@
 #====
 library(tidyverse)
 library(dplyr)
-library(ggpubr)
 load("output/environmentalCoefficients.rda")
 #====
 
