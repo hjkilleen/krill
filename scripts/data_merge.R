@@ -45,12 +45,6 @@ for(i in seq(1:nrow(a))){
 
 #UPWELLING
 #====
-#Get BEUTI averaged over past 13 days, PST day
-a$beuti <- rep(NA, nrow(a))
-for(i in seq(1:nrow(a))){
-  a$beuti[i] <- get.beuti(a$station[i], a$year[i], 13)
-}
-
 #Get CUTI averaged over past 13 days, PST day
 a$cuti <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))){
@@ -58,14 +52,8 @@ for(i in seq(1:nrow(a))){
 }
 #====
 
-#OTHER
+#MOCI
 #====
-#Get SLA averaged over past 13 days
-a$sla <- rep(NA, nrow(a))
-for(i in seq(1:nrow(a))){
-  a$sla[i] <- get.sla(a$station[i], a$year[i], 1)
-}
-
 #Get spring MOCI
 a$year <- as.numeric(a$year)#year as numeric for indexing with MOCI
 
@@ -79,8 +67,8 @@ mociList <- list(moci[,1:4], moci[,c(1:3, 5)], moci[,c(1:3,6)])
 for(i in 1:3){#get spring and winter moci values for each region
   b <- filter(mociList[[i]], Season == "AMJ")
   krillList[[i]] <- left_join(krillList[[i]], b, by = "year")
-  krillList[[i]] <- rename(krillList[[i]], moci_spring = names(krillList[[i]])[14])
-  krillList[[i]] <- krillList[[i]][,-c(12:13)]
+  krillList[[i]] <- rename(krillList[[i]], moci_spring = names(krillList[[i]])[12])
+  krillList[[i]] <- krillList[[i]][,-c(10:11)]
 }
 
 a <- bind_rows(krillList)#bind all regions into one df
