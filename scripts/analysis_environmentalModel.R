@@ -93,21 +93,3 @@ ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
 environmentalCoefficients <- list(pmc, epc, tsc, ndc)#merge as list
 save(environmentalCoefficients, file = "output/environmentalCoefficients.rda")#save list
 #====
-
-#SIMULATION
-#====
-pmsim <- fsim.glmm(pm, nsim = 1000)#generate simulated values
-epsim <- fsim.glmm(epm, nsim = 1000)
-tssim <- fsim.glmm(tsm, nsim = 1000)
-ndsim <- fsim.glmm(ndm, nsim = 1000)
-
-pmsimsum <- simsum(pmsim)#summary statistics for simulated data
-epsimsum <- simsum(epsim)
-tssimsum <- simsum(tssim)
-ndsimsum <- simsum(ndsim)
-
-save(pmsimsum, file = "output/environmentalPooled.rda")#save rda for simulated data
-save(epsimsum, file = "output/environmentalEP.rda")
-save(tssimsum, file = "output/environmentalTS.rda")
-save(ndsimsum, file = "output/environmentalND.rda")
-#====
