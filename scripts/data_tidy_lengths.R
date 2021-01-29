@@ -55,11 +55,11 @@ d$time <- as_datetime(d$timeUTC, "America/Los_Angeles")
 d$date <- as_date(d$time)
 d$station <- as.integer(d$station)
 d$haul <- d$haul_no
-d <- select(d, haul, station, year, date)
+d <- dplyr::select(d, haul, station, year, date)
 lengthsBaldo <- left_join(lengthsBaldo, d)
 
 #add haul and date for legacy stations (see data/na.fixes) from Keith
-d <- select(legacySites, haul, station, year, date)
+d <- dplyr::select(legacySites, haul, station, year, date)
 legacyKrill <- filter(lengthsBaldo, station %in% c(118, 421, 166))
 legacyKrill <- legacyKrill[,-16]#drop date
 legacyKrill <- left_join(legacyKrill, d, by = c("station", "year", "haul"))
@@ -81,8 +81,8 @@ allLengths <- as.data.frame(rbind(lengths, lengthsBaldo))#merge all lengths
 allLengths <- allLengths[,-c(1, 5:10)]#get rid of unneccessary notes
 
 metadata$date <- mdy(metadata$date)#add regional and site identifiers and metadata
-allLengths <- left_join(allLengths, select(metadata, station, date, latitude, longitude, bottom_depth, tdr_depth), by = c("station", "date"))#add station metadata
-allLengths <- left_join(allLengths, select(regions, station, sites, region, shore), by = 'station')#merge with regional and site identifiers
+allLengths <- left_join(allLengths, dplyr::select(metadata, station, date, latitude, longitude, bottom_depth, tdr_depth), by = c("station", "date"))#add station metadata
+allLengths <- left_join(allLengths, dplyr::select(regions, station, sites, region, shore), by = 'station')#merge with regional and site identifiers
 
 save(allLengths, file = "data/allLengths.rda")#save as .RDA file
 #====
