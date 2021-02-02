@@ -94,6 +94,7 @@ allLengthsEnv$chla <- scale(allLengthsEnv$chla)
 allLengthsEnv$moci_spring <- scale(allLengthsEnv$moci_spring)
 allLengthsEnv$cuti <- scale(allLengthsEnv$cuti)
 #Scale lengths
+allLengthsEnv$length.unscaled <- allLengthsEnv$length
 allLengthsEnv$length <- scale(allLengthsEnv$length)
 #Save scale parameters to transform lengths for plotting
 aleScale <- allLengthsEnv$length
