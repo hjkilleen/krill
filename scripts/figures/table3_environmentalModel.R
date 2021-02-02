@@ -7,6 +7,7 @@
 #====
 library(tidyverse)
 library(dplyr)
+library(superheat)
 load("output/environmentalCoefficients.rda")
 #====
 
