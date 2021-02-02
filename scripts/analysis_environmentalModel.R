@@ -22,7 +22,8 @@ allLengthsEnv$species <- as.factor(allLengthsEnv$species)
 
 pc <- allLengthsEnv[complete.cases(allLengthsEnv),]#filter to only complete cases
 epc <- ep[complete.cases(ep),]#filter to only complete cases
-tsc <- ts[complete.cases(ts[,-18]),]#filter to only complete cases, but drop temp_100 column
+ts <- ts[,-18]#drop temp_100 column
+tsc <- ts[complete.cases(ts),]#filter to only complete cases
 ndc <- nd[complete.cases(nd),]#filter to only complete cases
 #====
 
@@ -62,9 +63,9 @@ tsci <- as.data.frame(confint(tsm))
 
 #Nematocelis difficilis
 #Optimize random effects structure using maximum likelihood
-nd.int <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = ndc, na.action = na.fail, REML = FALSE) #model with random intercept 
+nd.int <- lmer(length ~ sex + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1|station), data = ndc, na.action = na.fail, REML = FALSE) #model with random intercept 
 
-nd.intSlope <- lmer(length ~ sex*temp_2 + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_2|station), data = ndc, na.action = na.fail, REML = FALSE) #model with random intercept 
+nd.intSlope <- lmer(length ~ sex + temp_100 + sex:temp_100 + sst_sd + sex:sst_sd + chla + sex:chla + moci_spring + sex:moci_spring + cuti + sex:cuti + (1+temp_100|station), data = ndc, na.action = na.fail, REML = FALSE) #model with random intercept 
 #Singular fit
 #Slope intercept is the optimal random effects structure
 
@@ -116,8 +117,8 @@ ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
                   NLCL = ndci[-c(1:2),]$`2.5 %`,
                   NUCL = ndci[-c(1:2),]$`97.5 %`)
 ndc$predictor <- as.character(ndc$predictor)#change predictor to character to allow editing
-ndc$predictor[7] <- "sexM:cuti"#rename interaction terms to facilitate binding
-ndc$predictor[8] <- "sexM:moci_spring"
+ndc$predictor[8] <- "sexM:cuti"#rename interaction terms to facilitate binding
+ndc$predictor[9] <- "sexM:moci_spring"
 ndc$predictor <- as.factor(ndc$predictor)#change back to factor
 environmentalCoefficients <- left_join(pmc, epc, by = "predictor")#merge as list
 environmentalCoefficients <- left_join(environmentalCoefficients, tsc, by = "predictor")
