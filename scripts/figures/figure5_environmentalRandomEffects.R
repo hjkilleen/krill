@@ -15,77 +15,98 @@ load("output/environmentalPooled.rda")
 
 #SETUP
 #====
-pmsum <- summarize(group_by_at(pmsimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))#group simulated data for plotting
-epsum <- summarize(group_by_at(epsimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
-tssum <- summarize(group_by_at(tssimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
-ndsum <- summarize(group_by_at(ndsimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+regions <- read_csv("data/regions.csv")#load regions script
 
-aleStMeans <- summarize(group_by_at(allLengthsEnv, vars(station, year, species)), stationMean = mean(length))#generate mean values for each species, year, station combination to plot with simulated data. 
+#Euphausia pacifica random effects dataframe
+epGroups <- data.frame(
+  station = as.numeric(row.names(ranef(epm)$station)),
+  intercept = ranef(epm)$station$'(Intercept)',
+  coefficient = ranef(epm)$station$'temp_2'
+)
+epGroups <- left_join(epGroups, regions)
 
-# pdiffs <- dcast(pmsum, year~sex, value.var = "sim.mean", mean)#gather differences between simulated male and female lengths 
-# pdiffs$diff <- pdiffs$F - pdiffs$M
-# pdiffs$prop <- pdiffs$diff/mean(pdiffs$F)
-# pdiffs$species <- rep("P", nrow(pdiffs))
+#Thysanoessa spinifera random effects dataframe
+tsGroups <- data.frame(
+  station = as.numeric(row.names(ranef(tsm)$station)),
+  intercept = ranef(tsm)$station$'(Intercept)',
+  coefficient = ranef(tsm)$station$'temp_2'
+)
+tsGroups <- left_join(tsGroups, regions)
 
-epdiffs <- dcast(epsum, year~sex, value.var = "sim.mean", mean)
-epdiffs$diff <- epdiffs$F - epdiffs$M
-epdiffs$prop <- epdiffs$diff/mean(epdiffs$F)
-epdiffs$species <- rep("EP", nrow(epdiffs))
-
-tsdiffs <- dcast(tssum, year~sex, value.var = "sim.mean", mean)
-tsdiffs$diff <- tsdiffs$F - tsdiffs$M
-tsdiffs$prop <- tsdiffs$diff/mean(tsdiffs$F)
-tsdiffs$species <- rep("TS", nrow(tsdiffs))
-
-nddiffs <- dcast(ndsum, year~sex, value.var = "sim.mean", mean)
-nddiffs$diff <- nddiffs$F - nddiffs$M
-nddiffs$prop <- nddiffs$diff/mean(nddiffs$F)
-nddiffs$species <- rep("ND", nrow(nddiffs))
-
-diffs <- rbind(epdiffs, tsdiffs)#bind species and pooled differences
-diffs <- rbind(diffs, nddiffs)
-#diffs <- rbind(diffs, pdiffs)
-
-x <- summarize(group_by_at(diffs, vars(year, species)), mean = mean(prop))
-x <- x[!(x$species == "ND" & x$year %in% c("2011", "2012", "2013")),]#filter out N. difficilis 2011-2013 due to lack of males
-
-pmsum <- summarize(group_by_at(pmsimsum, vars(year)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))#group simulated data for plotting without sex
-epsum <- summarize(group_by_at(epsimsum, vars(year)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
-tssum <- summarize(group_by_at(tssimsum, vars(year)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
-ndsum <- summarize(group_by_at(ndsimsum, vars(year)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
+#Nematocelis difficilis random effects dataframe
+ndGroups <- data.frame(
+  station = as.numeric(row.names(ranef(ndm)$station)),
+  intercept = ranef(ndm)$station$'(Intercept)'
+)
+ndGroups <- left_join(ndGroups, regions)
 #====
 
-#SUBFIGURE A - PLOT
+#INTERCEPT PLOTS
 #====
-a <- ggplot() + 
-  geom_line(data = pmsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(aleScale, "scaled:scale") + attr(aleScale, "scaled:center")), color = "grey"), size = 2) +
-  geom_line(data = epsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(epScale, "scaled:scale") + attr(epScale, "scaled:center")), color = "#E69F00"), size = 2) +
-  geom_line(data = tssum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(tsScale, "scaled:scale") + attr(tsScale, "scaled:center")), color = "#56B4E9"), size = 2) +
-  geom_line(data = ndsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(ndScale, "scaled:scale") + attr(ndScale, "scaled:center")), color = "#009E73"), size = 2) + 
-  geom_point(data = filter(aleStMeans, species == "EP"), aes(x = as.numeric(as.character(year)), y = (stationMean*attr(aleScale, "scaled:scale") + attr(aleScale, "scaled:center")), color = "#E69F00"), alpha = 1) +
-  geom_point(data = filter(aleStMeans, species == "TS"), aes(x = as.numeric(as.character(year)), y = (stationMean*attr(aleScale, "scaled:scale") + attr(aleScale, "scaled:center")), color = "#56B4E9"), alpha = 1) +
-  geom_point(data = filter(aleStMeans, species == "ND"), aes(x = as.numeric(as.character(year)), y = (stationMean*attr(aleScale, "scaled:scale") + attr(aleScale, "scaled:center")), color = "#009E73"), alpha = 1) +
-  labs(y = "Length (mm)", x = "Year", linetype = "Sex") +
-  ylim(min = 19, max = 26) + 
-  scale_linetype_discrete(guide = guide_legend(override.aes = list(size = 1, color = "black"))) + 
-  scale_color_identity(guide = "legend", labels = c("N. difficilis", "T. spinifera", "E. pacifica", "Pooled"), name = "Species") +
-  geom_rect(aes(xmin = 2013.5, ymin = 19, xmax = 2014.5, ymax = 26), color = "white", fill = "white") +
+epi <- ggplot(epGroups) +#EP intercept plot
+  geom_point(aes(x = latitude, y = intercept, shape = shore), size = 4) + 
+  geom_smooth(aes(x = latitude, y = intercept), method = 'lm')+
+  geom_hline(aes(yintercept = 0)) + 
+  labs(title = "E. pacifica", x = "", y = "Intercept") + 
+  scale_shape_manual(values = c(1, 16), labels = c("Offshore", "Onshore")) + 
+  geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "red", alpha = .01) +
+  theme_classic(base_size = 20) 
+epi <- epi + theme(legend.position = "none")
+
+tsi <- ggplot(tsGroups) +#TS intercept plot
+  geom_point(aes(x = latitude, y = intercept, shape = shore), size = 4) + 
+  geom_smooth(aes(x = latitude, y = intercept), method = 'lm')+
+  geom_hline(aes(yintercept = 0)) + 
+  labs(title = "T. spinifera", x = "", y = "Intercept") + 
+  scale_shape_manual(values = c(1, 16), labels = c("Offshore", "Onshore")) + 
+  geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "red", alpha = .01) +
+  theme_classic(base_size = 20) 
+tsi <- tsi + theme(legend.position = "none")
+
+ndi <- ggplot(ndGroups) +#ND intercept plot
+  geom_point(aes(x = latitude, y = intercept, shape = shore), size = 4) + 
+  geom_smooth(aes(x = latitude, y = intercept), method = 'lm')+
+  geom_hline(aes(yintercept = 0)) + 
+  labs(title = "N. difficilis", x = "Latitude", y = "Intercept") + 
+  scale_shape_manual(values = c(1, 16), labels = c("Offshore", "Onshore")) + 
+  geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "red", alpha = .01) +
+  theme_classic(base_size = 20) 
+ndi <- ndi + theme(legend.position = "none")
+#====
+
+#SLOPE PLOTS
+#====
+eps <- ggplot(epGroups) +#EP slope plot
+  geom_point(aes(x = latitude, y = coefficient, shape = shore), size = 4) + 
+  geom_smooth(aes(x = latitude, y = coefficient), method = 'lm')+
+  geom_hline(aes(yintercept = 0)) + 
+  labs(x = "", y = "SST Coefficient") + 
+  scale_shape_manual(values = c(1, 16), labels = c("Offshore", "Onshore")) + 
+  geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "red", alpha = .01) +
   theme_classic(base_size = 20)
-a <- a + theme(legend.position = "top", axis.title = element_blank())
-#====
+eps <- eps + theme(legend.title = element_blank(), legend.direction = "horizontal")
 
-#SUBFIGURE B - SEXUAL DIMORPHISM
-#====
-b <- ggplot(x) + 
-  geom_bar(aes(x = as.numeric(as.character(year)), y = mean, group = species, fill = species), stat = 'identity', position = 'dodge') + 
-  geom_hline(yintercept = 0) + 
-  scale_fill_manual(name = "Species", values = c("#E69F00", "#009E73", "#56B4E9"), labels = c("E. pacifica", "N. difficilis", "T. spinifera")) + 
-  labs(x = "Year", y = "Size difference\nF - M (% of mean length)") +
-  theme_classic(base_size = 20)
-b <- b + theme(legend.position = "none")
+tss <- ggplot(tsGroups) +#TS intercept plot
+  geom_point(aes(x = latitude, y = coefficient, shape = shore), size = 4) + 
+  geom_smooth(aes(x = latitude, y = coefficient), method = 'lm')+
+  geom_hline(aes(yintercept = 0)) + 
+  labs(x = "Latitude", y = "SST Coefficient") + 
+  geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "red", alpha = .01) +
+  scale_shape_manual(values = c(1, 16), labels = c("Offshore", "Onshore")) + 
+  theme_classic(base_size = 20) 
+tss <- tss + theme(legend.position = "none")
 #====
 
 #MERGE FIGURES
 #====
-ggarrange(a, b, ncol = 1, nrow = 2, align = "v", labels = c("A", "B"))
+get_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+mp.legend <- get_legend(eps)
+
+panels <- ggarrange(epi, eps + theme(legend.position = "none"), tsi, tss, ndi, ncol = 2, nrow = 3, align = "v", labels = c("A", "D", "B", "E", "C"))#multipanel plot
+
+grid.arrange(mp.legend, panels, heights = c(1, 10))#multipanel plot with legend
 #====
