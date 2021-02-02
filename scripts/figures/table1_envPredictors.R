@@ -4,20 +4,21 @@
 
 #LIBRARIES
 #====
-library(reshape2)
+library(readxl)
 library(knitr)
 library(kableExtra)
+library(tikzDevice)
 #====
 
 #SET UP
 #====
-ep <- read_csv("data/envPredictors.csv")
-ep[1:3,6] <- paste0("10km", "$^2$")
+ep <- read_xlsx("data/envPredictors.xlsx")#load table
+ep[1:3,6] <- paste0("10km", "$^2$")#add km^2 to spatial scale column
 #====
 
 #TABLE
 #====
-ep %>% 
+ep %>% #knit table
   kbl() %>% 
   kable_classic()
 #====
