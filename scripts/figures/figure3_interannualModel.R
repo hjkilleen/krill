@@ -16,6 +16,7 @@ load("output/epScale.rda")
 load("output/tsScale.rda")
 load("output/ndScale.rda")
 load("output/interannualCoefficients.rda")
+load("data/allLengthsEnv.rda")
 #====
 
 #SETUP
@@ -74,7 +75,8 @@ a <- ggplot() +
   ylim(min = 19, max = 26) + 
   scale_linetype_discrete(guide = guide_legend(override.aes = list(size = 1, color = "black"))) + 
   scale_color_identity(guide = "legend", labels = c("N. difficilis", "T. spinifera", "E. pacifica", "Pooled"), name = "Species") +
-  geom_rect(aes(xmin = 2013.5, ymin = 19, xmax = 2014.5, ymax = 26), color = "white", fill = "white") +
+  geom_rect(aes(xmin = 2013.5, ymin = -Inf, xmax = 2014.5, ymax = Inf), color = "white", fill = "white") +
+  geom_rect(aes(xmin = 2014.5, ymin = -Inf, xmax = 2015.5, ymax = Inf), fill = "red", alpha = 0.3) +
   theme_classic(base_size = 20)
 a <- a + theme(legend.position = "top", axis.title = element_blank())
 #====
@@ -84,8 +86,11 @@ a <- a + theme(legend.position = "top", axis.title = element_blank())
 b <- ggplot(x) + 
   geom_bar(aes(x = as.numeric(as.character(year)), y = mean, group = species, fill = species), stat = 'identity', position = 'dodge') + 
   geom_hline(yintercept = 0) + 
+  geom_rect(aes(xmin = 2014.5, ymin = -Inf, xmax = 2015.5, ymax = Inf), fill = "red", alpha = 0.03) +
   scale_fill_manual(name = "Species", values = c("#E69F00", "#009E73", "#56B4E9"), labels = c("E. pacifica", "N. difficilis", "T. spinifera")) + 
   labs(x = "Year", y = "Size difference\nF - M (% of mean length)") +
+  annotate("text", x = 2011, y = 2.8, label = "Females\nlarger", size = 5) + 
+  annotate("text", x = 2011, y = -.5, label = "Males larger", size = 5) +
   theme_classic(base_size = 20)
 b <- b + theme(legend.position = "none")
 #====
@@ -94,3 +99,4 @@ b <- b + theme(legend.position = "none")
 #====
 ggarrange(a, b, ncol = 1, nrow = 2, align = "v", labels = c("A", "B"))
 #====
+
