@@ -1,15 +1,25 @@
 #Script to identify and plot nonlinear models for length~temperature
-# Wed Nov 25 15:09:48 2020 ------------------------------
+# Wed Feb  3 12:22:58 2021 ------------------------------
+
 #https://www.statforbiology.com/nonlinearregression/usefulequations#asymptotic_regression_model
 #https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/SSasymp
 
+#LIBRARIES & SOURCES
+#====
 library(nlme)
 library(broom)
 library(Amelia)
 library(mlbench)
+library(splines)
+load("data/allLengthsEnv.rda")
+load("data/allLengthsEnvEP.rda")
+load("data/allLengthsEnvND.rda")
+load("data/allLengthsEnvTS.rda")
 missmap(nd, col=c("blue", "red"), legend=FALSE)
+#====
 
-#Setup
+#SETUP
+#====
 Asym <- 4
 r0 <- .24
 lrc <- -1
@@ -38,7 +48,7 @@ a <- ggplot(augment(epg2), aes(temp_2, length))+
   annotate("text", x = 17, y = 19.5, label = quote(phi[2] == "10.06"), hjust = 0) + 
   annotate("text", x = 17, y = 19, label = quote(phi[3] == "-1.72"), hjust = 0)
 
-  
+
 #Nematocelis difficilis
 #Set Up
 Asym <- 2
