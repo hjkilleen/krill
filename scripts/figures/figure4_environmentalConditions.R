@@ -77,7 +77,7 @@ cruises$max.y <- as.numeric(as.character(cruises$max.y))
 cf <- ggplot(cuti, aes(x = date, y = cuti_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "red", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   ylim(-1, 2.5) +
   labs(y = "CUTI") +
   theme_classic(base_size = 15) +
@@ -87,7 +87,7 @@ ylab <- "SST (°C)"
 sstf <- ggplot(sst, aes(x = date, y = sst_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "red", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   #ylim(-1, 2.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
@@ -97,7 +97,7 @@ ylab <- "Subsurface\ntemperature (°C)"
 subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "red", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   #ylim(-1, 2.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
@@ -107,7 +107,7 @@ subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
 cc <- ggplot(cuti.core, aes(x = date, y = cuti_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "red", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   ylim(-1, 2.5) +
   labs(y = "CUTI") +
   theme_classic(base_size = 15) +
@@ -117,7 +117,7 @@ ylab <- "SST (°C)"
 sstc <- ggplot(sst.core, aes(x = date, y = sst_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "red", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   #ylim(-1, 2.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
@@ -127,7 +127,7 @@ ylab <- "Subsurface\ntemperature (°C)"
 subc <- ggplot(sub.core, aes(x = date, y = sub_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "red", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   #ylim(-1, 2.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
