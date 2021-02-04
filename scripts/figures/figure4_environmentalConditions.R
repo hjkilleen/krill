@@ -91,7 +91,7 @@ sstf <- ggplot(sst, aes(x = date, y = sst_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
-  #ylim(-1, 2.5) +
+  ylim(10, 18.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
   theme(axis.title.x = element_blank())
@@ -101,7 +101,7 @@ subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
-  #ylim(-1, 2.5) +
+  ylim(7, 12) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
   theme(axis.title.x = element_blank())
@@ -109,6 +109,7 @@ subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
 mocif <- ggplot(moci, aes(x = time, y = moci_mean)) +
   geom_line() + 
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  ylim(-10, 12) + 
   labs(x = "Date", y = "MOCI") + 
   theme_classic(base_size = 15)
 
@@ -129,7 +130,7 @@ sstc <- ggplot(sst.core, aes(x = date, y = sst_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
-  #ylim(-1, 2.5) +
+  ylim(10, 18.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
   theme(axis.title.x = element_blank(),
@@ -140,7 +141,7 @@ subc <- ggplot(sub.core, aes(x = date, y = sub_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
-  #ylim(-1, 2.5) +
+  ylim(7, 12) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
   theme(axis.title.x = element_blank(),
@@ -149,6 +150,7 @@ subc <- ggplot(sub.core, aes(x = date, y = sub_mean)) +
 mocic <- ggplot(moci.core, aes(x = time, y = moci_mean)) +
   geom_line() + 
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  ylim(-10, 12) +
   labs(x = "Date", y = "MOCI") + 
   theme_classic(base_size = 15) + 
   theme(axis.title.y = element_blank())
