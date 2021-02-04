@@ -43,9 +43,7 @@ for(i in seq(1:nrow(urls))) {#for loop to access URLs and tidy resulting datafra
     names(temps) <- c("lat", "lon", "year", "month", "day", "monthDay", "temp_2")
   }
   temps$lat_lon <- paste(temps$lat, temps$lon, sep = "_")
-  temps <- filter(temps, year >= 2011, year <=2018)#only 2011-2018
-  temps <- filter(temps, year != 2014)#leave out 2014
-  temps <- filter(temps, month >=4, month<8)#only months April-August
+  temps <- filter(temps, year >= 2010, year <=2018)#only 2011-2018
   temps$temp_2 <- (temps$temp_2-32)/1.8#convert temp to Celsius
   if("temp_100" %in% names(temps)){#convert subsurface temp to Celsius
     temps$temp_100 <- (temps$temp_100-32)/1.8
