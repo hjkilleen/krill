@@ -16,6 +16,7 @@ library(readxl)
 regions <- read_csv("data/regions.csv")#load experimental design metadata
 d <- read_xlsx("data/RREASmetadata.xlsx")#load NMFS metadata
 metadata <- read_csv("data/allStationMetadata.csv")#station metadata
+save(metadata, file = "data/metadata.rda")
 legacySites <- read_csv("data/MWTdataKeith.csv")
 #====
 

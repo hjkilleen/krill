@@ -29,6 +29,18 @@ CAfromstates <- states %>%
 
 #combine region and metadata 
 md <- left_join(metadata, regions, by = 'station')
+
+#sentinel stations used to create figure 4
+sentinels <- c(453, 454, 167, 171, 139, 152, 132, 134, 124, 127, 114, 110, 442, 445, 493, 495, 422, 425, 411, 414, 481, 402)
+md <- mutate(md, sentinel = md$station %in% sentinels)
+
+#Site labels 
+sites <- summarize(group_by(regions, sites), lat = mean(latitude))
+sites$lon <- c(-121.25, -122.40, -123.75, -118.75, -121, -120, -120.5, -124.25, -121.8, -120.25, -117.75)
+sites$labs <- c("Davenport", "Fort Ross", "Gulf of the\nFarallons", "Channel\nIslands", "Monterey Bay", "Morro Bay", "Piedras\nBlancas", "Point Reyes", "San Mateo", "Santa Barbara", "San Diego")
+sites[11,2] <- 32.7#nudge latitudes for labels
+sites[10,2] <- 34.1
+sites[9,2] <- 37.3
 #=====
 
 #MAPPING
@@ -36,7 +48,7 @@ md <- left_join(metadata, regions, by = 'station')
 #Large Map
 map <- ggplot(data = states) +
   geom_sf(fill = "white") +
-  geom_point(data = md, aes(x = longitude,y = latitude.x, shape = shore), size = 2) +
+  geom_point(data = md, aes(x = longitude,y = latitude.x, shape = shore, color = sentinel), size = 3, position = "jitter") +
   coord_sf(
     xlim = c(-125.5,-116.75),
     ylim = c(32.0, 39.5),
@@ -51,7 +63,9 @@ map <- ggplot(data = states) +
     style = north_arrow_fancy_orienteering
   ) +
   scale_shape_discrete(labels = c("Offshore", "Onshore")) +
+  scale_color_brewer(palette = "Paired") +
   geom_segment(data = boundaries, aes(x = x1, y = y1, xend = x2, yend = y2)) + 
+  geom_text(data = sites, aes(x = lon, y = lat, label = labs), color = "gray28") +
   annotate("text", x = -124.75, y = 33.75, label = "South", size = 5) + 
   annotate("text", x = -124.75, y = 35.25, label = "Central", size = 5) + 
   annotate("text", x = -124.75, y = 37, label = "North\nCentral", size = 5) + 
@@ -62,7 +76,7 @@ map <- ggplot(data = states) +
         legend.position = c(0.77, 0.6),
         legend.title = element_blank(),
         legend.background = element_rect(fill = "NA")) + 
-  guides(shape = guide_legend(override.aes = list(size = 5)))
+  guides(shape = guide_legend(override.aes = list(size = 5)), color = FALSE)
 
 #Inset Map
 inset <- ggplot(data = states) +
