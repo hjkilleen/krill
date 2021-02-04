@@ -56,8 +56,10 @@ sub.core$sub_mean <- rowMeans(sub.core[2:16], na.rm = TRUE)
 
 #Create MOCI data frames
 moci <- rename(moci, year = Year)
-moci.core <- filter(moci, station %in% coreStations) %>% 
-  mutate(moci_mean = rowMeans(.[x:x]))
+moci <- filter(moci, year>=2011, year <=2018)
+moci$moci_mean <- rowMeans(moci[4:6])
+moci.core <- moci[,c(1:3,5)]#just central time series
+colnames(moci.core)[4] <- "moci_mean"
 
 #Cruise highlights
 cruises <- data.frame(start.x = c("2011-05-01", "2012-05-01", "2013-05-01", "2015-05-01", "2016-05-01", "2017-05-01", "2018-05-01"),
@@ -79,9 +81,10 @@ cf <- ggplot(cuti, aes(x = date, y = cuti_mean)) +
   geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   ylim(-1, 2.5) +
-  labs(y = "CUTI") +
+  labs(y = "CUTI", title = "Study Domain") +
   theme_classic(base_size = 15) +
-  theme(axis.title.x = element_blank())
+  theme(axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5))
 #SST time series
 ylab <- "SST (°C)"
 sstf <- ggplot(sst, aes(x = date, y = sst_mean)) +
@@ -102,6 +105,12 @@ subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
   theme(axis.title.x = element_blank())
+#MOCI time series
+mocif <- ggplot(moci, aes(x = time, y = moci_mean)) +
+  geom_line() + 
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  labs(x = "Date", y = "MOCI") + 
+  theme_classic(base_size = 15)
 
 #Core Region
 cc <- ggplot(cuti.core, aes(x = date, y = cuti_mean)) +
@@ -109,9 +118,11 @@ cc <- ggplot(cuti.core, aes(x = date, y = cuti_mean)) +
   geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
   ylim(-1, 2.5) +
-  labs(y = "CUTI") +
+  labs(y = "CUTI", title = "North Central Region") +
   theme_classic(base_size = 15) +
-  theme(axis.title.x = element_blank())
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        plot.title = element_text(hjust = 0.5))
 #SST time series
 ylab <- "SST (°C)"
 sstc <- ggplot(sst.core, aes(x = date, y = sst_mean)) +
@@ -121,7 +132,8 @@ sstc <- ggplot(sst.core, aes(x = date, y = sst_mean)) +
   #ylim(-1, 2.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
-  theme(axis.title.x = element_blank())
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank())
 #Subsurface time series
 ylab <- "Subsurface\ntemperature (°C)"
 subc <- ggplot(sub.core, aes(x = date, y = sub_mean)) +
@@ -131,16 +143,18 @@ subc <- ggplot(sub.core, aes(x = date, y = sub_mean)) +
   #ylim(-1, 2.5) +
   labs(y = ylab) +
   theme_classic(base_size = 15) +
-  theme(axis.title.x = element_blank())
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank())
 #MOCI time series
-mc <- ggplot(moci, aes(x = date, y = moci_mean)) +
+mocic <- ggplot(moci.core, aes(x = time, y = moci_mean)) +
   geom_line() + 
-  labs(y = ylab) +
-  theme_classic() +
-  theme(axis.title.x = element_blank())
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  labs(x = "Date", y = "MOCI") + 
+  theme_classic(base_size = 15) + 
+  theme(axis.title.y = element_blank())
 #====
 
 #MERGE PLOTS
 #====
-ggarrange(cf, cc, sstf, sstc, subf, subc, mf, mc, ncol = 2, nrow = 4, align = "hv", labels = c("A", "E", "B", "F", "C", "G", "D", "H"))#arrange plots into multipanel grid, vertically and horizontally aligned
+ggarrange(cf, cc, sstf, sstc, subf, subc, mocif, mocic, ncol = 2, nrow = 4, align = "hv", labels = c("A", "E", "B", "F", "C", "G", "D", "H"))#arrange plots into multipanel grid, vertically and horizontally aligned
 #====
