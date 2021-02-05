@@ -7,6 +7,7 @@
 library(reshape2)
 library(knitr)
 library(kableExtra)
+library(janitor)
 #====
 
 #SET UP
@@ -27,6 +28,8 @@ grouped2 <- grouped[,col_order]
 
 grouped2[is.na(grouped2)] <- 0
 
+grouped2 <- as.data.frame(adorn_totals(grouped2, "row"))
+
 names(grouped2) <- c("year", "N", "NC", "C", "S", "N", "NC", "C", "S", "N", "NC", "C", "S", "N", "NC", "C", "S", "N", "NC", "C", "S", "N", "NC", "C", "S")
 #====
 
@@ -36,5 +39,7 @@ grouped2 %>%
   kbl() %>% 
   kable_classic() %>% 
   add_header_above(c(" " = 1, "Female" = 4, "Male" = 4, "Female" = 4, "Male" = 4,"Female" = 4, "Male" = 4)) %>% 
-  add_header_above(c(" " = 1, "Euphausia pacifica" = 8, "Thysanoessa spinifera" = 8, "Nematocelis difficilis" = 8))
+  add_header_above(c(" " = 1, "Euphausia pacifica" = 8, "Thysanoessa spinifera" = 8, "Nematocelis difficilis" = 8)) %>% 
+  row_spec(8, bold = TRUE) %>% 
+  column_spec(c(1, 5, 9, 13, 17, 21, 25), border_right = TRUE)
 #====
