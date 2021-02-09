@@ -20,10 +20,6 @@ source("scripts/functions/model_simulation.R")
 allLengthsEnv$station <- as.factor(allLengthsEnv$station)
 allLengthsEnv$year <- as.factor(allLengthsEnv$year)
 allLengthsEnv$species <- as.factor(allLengthsEnv$species)
-
-#Drop 2011-2013 N. difficilis due to limited sampling
-# allLengthsEnv <- allLengthsEnv[!(allLengthsEnv$species == "ND" & allLengthsEnv$year %in% c("2011", "2012", "2013")),]
-# nd <- nd[!(nd$year %in% c("2011", "2012", "2013")),]
 #====
 
 #MULTILEVEL MODELING
@@ -43,6 +39,10 @@ ndc.noSex <- data.frame(predictor = attr(fixef(ndm.noSex), "names"),
                   coefficient = as.vector(fixef(ndm.noSex)))
 interannualCoefficients.noSex <- list(pmc.noSex, epc.noSex, tsc.noSex, ndc.noSex)#merge as list
 save(interannualCoefficients.noSex, file = "output/interannualCoefficients_noSex.rda")#save list
+
+#Drop 2011-2013 N. difficilis due to limited sampling
+allLengthsEnv <- allLengthsEnv[!(allLengthsEnv$species == "ND" & allLengthsEnv$year %in% c("2011", "2012", "2013")),]
+nd <- nd[!(nd$year %in% c("2011", "2012", "2013")),]
 
 pm <- lmer(length ~ year + sex + year:sex + (1|station), data = allLengthsEnv)#Pooled species model with sex interaction
 epm <- lmer(length ~ year + sex + year:sex + (1|station), data = ep)#EP
