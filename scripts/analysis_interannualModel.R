@@ -5,6 +5,7 @@
 #====
 library(lme4)
 library(tidyverse)
+library(superheat)
 load("data/allLengthsEnv.rda")
 load("data/allLengthsEnvEP.rda")
 load("data/allLengthsEnvND.rda")
@@ -27,7 +28,23 @@ allLengthsEnv$species <- as.factor(allLengthsEnv$species)
 
 #MULTILEVEL MODELING
 #====
-pm <- lmer(length ~ year + sex + year:sex + (1|station), data = allLengthsEnv)#Pooled species model
+pm.noSex <- lmer(length ~ year + (1|station), data = allLengthsEnv)#Pooled species model without sex interaction
+epm.noSex <- lmer(length ~ year + (1|station), data = ep)#EP
+tsm.noSex <- lmer(length ~ year + (1|station), data = ts)#TS
+ndm.noSex <- lmer(length ~ year + (1|station), data = nd)#ND
+
+pmc.noSex <- data.frame(predictor = attr(fixef(pm.noSex), "names"),#extract fixed effects coefficients
+                  coefficient = as.vector(fixef(pm.noSex)))
+epc.noSex <- data.frame(predictor = attr(fixef(epm.noSex), "names"),
+                  coefficient = as.vector(fixef(epm.noSex)))
+tsc.noSex <- data.frame(predictor = attr(fixef(tsm.noSex), "names"),
+                  coefficient = as.vector(fixef(tsm.noSex)))
+ndc.noSex <- data.frame(predictor = attr(fixef(ndm.noSex), "names"),
+                  coefficient = as.vector(fixef(ndm.noSex)))
+interannualCoefficients.noSex <- list(pmc.noSex, epc.noSex, tsc.noSex, ndc.noSex)#merge as list
+save(interannualCoefficients.noSex, file = "output/interannualCoefficients_noSex.rda")#save list
+
+pm <- lmer(length ~ year + sex + year:sex + (1|station), data = allLengthsEnv)#Pooled species model with sex interaction
 epm <- lmer(length ~ year + sex + year:sex + (1|station), data = ep)#EP
 tsm <- lmer(length ~ year + sex + year:sex + (1|station), data = ts)#TS
 ndm <- lmer(length ~ year + sex + year:sex + (1|station), data = nd)#ND
