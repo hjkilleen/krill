@@ -20,5 +20,5 @@ ep[1:3,6] <- paste0("10km", "$^2$")#add km^2 to spatial scale column
 #====
 ep %>% #knit table
   kbl() %>% 
-  kable_classic()
+  kable_classic(lightable_options = "striped")
 #====
