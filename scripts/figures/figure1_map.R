@@ -1,6 +1,6 @@
 #Figure 1
 #Map of study area with inset
-# Wed Jan 27 13:58:20 2021 ------------------------------
+# Wed Feb 17 09:14:32 2021 ------------------------------
 
 #LIBRARIES
 #====
@@ -14,6 +14,7 @@ library(sp)
 library(maps)
 library(geosphere)
 library(cowplot)
+library(marmap)
 load("data/metadata.rda")
 #====
 
@@ -41,19 +42,25 @@ sites$labs <- c("Davenport", "Fort Ross", "Gulf of the\nFarallons", "Channel\nIs
 sites[11,2] <- 32.7#nudge latitudes for labels
 sites[10,2] <- 34.1
 sites[9,2] <- 37.3
+
+#Bathymetry
+dat <- getNOAA.bathy(-125.5,-116.75, 32.0, 39.5,res=4, keep=TRUE)
+datf <- fortify.bathy(dat)
 #=====
 
 #MAPPING
 #====
 #Large Map
 map <- ggplot(data = states) +
-  geom_sf(fill = "white") +
-  geom_point(data = md, aes(x = longitude,y = latitude.x, shape = shore, color = sentinel), size = 3, position = "jitter") +
+  geom_sf(fill = "#CAB7A5") +
+  geom_contour(data = datf, aes(x = x, y = y, z = z), breaks = c(-200), size = c(0.3), colour = "#7DACBB") +
+  geom_contour(data = datf, aes(x = x, y = y, z = z), breaks = c(-2000), size = c(0.3), colour = "#376A79") +
+  geom_point(data = md, aes(x = longitude,y = latitude.x, shape = shore), size = 3, position = "jitter") +
   coord_sf(
     xlim = c(-125.5,-116.75),
     ylim = c(32.0, 39.5),
     expand = FALSE
-  ) +
+  ) + 
   annotation_scale(location = "bl", width_hint = 0.5) +
   annotation_north_arrow(
     location = "bl",
@@ -63,13 +70,13 @@ map <- ggplot(data = states) +
     style = north_arrow_fancy_orienteering
   ) +
   scale_shape_discrete(labels = c("Offshore", "Onshore")) +
-  scale_color_brewer(palette = "Paired") +
   geom_segment(data = boundaries, aes(x = x1, y = y1, xend = x2, yend = y2)) + 
   geom_text(data = sites, aes(x = lon, y = lat, label = labs), color = "gray28") +
   annotate("text", x = -124.75, y = 33.75, label = "South", size = 5) + 
   annotate("text", x = -124.75, y = 35.25, label = "Central", size = 5) + 
   annotate("text", x = -124.75, y = 37, label = "North\nCentral", size = 5) + 
   annotate("text", x = -124.75, y = 38.75, label = "North", size = 5) +
+  theme_classic() +
   theme(text = element_text(size = 25)) +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
@@ -80,7 +87,7 @@ map <- ggplot(data = states) +
 
 #Inset Map
 inset <- ggplot(data = states) +
-  geom_sf(fill = "beige") +
+  geom_sf(fill = "#E4DECE") +
   coord_sf(
     xlim = c(-130,-66),
     ylim = c(24.5, 50),
@@ -92,4 +99,6 @@ inset <- ggplot(data = states) +
 #Full Map
 ggdraw() + 
   draw_plot(map) + 
-  draw_plot(inset, x = 0.6, y = 0.7, height = .3, width = 0.3)
+  draw_plot(inset, x = 0.5, y = 0.7, height = .3, width = 0.3) +
+  ggsave("figures/manuscript/figure1_map.jpeg", width = 10, height = 7.5, dpi = 300)
+ 
