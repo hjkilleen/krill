@@ -10,6 +10,7 @@ library(nlme)
 library(tidyverse)
 library(ggpubr)
 library(kableExtra)
+library(broom)
 load("data/allLengthsEnvEP.rda")
 #====
 
@@ -34,15 +35,16 @@ AIC(ep1, ep2)
 #PLOTTING NONLINEAR MODEL
 #====
 epg2 <- nls(length ~ SSasymp(temp_2, Asym, r0, lrc), data = epg)
-a <- ggplot(augment(ep2))+ 
+ggplot(augment(ep2))+ 
   geom_line(aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (.fitted*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) + 
   geom_point(data = epg, aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (length*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) +
   labs(x = "Sea Surface Temperature (C)", 
        y = "Length (mm)", 
-       title = quote("E. pacifica asymptotic length model" ~ {L[phi]('T') == phi[1] + (phi[2]-phi[1])*~e^{-e^{phi[3]}*~'T'}}), 
-       subtitle = (quote(list(L == "Length", 'T' == "Temperature", phi[1] == "Asymptote", phi[2] == "Intercept", phi[3] == "Rate constant")))) + 
-  theme_classic(base_size = 15)
-a
+       title = "E. pacifica asymptotic length model", 
+       subtitle = (quote({L[phi]('T') == phi[1] + (phi[2]-phi[1])*~e^{-e^{phi[3]}*~'T'}}))) +
+  theme_classic(base_size = 20) + 
+  ggsave("figures/manuscript/figure6_nonlinear.jpeg", width =6.5, height = 5, dpi = 300)
+
 #====
 
 #SUMMARY TABLE
