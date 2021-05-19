@@ -11,8 +11,10 @@ library(ggplot2)
 library(ggpubr)
 library(reshape2)
 library(zoo)
+library(lubridate)
 source("scripts/data_load.R")
 load("data/allLengthsEnv.rda")
+load("data/metadata.rda")
 #====
 
 #SETUP
@@ -61,6 +63,20 @@ moci$moci_mean <- rowMeans(moci[4:6])
 moci.core <- moci[,c(1:3,5)]#just central time series
 colnames(moci.core)[4] <- "moci_mean"
 
+#Create Chlorophyll data frame
+mydir = "data/chla/"
+myfiles = list.files(path=mydir, pattern="*.csv", full.names=TRUE)
+data2=lapply(myfiles, read_csv)
+for (i in 1:length(data2)){data2[[i]]<-cbind(data2[[i]],myfiles[i])}
+dat_csv <- do.call("rbind", data2) #merge chla data from individual station datasets
+dat_csv$date <- as_datetime(dat_csv$UTC_time, format = "%d-%b-%Y %H:%M:%S")#convert time to date
+dat_csv$station <- as.numeric(gsub("\\D", "", dat_csv$`myfiles[i]`))#extract station ID
+names(dat_csv) <- c("date_str", "latitude", "longitude", "chla", "file", "date", "station")#rename variables
+allChla <- filter(dat_csv, station %in% sentinels)
+allChla$chla <- log(allChla$chla)#log transform
+allChla <- dcast(allChla, date ~ station, value.var = "chla")#reshape to wide-format data table
+allChla$chla_mean <- rowMeans(allChla[2:23], na.rm = TRUE)
+
 #Cruise highlights
 cruises <- data.frame(start.x = c("2011-05-01", "2012-05-01", "2013-05-01", "2015-05-01", "2016-05-01", "2017-05-01", "2018-05-01"),
                       end.x = c("2011-07-01", "2012-07-01", "2013-07-01", "2015-07-01", "2016-07-01", "2017-07-01", "2018-07-01"),
@@ -79,48 +95,67 @@ cruises$max.y <- as.numeric(as.character(cruises$max.y))
 cf <- ggplot(cuti, aes(x = date, y = cuti_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(-1, 2.5) +
-  labs(y = "CUTI", title = "Study Domain") +
-  theme_classic(base_size = 15) +
+  labs(y = "CUTI") +
+  theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         plot.title = element_text(hjust = 0.5))
+#Chlorophyll time series
+ave <- allChla
+cruises$start.x <- as.POSIXct(cruises$start.x)
+cruises$end.x <- as.POSIXct(cruises$end.x)
+ylab <- quote('Chl-a\n[log(mg/'~m^3~')]')
+ave$ave2 <- c(rep(NA, 29), rollapply(allChla$chla_mean, 30, mean, na.rm = TRUE))
+chf <- ggplot(allChla, aes(x = date, y = chla_mean)) + 
+  geom_line(color = "grey") + 
+  geom_line(data = ave, aes(y = ave2), color = "black") +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
+  ylim(-2, 1.5) +
+  labs(y = ylab) +
+  theme_classic(base_size = 20) +
+  theme(axis.title.x = element_blank(),
+        plot.title = element_text(hjust = 0.5),
+        axis.title.y = element_text(size = 15, hjust = 0.5))
+cruises$start.x <- as.Date(cruises$start.x)
+cruises$end.x <- as.Date(cruises$end.x)
 #SST time series
 ylab <- "SST (°C)"
 sstf <- ggplot(sst, aes(x = date, y = sst_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(10, 18.5) +
   labs(y = ylab) +
-  theme_classic(base_size = 15) +
+  theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank())
 #Subsurface time series
 ylab <- "Subsurface\ntemperature (°C)"
 subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(7, 12) +
   labs(y = ylab) +
-  theme_classic(base_size = 15) +
-  theme(axis.title.x = element_blank())
+  theme_classic(base_size = 20) +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 15))
 #MOCI time series
 mocif <- ggplot(moci, aes(x = time, y = moci_mean)) +
   geom_line() + 
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(-10, 12) + 
   labs(x = "Date", y = "MOCI") + 
-  theme_classic(base_size = 15)
+  theme_classic(base_size = 20)
 
 #Core Region
 cc <- ggplot(cuti.core, aes(x = date, y = cuti_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(-1, 2.5) +
   labs(y = "CUTI", title = "North Central Region") +
-  theme_classic(base_size = 15) +
+  theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         plot.title = element_text(hjust = 0.5))
@@ -129,10 +164,10 @@ ylab <- "SST (°C)"
 sstc <- ggplot(sst.core, aes(x = date, y = sst_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(10, 18.5) +
   labs(y = ylab) +
-  theme_classic(base_size = 15) +
+  theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank())
 #Subsurface time series
@@ -140,23 +175,26 @@ ylab <- "Subsurface\ntemperature (°C)"
 subc <- ggplot(sub.core, aes(x = date, y = sub_mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(7, 12) +
   labs(y = ylab) +
-  theme_classic(base_size = 15) +
+  theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank())
+        axis.title.y = element_text(size = 15))
 #MOCI time series
 mocic <- ggplot(moci.core, aes(x = time, y = moci_mean)) +
   geom_line() + 
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "grey20", alpha = 0.3) +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(-10, 12) +
   labs(x = "Date", y = "MOCI") + 
-  theme_classic(base_size = 15) + 
+  theme_classic(base_size = 20) + 
   theme(axis.title.y = element_blank())
 #====
 
 #MERGE PLOTS
 #====
-ggarrange(cf, cc, sstf, sstc, subf, subc, mocif, mocic, ncol = 2, nrow = 4, align = "hv", labels = c("A", "E", "B", "F", "C", "G", "D", "H"))#arrange plots into multipanel grid, vertically and horizontally aligned
+#ggarrange(cf, cc, sstf, sstc, subf, subc, mocif, mocic, ncol = 2, nrow = 4, align = "hv", labels = c("A", "E", "B", "F", "C", "G", "D", "H"))#arrange plots into multipanel grid, vertically and horizontally aligned
+jpeg("figures/manuscript/figure4_environmentalConditions.jpeg", units = "in", width = 12, height = 13, res = 300)
+ggarrange(cf, NULL, cuti.sum, sstf, NULL, temp_2.sum, subf, NULL, temp_100.sum, chf, NULL, chla.sum, mocif, NULL, moci.sum, ncol = 3, nrow = 5, align = "hv", labels = c("A", "", "B", "C", "", "D", "E", "", "F", "G", "", "H", "I", "", "J"), font.label = list(size = 20), widths = c(1, -.1, 1))#arrange plots into multipanel grid, vertically and horizontally aligned
+dev.off()
 #====
