@@ -1,6 +1,6 @@
 # Thu Oct  8 16:47:40 2020 ------------------------------
 #Script to derive maximum r2 value for temperature length relationship
-
+load("data/allLengthsEnvEP.rda")
 #set up 
 epn <- summarise(group_by_at(ep, vars(station, date, year, latitude)), length=mean(as.numeric(length)))
 epn$temp_2 <- rep(NA, nrow(epn))
@@ -35,10 +35,12 @@ for(i in seq(1:30)){
 }
 epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
-ggplot(epdata, aes(x = n, y = r)) + 
+a <- ggplot(epdata, aes(x = n, y = r)) + 
   geom_point() + 
-  ggtitle("Days averaged vs R squared\nfor surface temperature") +
+  ggtitle("SST") +
+  theme_classic(base_size = 20) +
   ggsave("output/temp_2Averaging.jpg")
+save(a, file = "output/sstAveraging.rda")
 rm(datalist)
 #EP at depth relationship
 datalist = list()
@@ -53,11 +55,13 @@ for(i in seq(1:30)){
 }
 epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
-ggplot(epdata, aes(x = n, y = r)) + 
+b <- ggplot(epdata, aes(x = n, y = r)) + 
   geom_point() + 
-  ggtitle("Days averaged vs R squared\nfor 100m temperature") +
+  ggtitle("100m temperature") +
+  theme_classic(base_size = 20) +
   ggsave("output/temp_100Averaging.jpg")
-
+save(b, file = "output/temp100Averaging.rda")
+rm(datalist)
 #plots for best fits
 n.a <- 2
 n.b <- 5

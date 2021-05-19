@@ -7,6 +7,7 @@ library(lubridate)
 library(reshape2)
 library(stringr)
 source("scripts/functions/length_frequency.R")
+load("data/allLengths.rda")
 
 #set up 
 cuti <- read_csv("data/CUTI_daily.csv")#load cuti data, PST day
@@ -21,8 +22,15 @@ epn <- summarise(group_by_at(ep, vars(station, date, year, latitude)), length=me
 epn$cuti <- rep(NA, nrow(epn))
 epn$latitude.round <- round(epn$latitude)
 
+get.cuti <- function(x, y, z) {#modify get.cuti function
+  end.date <- filter(epn, station == x, year == y)$date[1]
+  lat <- filter(epn, station == x, year == y)$latitude.round[1]
+  start.date <- end.date-z
+  cuti.val <- mean(filter(cuti, latitude.round == lat, year == y, date >= start.date, date <= end.date)$cuti)
+  cuti.val
+}
+
 #EP length~cuti relationship
-get.cuti(110, 2011, 2)
 datalist = list()
 for(i in seq(1:30)){
   n <- i
@@ -35,10 +43,12 @@ for(i in seq(1:30)){
 }
 epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
-ggplot(epdata, aes(x = n, y = r)) + 
+e <- ggplot(epdata, aes(x = n, y = r)) + 
   geom_point() + 
-  ggtitle("Days averaged vs R squared\nfor cuti index") +
+  ggtitle("CUTI") +
+  theme_classic(base_size = 20) +
   ggsave("output/cutiAveraging.jpg")
+save(e, file = "output/chlaAveraging.rda")
 rm(datalist)
 
 #cuti has highest explanatory power when averaged over the 13 days prior to collection R~0.04

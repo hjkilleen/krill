@@ -3,13 +3,13 @@
 
 #LIBRARIES & SOURCES
 source("scripts/functions/length_frequency.R")
+source("scripts/data_tidy_satellite.R")
+load("data/allLengthsEnvEP.rda")
 
 #set up 
 epn <- summarise(group_by_at(ep, vars(station, date, year, latitude)), length=mean(as.numeric(length)))
 epn$chla <- rep(NA, nrow(epn))
-env$date <- as.POSIXct(env$time64)
-env$year <- as.character(substring(env$date, 1, 4))
-env <- filter(env, dtime != 0)#get rid of zero day (UTC correction)
+#get rid of zero day (UTC correction)
 
 #==========
 #See how well analyze_sst aligns with ROMS/TOMS temp_2
@@ -49,10 +49,12 @@ for(i in seq(1:30)){
 }
 epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
-ggplot(epdata, aes(x = n, y = r)) + 
+d <- ggplot(epdata, aes(x = n, y = r)) + 
   geom_point() + 
-  ggtitle("Days averaged vs R squared\nfor Log chlorophyll_a mg/m3") +
+  ggtitle("Log chlorophyll_a (mg/m3)") +
+  theme_classic(base_size = 20) +
   ggsave("output/chlaAveraging.jpg")
+save(d, file = "output/chlaAveraging.rda")
 rm(datalist)
 
 #Chlorophyll values chose for each station/date based on mean values over the prior three days. If no data is available, the values are averaged over past 8 days, and then over 13 days. If station/date still does not have a value, then NA is accepted. 

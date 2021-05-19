@@ -26,10 +26,12 @@ for(i in seq(1:30)){
 }
 epdata <- as.data.frame(do.call(rbind, datalist))
 names(epdata) <- c("n", "r")
-ggplot(epdata, aes(x = n, y = r)) + 
+c <- ggplot(epdata, aes(x = n, y = r)) + 
   geom_point() + 
-  ggtitle("Days averaged vs R squared\nfor SST Std. Dev.") +
+  ggtitle("SST Std. Dev.") +
+  theme_classic(base_size = 20) +
   ggsave("output/sst_sdAveraging.jpg")
+save(c, file = "output/sstSdAveraging.rda")
 rm(datalist)
 
 #SST_SD has highest explanatory power when averaged over the 17 days prior to collection R~0.045
