@@ -1,6 +1,6 @@
 #Table 2
 #Data Summary Table
-# Wed Jan 27 11:42:50 2021 ------------------------------
+# Wed Feb 17 10:24:54 2021 ------------------------------
 
 #LIBRARIES
 #====
@@ -8,6 +8,8 @@ library(reshape2)
 library(knitr)
 library(kableExtra)
 library(janitor)
+library(tidyverse)
+load("data/allLengthsEnv.rda")
 #====
 
 #SET UP
