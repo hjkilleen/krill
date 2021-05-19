@@ -1,4 +1,4 @@
-#Figure 5
+#Figure 6
 #Environmental model random effects
 
 # Fri Jan 29 12:40:17 2021 ------------------------------

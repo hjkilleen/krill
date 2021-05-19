@@ -1,4 +1,4 @@
-#Figure 7
+#Supplemental figure 10
 #SST Variance by Site
 
 #LBRARIES & SOURCES

@@ -1,4 +1,6 @@
-#Script to identify and plot nonlinear models for length~temperature
+#Figure 7
+#Nonlinear temperature effects on E. pacifica
+
 # Wed Feb  3 12:22:58 2021 ------------------------------
 
 #https://www.statforbiology.com/nonlinearregression/usefulequations#asymptotic_regression_model

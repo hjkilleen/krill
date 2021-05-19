@@ -1,3 +1,6 @@
+#Supplemental figure 2
+#Environmental predictor averaging
+
 load("output/sstAveraging.rda")
 load("output/temp100Averaging.rda")
 load("output/chlaAveraging.rda")

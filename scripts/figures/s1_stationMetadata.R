@@ -1,3 +1,6 @@
+#Supplemental figure 1
+#Station metadata
+
 load("data/metadata.rda")
 library(reshape2)
 library(kableExtra)
