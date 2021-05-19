@@ -13,6 +13,8 @@ load("data/allLengths.rda")
 #====
 allLengths$latitude.round <- round(allLengths$latitude, 0)#rounded latitude variable to index with CUIT/BEUTI
 a <- as.data.frame(summarize(group_by_at(allLengths, vars(station, year, latitude, latitude.round)), temp_2 = NA, temp_100 = NA))#list of stations and years
+
+climatology <- summarize(group_by(env, station), chl = mean(chlor_a, na.rm = TRUE))#climatology for chlorophyll data, impute missing values
 #====
 
 #TEMPERATURE
@@ -35,11 +37,9 @@ for(i in seq(1:nrow(a))) {
 #Get chlorophyll variable based on prior 3, 8, 13 days depending on availability
 a$chla <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))){
-  if(get.chla(a$station[i], a$year[i], 3) != "NaN"){
-    a$chla[i] <- get.chla(a$station[i], a$year[i], 3)
-  } else if(get.chla(a$station[i], a$year[i], 8) != "NaN"){
-    a$chla[i] <- get.chla(a$station[i], a$year[i], 8)
-  } else a$chla[i] <- get.chla(a$station[i], a$year[i], 13)
+  if(get.chla(a$station[i], a$year[i], 27) != "NaN"){
+    a$chla[i] <- get.chla(a$station[i], a$year[i], 27)
+  } else a$chla[i] <- filter(climatology, station == a$station[i])$chl
 }
 #====
 
@@ -48,7 +48,7 @@ for(i in seq(1:nrow(a))){
 #Get CUTI averaged over past 13 days, PST day
 a$cuti <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))){
-  a$cuti[i] <- get.cuti(a$station[i], a$year[i], 13)
+  a$cuti[i] <- get.cuti(a$station[i], a$year[i], 9)
 }
 #====
 
@@ -148,3 +148,4 @@ save(ep, file = "data/allLengthsEnvEP.rda")
 save(ts, file = "data/allLengthsEnvTS.rda")
 save(nd, file = "data/allLengthsEnvND.rda")
 #====
+
