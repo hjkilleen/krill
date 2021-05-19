@@ -8,6 +8,7 @@ library(lme4)
 library(tidyverse)
 library(arm)
 library(MuMIn)
+library(sjPlot)
 load("data/allLengthsEnv.rda")
 load("data/allLengthsEnvEP.rda")
 load("data/allLengthsEnvND.rda")
@@ -44,6 +45,12 @@ ep.model.set <- dredge(ep.intSlope)
 ep.top.model <- get.models(ep.model.set, subset = 1)
 epm <- ep.top.model[[1]]
 epci <- as.data.frame(confint(epm))
+tab_model(epm, title = "E. pacifica", show.p = FALSE, CSS = list(
+  css.depvarhead = '+color: red;',
+  css.centeralign = 'text-align: center;', 
+  css.firsttablecol = 'font-weight: bold;', 
+  css.summary = 'color: blue;'
+))
 
 #Thysanoessa spinifera
 #Optimize random effects structure using maximum likelihood
@@ -60,6 +67,12 @@ ts.model.set <- dredge(ts.intSlope)
 ts.top.model <- get.models(ts.model.set, subset = 1)
 tsm <- ts.top.model[[1]]
 tsci <- as.data.frame(confint(tsm))
+tab_model(tsm, title = "T. spinifera", show.p = FALSE, CSS = list(
+  css.depvarhead = '+color: red;',
+  css.centeralign = 'text-align: center;', 
+  css.firsttablecol = 'font-weight: bold;', 
+  css.summary = 'color: blue;'
+))
 
 #Nematocelis difficilis
 #Optimize random effects structure using maximum likelihood
@@ -75,6 +88,12 @@ nd.model.set <- dredge(nd.int)
 nd.top.model <- get.models(nd.model.set, subset = 1)
 ndm <- nd.top.model[[1]]
 ndci <- as.data.frame(confint(ndm))
+tab_model(ndm, title = "N. difficilis", show.p = FALSE, CSS = list(
+  css.depvarhead = '+color: red;',
+  css.centeralign = 'text-align: center;', 
+  css.firsttablecol = 'font-weight: bold;', 
+  css.summary = 'color: blue;'
+))
 
 #Pooled species
 #Optimize random effects structure using maximum likelihood
@@ -104,21 +123,25 @@ epc <- data.frame(predictor = attr(fixef(epm), "names"),
                   Ecoefficient = as.vector(fixef(epm)),
                   ELCL = epci[-c(1:4),]$`2.5 %`,
                   EUCL = epci[-c(1:4),]$`97.5 %`)
+epc$predictor <- as.character(epc$predictor)#change predictor to character to allow editing
+epc$predictor <- as.factor(epc$predictor)#change back to factor
 tsc <- data.frame(predictor = attr(fixef(tsm), "names"),
                   Tcoefficient = as.vector(fixef(tsm)),
                   TLCL = tsci[-c(1:4),]$`2.5 %`,
                   TUCL = tsci[-c(1:4),]$`97.5 %`)
 tsc$predictor <- as.character(tsc$predictor)#change predictor to character to allow editing
 tsc$predictor[8] <- "sexM:chla"#rename interaction terms to facilitate binding
-tsc$predictor[9] <- "sexM:moci_spring"
+tsc$predictor[9] <- "sexM:cuti"
+tsc$predictor[10] <- "sexM:moci_spring"
 tsc$predictor <- as.factor(tsc$predictor)#change back to factor
 ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
                   Ncoefficient = as.vector(fixef(ndm)),
                   NLCL = ndci[-c(1:2),]$`2.5 %`,
                   NUCL = ndci[-c(1:2),]$`97.5 %`)
 ndc$predictor <- as.character(ndc$predictor)#change predictor to character to allow editing
-ndc$predictor[8] <- "sexM:cuti"#rename interaction terms to facilitate binding
-ndc$predictor[9] <- "sexM:moci_spring"
+ndc$predictor[8] <- "sexM:chla"#rename interaction terms to facilitate binding
+ndc$predictor[9] <- "sexM:cuti"
+ndc$predictor[10] <- "sexM:moci_spring"
 ndc$predictor <- as.factor(ndc$predictor)#change back to factor
 environmentalCoefficients <- left_join(pmc, epc, by = "predictor")#merge as list
 environmentalCoefficients <- left_join(environmentalCoefficients, tsc, by = "predictor")
