@@ -2,7 +2,9 @@
 #Script to determine the number of krill necessary for length frequency analysis
 
 #set up 
+library(tidyverse)
 load("data/allLengthsEnv.rda")
+load("data/allLengthsEnvEP.rda")
 aLE_tally <- add_tally(group_by_at(allLengthsEnv, vars(year, species, station)), name = "LFcounts")
 aLE_tally <- summarize(group_by_at(aLE_tally, vars(year, species, station)), LFcounts = mean(LFcounts))
 #top counts
@@ -25,11 +27,15 @@ epx.mean.res <- resid(epx.mean.lm)
 plot(epdata$n, epx.mean.res)
 ggplot(epdata, aes(x = n, y = mean)) + 
   geom_point() + 
+  geom_vline(xintercept = 40, linetype = "dashed", color = "red") + 
   ggtitle("Mean EP length by n") +
+  theme(text=element_text(size=21)) +
   ggsave("output/epSampling.jpg")
 ggplot(epdata, aes(x = n, y = sd)) + 
   geom_point() + 
+  geom_vline(xintercept = 40, linetype = "dashed", color = "red") + 
   ggtitle("SD of EP length by n") +
+  theme(text=element_text(size=21)) +
   ggsave("output/epSamplingSD.jpg")
 rm(datalist)
 #At least 45 required
