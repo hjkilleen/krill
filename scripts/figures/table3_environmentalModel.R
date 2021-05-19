@@ -13,9 +13,9 @@ load("output/environmentalCoefficients.rda")
 
 #SETUP
 #====
-envCoef <- dplyr::select(environmentalCoefficients, "Ecoefficient", "Tcoefficient", "Ncoefficient", "Pcoefficient")
+envCoef <- dplyr::select(environmentalCoefficients, "Ecoefficient", "Tcoefficient", "Ncoefficient")
 rownames(envCoef) <- environmentalCoefficients$predictor
-names(envCoef) <- c("E. pacifica", "T. spinifera", "N. difficilis", "Pooled")
+names(envCoef) <- c("E. pacifica", "T. spinifera", "N. difficilis")
 envCoef <- arrange(envCoef, -row_number())#reverse row order
 
 envCoef <- envCoef[-c(12:13),]#remove intercept score
@@ -28,17 +28,26 @@ vals <- as.matrix(vals)
 
 #TABLE
 #====
-t <- superheat(ecMat, 
+superheat(ecMat, 
           heat.pal = c("#b35806", "white", "#542788"), 
           X.text = round(vals, 3), 
           heat.na.col = "black",
           row.title = "Environmental Predictor",
-          row.title.size = 10)
+          X.text.size = 8,
+          #row.title = "Predictor",
+          row.title.size = 11, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 6, legend.text.size = 20)
 #====
 
 #SAVE 
 #====
-png("figures/manuscript/table3_environmentalModel.png", height = 900, width = 800)
-t
+png("figures/manuscript/table3_environmentalModel.png", height = 800, width = 1100)
+superheat(ecMat, 
+          heat.pal = c("#b35806", "white", "#542788"), 
+          X.text = round(vals, 3), 
+          heat.na.col = "black",
+          row.title = "Environmental Predictor",
+          X.text.size = 8,
+          #row.title = "Predictor",
+          row.title.size = 11, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 10, legend.text.size = 20)
 dev.off()
 #====
