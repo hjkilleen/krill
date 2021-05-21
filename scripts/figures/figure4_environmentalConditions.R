@@ -101,6 +101,15 @@ cf <- ggplot(cuti, aes(x = date, y = cuti_mean)) +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         plot.title = element_text(hjust = 0.5))
+
+#CUTI station conditions boxplot
+df <- summarize(group_by_at(allLengthsEnv, vars(year, sites, region)), cuti = (mean(cuti)*attr(allLengthsEnv$cuti, "scaled:scale")+attr(allLengthsEnv$cuti, "scaled:center")))
+cuti.sum <- ggplot(df) + 
+  geom_boxplot(aes(x = year, y = cuti)) +
+  labs(x = "Year") + 
+  theme_classic(base_size = 20) + 
+  theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
+
 #Chlorophyll time series
 ave <- allChla
 cruises$start.x <- as.POSIXct(cruises$start.x)
@@ -119,6 +128,15 @@ chf <- ggplot(allChla, aes(x = date, y = chla_mean)) +
         axis.title.y = element_text(size = 15, hjust = 0.5))
 cruises$start.x <- as.Date(cruises$start.x)
 cruises$end.x <- as.Date(cruises$end.x)
+
+#Chlorophyll station conditions boxplot
+df <- summarize(group_by_at(allLengthsEnv, vars(year, sites, region)), chla = (mean(chla)*attr(allLengthsEnv$chla, "scaled:scale")+attr(allLengthsEnv$chla, "scaled:center")))
+chla.sum <- ggplot(df) + 
+  geom_boxplot(aes(x = year, y = chla))+
+  labs(x = "Year") + 
+  theme_classic(base_size = 20) + 
+  theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
+
 #SST time series
 ylab <- "SST (°C)"
 sstf <- ggplot(sst, aes(x = date, y = sst_mean)) +
@@ -129,6 +147,15 @@ sstf <- ggplot(sst, aes(x = date, y = sst_mean)) +
   labs(y = ylab) +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank())
+
+#SST station conditions boxplot
+df <- summarize(group_by_at(allLengthsEnv, vars(year, sites, region)), temp_2 = (mean(temp_2)*attr(allLengthsEnv$temp_2, "scaled:scale")+attr(allLengthsEnv$temp_2, "scaled:center")))
+temp_2.sum <- ggplot(df) + 
+  geom_boxplot(aes(x = year, y = temp_2)) +
+  labs(x = "Year") + 
+  theme_classic(base_size = 20) + 
+  theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
+
 #Subsurface time series
 ylab <- "Subsurface\ntemperature (°C)"
 subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
@@ -140,6 +167,15 @@ subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_text(size = 15))
+
+#Subsurface station conditions boxplot
+df <- summarize(group_by_at(allLengthsEnv, vars(year, sites, region)), temp_100 = (mean(temp_100)*attr(allLengthsEnv$temp_100, "scaled:scale")+attr(allLengthsEnv$temp_100, "scaled:center")))
+temp_100.sum <- ggplot(df) + 
+  geom_boxplot(aes(x = year, y = temp_100)) +
+  labs(x = "Year") + 
+  theme_classic(base_size = 20) + 
+  theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
+
 #MOCI time series
 mocif <- ggplot(moci, aes(x = time, y = moci_mean)) +
   geom_line() + 
@@ -148,52 +184,18 @@ mocif <- ggplot(moci, aes(x = time, y = moci_mean)) +
   labs(x = "Date", y = "MOCI") + 
   theme_classic(base_size = 20)
 
-#Core Region
-cc <- ggplot(cuti.core, aes(x = date, y = cuti_mean)) +
-  geom_line(color = "grey") + 
-  geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
-  ylim(-1, 2.5) +
-  labs(y = "CUTI", title = "North Central Region") +
-  theme_classic(base_size = 20) +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        plot.title = element_text(hjust = 0.5))
-#SST time series
-ylab <- "SST (°C)"
-sstc <- ggplot(sst.core, aes(x = date, y = sst_mean)) +
-  geom_line(color = "grey") + 
-  geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
-  ylim(10, 18.5) +
-  labs(y = ylab) +
-  theme_classic(base_size = 20) +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank())
-#Subsurface time series
-ylab <- "Subsurface\ntemperature (°C)"
-subc <- ggplot(sub.core, aes(x = date, y = sub_mean)) +
-  geom_line(color = "grey") + 
-  geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
-  ylim(7, 12) +
-  labs(y = ylab) +
-  theme_classic(base_size = 20) +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_text(size = 15))
-#MOCI time series
-mocic <- ggplot(moci.core, aes(x = time, y = moci_mean)) +
-  geom_line() + 
-  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
-  ylim(-10, 12) +
-  labs(x = "Date", y = "MOCI") + 
+#MOCI station conditions boxplot
+df <- summarize(group_by_at(allLengthsEnv, vars(year, sites, region)), moci_spring = (mean(moci_spring)*attr(allLengthsEnv$moci_spring, "scaled:scale")+attr(allLengthsEnv$moci_spring, "scaled:center")))
+moci.sum <- ggplot(df) + 
+  geom_boxplot(aes(x = year, y = moci_spring))+
+  labs(x = "Year") + 
   theme_classic(base_size = 20) + 
-  theme(axis.title.y = element_blank())
+  theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
+
 #====
 
 #MERGE PLOTS
 #====
-#ggarrange(cf, cc, sstf, sstc, subf, subc, mocif, mocic, ncol = 2, nrow = 4, align = "hv", labels = c("A", "E", "B", "F", "C", "G", "D", "H"))#arrange plots into multipanel grid, vertically and horizontally aligned
 jpeg("figures/manuscript/figure4_environmentalConditions.jpeg", units = "in", width = 12, height = 13, res = 300)
 ggarrange(cf, NULL, cuti.sum, sstf, NULL, temp_2.sum, subf, NULL, temp_100.sum, chf, NULL, chla.sum, mocif, NULL, moci.sum, ncol = 3, nrow = 5, align = "hv", labels = c("A", "", "B", "C", "", "D", "E", "", "F", "G", "", "H", "I", "", "J"), font.label = list(size = 20), widths = c(1, -.1, 1))#arrange plots into multipanel grid, vertically and horizontally aligned
 dev.off()
