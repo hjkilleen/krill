@@ -6,6 +6,7 @@
 library(lme4)
 library(tidyverse)
 library(superheat)
+library(sjPlot)
 load("data/allLengthsEnv.rda")
 load("data/allLengthsEnvEP.rda")
 load("data/allLengthsEnvND.rda")
@@ -118,3 +119,4 @@ save(epsimsum, file = "output/interannualEP.rda")
 save(tssimsum, file = "output/interannualTS.rda")
 save(ndsimsum, file = "output/interannualND.rda")
 #====
+
