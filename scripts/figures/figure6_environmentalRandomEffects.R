@@ -117,7 +117,7 @@ mp.legend <- get_legend(eps)
 
 panels <- ggarrange(epi, tsi, ndi, eps + theme(legend.position = "none"), tss, ncol = 3, nrow = 2, align = "v", labels = c("A", "C", "E", "B", "D"), font.label = list(size = 20))#multipanel plot
 
-jpeg("figures/manuscript/figure5_randomEffects.jpeg", units = "in", width = 10, height = 7, res = 300)
+jpeg("figures/manuscript/figure6_randomEffects.jpeg", units = "in", width = 10, height = 7, res = 300)
 grid.arrange(mp.legend, panels, heights = c(1, 10))#multipanel plot with legend
 dev.off()
 #====
