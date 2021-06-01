@@ -55,3 +55,4 @@ t.test(ts$length*attr(ts$length, "scaled:scale") + attr(ts$length, "scaled:cente
 
 #Nematoscelis difficilis
 t.test(nd$length*attr(nd$length, "scaled:scale") + attr(nd$length, "scaled:center"))
+#=====
