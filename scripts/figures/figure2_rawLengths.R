@@ -18,7 +18,7 @@ aLE_tally$species = factor(aLE_tally$species, levels=c("EP", "TS", "ND"))
 allLengthsEnv$species = factor(allLengthsEnv$species, levels=c("EP", "TS", "ND"))
 labs <- c("E. pacifica", "T. spinifera", "N. difficilis")
 names(labs) <- c("EP", "TS", "ND")
-a <- ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length.unscaled, group = year, fill = as.factor(year))) +
+a <- ggplot(allLengthsEnv, aes(x = as.factor(year), y = length.unscaled, group = year, fill = as.factor(year))) +
   geom_violin() +
   geom_boxplot(width = 0.1) +
   scale_fill_manual(values = c("#ffffff80", "#00000080", "#ffffff80", "#00000080", "#ffffff80", "#00000080", "#ffffff80"), labels = c("2011", "2012", "2013", "2015", "2016", "2017", "2018")) +
@@ -27,6 +27,7 @@ a <- ggplot(filter(allLengthsEnv), aes(x = as.factor(year), y = length.unscaled,
   geom_text(data = summarize(group_by_at(aLE_tally, vars(year, species)), mean = round(mean(length.unscaled), 1), max = max(length.unscaled)), aes(x = as.factor(year), y = max + 13, label = paste("mean=", mean, sep = " ")), color = "black", size = 4) +
   labs(x = "Year", y = "Length (mm)") + 
   theme_bw() +
+  theme(strip.text = element_text(face = "italic")) +
   theme(text = element_text(size = 20), legend.position = "none")
 #====
 
