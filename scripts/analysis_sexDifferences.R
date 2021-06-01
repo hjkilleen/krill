@@ -55,16 +55,16 @@ moments::kurtosis(filter(nd, sex =="M")$length)-3
 #Investigation of the histogram and qqplot show the distribution is close to normal with a slight right skew. D'Agostino test also detected this skew, but the estimated value (0.23) was <1. Excess kurtosis indicated the distribution was slightly platykurtic, but the value (-0.19) was >-1.
 
 #T-Tests
-e <- summarize(group_by_at(filter(allLengthsEnv, species =="EP"), vars(station, year, sex)), length = mean(length.unscaled))
+e <- summarize(group_by_at(ep, vars(station, year, sex)), length = mean(length))#calculate mean for eachs station, sex, year
 
-t <- summarize(group_by_at(filter(allLengthsEnv, species =="TS"), vars(station, year, sex)), length = mean(length.unscaled))
+t <- summarize(group_by_at(ts, vars(station, year, sex)), length = mean(length))
 
-n <- summarize(group_by_at(filter(allLengthsEnv, species =="ND"), vars(station, year, sex)), length = mean(length.unscaled))
+n <- summarize(group_by_at(nd, vars(station, year, sex)), length = mean(length))
 
-e.diff <- mean(filter(e, sex == "F")$length) - mean(filter(e, sex == "M")$length)
-t.diff <- mean(filter(t, sex == "F")$length) - mean(filter(t, sex == "M")$length)
-n.diff <- mean(filter(n, sex == "F")$length) - mean(filter(n, sex == "M")$length)
+e.diff <- (mean(filter(e, sex == "F")$length) - mean(filter(e, sex == "M")$length)) * attr(ep$length, "scaled:scale")#calculate difference between sex mean values
+t.diff <- (mean(filter(t, sex == "F")$length) - mean(filter(t, sex == "M")$length)) * attr(ts$length, "scaled:scale")
+n.diff <- (mean(filter(n, sex == "F")$length) - mean(filter(n, sex == "M")$length)) * attr(nd$length, "scaled:scale")
 
-t.test(length~sex, e)
+t.test(length~sex, e)#two-sample t-test for difference between males and female lengths of each species
 t.test(length~sex, t)
 t.test(length~sex, n)
