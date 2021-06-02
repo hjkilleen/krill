@@ -18,7 +18,7 @@ rownames(envCoef) <- environmentalCoefficients$predictor
 names(envCoef) <- c("E. pacifica", "T. spinifera", "N. difficilis")
 envCoef <- arrange(envCoef, -row_number())#reverse row order
 
-envCoef <- envCoef[-c(12:13),]#remove intercept score
+envCoef <- envCoef[-c(12:13),]#remove sex & intercept score
 vals <- envCoef#copy
 vals[is.na(vals)] <- 0#make matrix of coefficient values
 
@@ -47,7 +47,6 @@ superheat(ecMat,
           heat.na.col = "black",
           row.title = "Environmental Predictor",
           X.text.size = 8,
-          #row.title = "Predictor",
           row.title.size = 11, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 10, legend.text.size = 20)
 dev.off()
 #====
