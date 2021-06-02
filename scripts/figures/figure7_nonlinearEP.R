@@ -13,6 +13,7 @@ library(tidyverse)
 library(ggpubr)
 library(kableExtra)
 library(broom)
+library(mdthemes)
 load("data/allLengthsEnvEP.rda")
 #====
 
@@ -45,7 +46,7 @@ ggplot(augment(ep2))+
        title = "E. pacifica asymptotic length model", 
        subtitle = (quote({L[phi]('T') == phi[1] + (phi[2]-phi[1])*~e^{-e^{phi[3]}*~'T'}}))) +
   theme_classic(base_size = 20) + 
-  ggsave("figures/manuscript/figure7_nonlinear.jpeg", width =6.5, height = 5, dpi = 300)
+  ggsave("figures/manuscript/figure7_nonlinear.jpeg", width =6.5, height = 5, dpi = 400)
 
 #====
 
