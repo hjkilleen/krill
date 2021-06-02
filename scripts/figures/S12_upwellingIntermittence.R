@@ -1,10 +1,18 @@
+#Plot of SST std. vs. CUTI std.
+# Wed Jun  2 11:42:44 2021 ------------------------------
+
+#LIBRARIES & SOURCES
+#====
 source("scripts/data_tidy_environment.R")
 library(lubridate)
 library(tidyverse)
 library(reshape2)
 library(ggpmisc)
 load("data/allLengthsEnv.rda")
+#====
 
+#SET UP
+#====
 a <- as.data.frame(summarize(group_by_at(allLengthsEnv, vars(station, year, latitude, latitude.round))))#list of stations and years
 sentinels <- c(453, 454, 167, 171, 139, 152, 132, 134, 124, 127, 114, 110, 442, 445, 493, 495, 422, 425, 411, 414, 481, 402)#stations used to get domain-wide averages
 a <- filter(a, station %in% sentinels)
@@ -33,7 +41,10 @@ a$sst.sd <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))) {
   a$sst.sd[i] <- get.sst.sd(a$station[i], a$year[i], 30)
 }
+#====
 
+#PLOT
+#====
 ggplot(a, aes(x = cuti.sd, y = sst.sd))+
   geom_point(aes(color = year), size = 2, alpha = 0.5) + 
   geom_smooth(method = 'lm', color = "black") +
@@ -41,9 +52,11 @@ ggplot(a, aes(x = cuti.sd, y = sst.sd))+
   scale_color_brewer(palette = "Dark2") + 
   labs(x = "CUTI Std. Dev.", y = "SST Std. Dev.", color = "Year") + 
   theme_classic(base_size = 20) +
-  ggsave("figures/manuscript/S10_upwellingIntermittence.jpg", dpi = 300)
+  ggsave("figures/manuscript/S12_upwellingIntermittence.jpg", dpi = 300)
+#====
 
-
+#MODEL
+#====
 mod <- lm(cuti.sd ~ sst.sd, a)
 summary(mod)
-
+#====
