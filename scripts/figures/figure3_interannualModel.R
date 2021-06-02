@@ -148,6 +148,6 @@ b <- b + annotation_custom(grob = l2, xmin = 2010.5, xmax = 2012, ymin = 26, yma
 b <- arrangeGrob(l1, b, heights = c(1, 10))
 
 ggarrange(a$plot, ggarrange(b, c, nrow = 2, align = "v", labels = c("B", "C"), font.label = list(size = 20)), nrow = 1, labels = "A", font.label = list(size = 20))#arrange subfigures
-ggsave("figures/manuscript/figure3_interannualModel.jpeg", width = 14, height = 8, dpi = 300)
+ggsave("figures/manuscript/figure3_interannualModel.jpeg", width = 14, height = 8, dpi = 400)
 #====
 

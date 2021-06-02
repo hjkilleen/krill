@@ -196,7 +196,7 @@ moci.sum <- ggplot(df) +
 
 #MERGE PLOTS
 #====
-jpeg("figures/manuscript/figure4_environmentalConditions.jpeg", units = "in", width = 12, height = 13, res = 300)
+jpeg("figures/manuscript/figure4_environmentalConditions.jpeg", units = "in", width = 12, height = 13, res = 400)
 ggarrange(cf, NULL, cuti.sum, sstf, NULL, temp_2.sum, subf, NULL, temp_100.sum, chf, NULL, chla.sum, mocif, NULL, moci.sum, ncol = 3, nrow = 5, align = "hv", labels = c("A", "", "B", "C", "", "D", "E", "", "F", "G", "", "H", "I", "", "J"), font.label = list(size = 20), widths = c(1, -.1, 1))#arrange plots into multipanel grid, vertically and horizontally aligned
 dev.off()
 #====

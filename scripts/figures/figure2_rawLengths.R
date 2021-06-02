@@ -50,5 +50,5 @@ b <- ggplot(x, aes(x = year, y = cv, color = species, group = species)) +
 #MERGED FIGURE
 #====
 ggarrange(a, b, labels = c("A", "B"), ncol = 1, nrow = 2, heights = c(10, 4), align = "v", label.x = .05)
-ggsave("figures/manuscript/figure2_krillViolinCV.jpeg", width = 8, height = 11, dpi = 300)
+ggsave("figures/manuscript/figure2_krillViolinCV.jpeg", width = 8, height = 11, dpi = 400)
 #====

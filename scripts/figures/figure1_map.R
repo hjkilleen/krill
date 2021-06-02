@@ -100,5 +100,5 @@ inset <- ggplot(data = states) +
 ggdraw() + 
   draw_plot(map) + 
   draw_plot(inset, x = 0.5, y = 0.7, height = .3, width = 0.3) +
-  ggsave("figures/manuscript/figure1_map.jpeg", width = 10, height = 7.5, dpi = 300)
+  ggsave("figures/manuscript/figure1_map.jpeg", width = 10, height = 7.5, dpi = 400)
  
