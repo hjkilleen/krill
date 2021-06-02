@@ -55,7 +55,7 @@ epi <- ggplot(epGroups) +#EP intercept plot
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .01) +
   theme_classic(base_size = 20) 
-epi <- epi + theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
+epi <- epi + theme(legend.position = "none", plot.title = element_text(hjust = 0.5, face = "italic"))
 
 summary(lm(intercept~latitude, tsGroups))#significant, p<.05
 tsi <- ggplot(tsGroups) +#TS intercept plot
@@ -67,7 +67,7 @@ tsi <- ggplot(tsGroups) +#TS intercept plot
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .01) +
   theme_classic(base_size = 20) 
-tsi <- tsi + theme(legend.position = "none", axis.title.y = element_blank(), plot.title = element_text(hjust = 0.5))
+tsi <- tsi + theme(legend.position = "none", axis.title.y = element_blank(), plot.title = element_text(hjust = 0.5, face = "italic"))
 
 summary(lm(intercept~latitude, ndGroups))#insignificant
 ndi <- ggplot(ndGroups) +#ND intercept plot
@@ -78,7 +78,7 @@ ndi <- ggplot(ndGroups) +#ND intercept plot
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .03) +
   theme_classic(base_size = 20) 
-ndi <- ndi + theme(legend.position = "none", axis.title.y = element_blank(), plot.title = element_text(hjust = 0.5))
+ndi <- ndi + theme(legend.position = "none", axis.title.y = element_blank(), plot.title = element_text(hjust = 0.5, face = "italic"))
 #====
 
 #SLOPE PLOTS
@@ -117,7 +117,7 @@ mp.legend <- get_legend(eps)
 
 panels <- ggarrange(epi, tsi, ndi, eps + theme(legend.position = "none"), tss, ncol = 3, nrow = 2, align = "v", labels = c("A", "C", "E", "B", "D"), font.label = list(size = 20))#multipanel plot
 
-jpeg("figures/manuscript/figure6_randomEffects.jpeg", units = "in", width = 10, height = 7, res = 300)
+jpeg("figures/manuscript/figure6_randomEffects.jpeg", units = "in", width = 10, height = 7, res = 400)
 grid.arrange(mp.legend, panels, heights = c(1, 10))#multipanel plot with legend
 dev.off()
 #====
