@@ -53,6 +53,7 @@ epi <- ggplot(epGroups) +#EP intercept plot
   geom_hline(aes(yintercept = 0)) + 
   labs(title = "E. pacifica", x = "", y = "Intercept") + 
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
+  ylim(-5, 3) +
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .01) +
   theme_classic(base_size = 20) 
 epi <- epi + theme(legend.position = "none", plot.title = element_text(hjust = 0.5, face = "italic"))
@@ -64,6 +65,7 @@ tsi <- ggplot(tsGroups) +#TS intercept plot
   #stat_poly_eq(formula = tsGroups$intercept ~ tsGroups$latitude, aes(x = latitude, y = intercept, label = paste(..eq.label.., ..rr.label.., sep = "~~~")), parse = TRUE, eq.with.lhs = "bold(hat(L))~'='~", eq.x.rhs = "~bold(lat)", label.x.npc = "right") + 
   geom_hline(aes(yintercept = 0)) + 
   labs(title = "T. spinifera", x = "") + 
+  ylim(-5, 3) +
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .01) +
   theme_classic(base_size = 20) 
@@ -74,6 +76,7 @@ ndi <- ggplot(ndGroups) +#ND intercept plot
   geom_point(aes(x = latitude, y = intercept, shape = shore), size = 4) + 
   #geom_smooth(aes(x = latitude, y = intercept), method = 'lm', se = FALSE, color = "blue", linetype = "dashed") +
   geom_hline(aes(yintercept = 0)) + 
+  ylim(-5, 3) +
   labs(title = "N. difficilis", x = "Latitude", y = "Intercept") + 
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .03) +
@@ -88,6 +91,7 @@ eps <- ggplot(epGroups) +#EP slope plot
   geom_point(aes(x = latitude, y = coefficient, shape = shore), size = 4) + 
   #geom_smooth(aes(x = latitude, y = coefficient), method = 'lm', se = FALSE, color = "blue", linetype = "dashed") +
   geom_hline(aes(yintercept = 0)) + 
+  ylim(-5, 1.5) +
   labs(x = "Latitude", y = "SST Slope\nCoefficient") + 
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .01) +
@@ -99,6 +103,7 @@ tss <- ggplot(tsGroups) +#TS intercept plot
   geom_point(aes(x = latitude, y = coefficient, shape = shore), size = 4) + 
   #geom_smooth(aes(x = latitude, y = coefficient), method = 'lm', se = FALSE, color = "blue", linetype = "dashed") +
   geom_hline(aes(yintercept = 0)) + 
+  ylim(-5, 1.5) +
   labs(x = "Latitude", y = "SST\nCoefficient") + 
   geom_rect(aes(xmin = 36.6, ymin = -Inf, xmax = 37.8, ymax = Inf), fill = "grey", alpha = .01) +
   scale_shape_manual(values = c(16, 17), labels = c("Offshore", "Onshore")) + 
