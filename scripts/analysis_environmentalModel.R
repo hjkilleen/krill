@@ -130,9 +130,8 @@ tsc <- data.frame(predictor = attr(fixef(tsm), "names"),
                   TLCL = tsci[-c(1:4),]$`2.5 %`,
                   TUCL = tsci[-c(1:4),]$`97.5 %`)
 tsc$predictor <- as.character(tsc$predictor)#change predictor to character to allow editing
-tsc$predictor[8] <- "sexM:chla"#rename interaction terms to facilitate binding
-tsc$predictor[9] <- "sexM:cuti"
-tsc$predictor[10] <- "sexM:moci_spring"
+tsc$predictor[7] <- "sexM:chla"#rename interaction terms to facilitate binding
+tsc$predictor[8] <- "sexM:moci_spring"
 tsc$predictor <- as.factor(tsc$predictor)#change back to factor
 ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
                   Ncoefficient = as.vector(fixef(ndm)),
