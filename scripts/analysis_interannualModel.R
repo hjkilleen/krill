@@ -28,7 +28,8 @@ allLengthsEnv$species <- as.factor(allLengthsEnv$species)
 pm.noSex <- lmer(length ~ year + (1|station), data = allLengthsEnv)#Pooled species model without sex interaction
 epm.noSex <- lmer(length ~ year + (1|station), data = ep)#EP
 tsm.noSex <- lmer(length ~ year + (1|station), data = ts)#TS
-ndm.noSex <- lmer(length ~ year + (1|station), data = nd)#ND
+ndf <- filter(nd, year != "2011", year != "2012", year != "2013")#drop observations from 2011-2013, too few samples
+ndm.noSex <- lmer(length ~ year + (1|station), data = ndf)#ND
 
 pmc.noSex <- data.frame(predictor = attr(fixef(pm.noSex), "names"),#extract fixed effects coefficients
                   coefficient = as.vector(fixef(pm.noSex)))

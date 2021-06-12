@@ -27,15 +27,21 @@ load("data/allLengthsEnv.rda")
 
 #SETUP
 #====
+na <- data.frame(predictor = c("2011", "2012", "2013"),
+                 coefficient = c(NA, NA, NA))#create empty rows for 2011-2013 for ND
+interannualCoefficients.noSex[[4]] <- rbind(na, interannualCoefficients.noSex[[4]])#bind blank rows with ND annual estimates
 ic.noSex <- data.frame(ep = interannualCoefficients.noSex[[2]][,2],#create matrix for heatmap of year effects without sex interaction
                  ts = interannualCoefficients.noSex[[3]][,2],
                  nd = interannualCoefficients.noSex[[4]][,2])
 ic.noSex[2:7,1] <- ic.noSex[2:7,1] + ic.noSex$ep[1]#add or subtract intercept value, so all coefficients are relative to 0 in 2011
 ic.noSex[2:7,2] <- ic.noSex[2:7,2] + ic.noSex$ts[1]
-ic.noSex[2:7,3] <- ic.noSex[2:7,3] + ic.noSex$nd[1]
+ic.noSex[5:7,3] <- ic.noSex[5:7,3] + ic.noSex$nd[4]#add or subtract intercept value, so all coefficients are relative to 0 in 2015
 row.names(ic.noSex) <- c("2011", "2012", "2013", "2015", "2016", "2017", "2018")#change column names
 names(ic.noSex) <- c("E. pacifica", "T. spinifera", "N. difficilis")#change row names
 icMat.noSex <- as.matrix(ic.noSex)
+
+vals <- icMat.noSex#copy
+vals[is.na(vals)] <- 0#make matrix of coefficient values
 
 epsum <- summarize(group_by_at(epsimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))#group simulated data for plotting with sex interaction
 tssum <- summarize(group_by_at(tssimsum, vars(year, sex)), sim.mean = mean(sim.mean), lower.95 = mean(lower.95), upper.95 = mean(upper.95))
@@ -76,7 +82,7 @@ x <- x[!(x$species == "ND" & x$year %in% c("2011", "2012", "2013")),]#filter out
 a <- superheat(icMat.noSex, 
           scale = TRUE,
           heat.pal = c("#b35806", "white", "#542788"), 
-          X.text = round(icMat.noSex, 3), 
+          X.text = round(vals, 3), 
           X.text.size = 8,
           heat.na.col = "black",
           #row.title = "Predictor",
