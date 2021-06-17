@@ -15,6 +15,7 @@ library(maps)
 library(geosphere)
 library(cowplot)
 library(marmap)
+library(metR)
 load("data/metadata.rda")
 #====
 
@@ -46,6 +47,9 @@ sites[9,2] <- 37.3
 #Bathymetry
 dat <- getNOAA.bathy(-125.5,-116.75, 32.0, 39.5,res=4, keep=TRUE)
 datf <- fortify.bathy(dat)
+bathLabs <- data.frame(labs = c("-200", "-200", "-2000", "-2000"),
+                       lat = c(36, 39.4, 36, 39),
+                       lon = c(-121.8, -123.9, -122.6, -124.3))
 #=====
 
 #MAPPING
@@ -72,6 +76,8 @@ map <- ggplot(data = states) +
   scale_shape_discrete(labels = c("Offshore", "Onshore")) +
   geom_segment(data = boundaries, aes(x = x1, y = y1, xend = x2, yend = y2)) + 
   geom_text(data = sites, aes(x = lon, y = lat, label = labs), color = "gray28") +
+  geom_text(data = bathLabs[1,], aes(x = lon, y = lat, label = labs), color = "#7DACBB", angle = 300) +
+  geom_text(data = bathLabs[3,], aes(x = lon, y = lat, label = labs), color = "#376A79", angle = 300) +
   annotate("text", x = -124.75, y = 33.75, label = "South", size = 5) + 
   annotate("text", x = -124.75, y = 35.25, label = "South\nCentral", size = 5) + 
   annotate("text", x = -124.75, y = 37.2, label = "Core", size = 5) + 
