@@ -22,7 +22,7 @@ load("data/metadata.rda")
 #====
 regions <- read_csv("data/regions.csv")#add regions for merging shore identifiers
 
-boundaries <- data.frame(x1 = c(-125.5, -125.5, -125.5), y1 = c(34.448, 36.306, 37.948), x2 = c(-120.472, -121.901, -122.785), y2 = c(34.448, 36.306, 37.948))#create gridpoints for regional boundaries
+boundaries <- data.frame(x1 = c(-125.5, -125.5), y1 = c(34.448, 36.306), x2 = c(-120.472, -121.901), y2 = c(34.448, 36.306))#create gridpoints for regional boundaries
 
 states <- sf::st_as_sf(map("state", plot = FALSE, fill = TRUE))#state lines and coast
 CAfromstates <- states %>%
@@ -73,9 +73,8 @@ map <- ggplot(data = states) +
   geom_segment(data = boundaries, aes(x = x1, y = y1, xend = x2, yend = y2)) + 
   geom_text(data = sites, aes(x = lon, y = lat, label = labs), color = "gray28") +
   annotate("text", x = -124.75, y = 33.75, label = "South", size = 5) + 
-  annotate("text", x = -124.75, y = 35.25, label = "Central", size = 5) + 
-  annotate("text", x = -124.75, y = 37, label = "North\nCentral", size = 5) + 
-  annotate("text", x = -124.75, y = 38.75, label = "North", size = 5) +
+  annotate("text", x = -124.75, y = 35.25, label = "South\nCentral", size = 5) + 
+  annotate("text", x = -124.75, y = 37.2, label = "Core", size = 5) + 
   theme_classic() +
   theme(text = element_text(size = 25)) +
   theme(axis.title.x = element_blank(),
