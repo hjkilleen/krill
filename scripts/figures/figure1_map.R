@@ -65,6 +65,12 @@ map <- ggplot(data = states) +
     ylim = c(32.0, 39.5),
     expand = FALSE
   ) + 
+  scale_x_continuous(breaks = c(-124, -122, -120, -118),
+                     labels = c("-124", "-122", "-120", "-118")) +
+  scale_y_continuous(breaks = c(33, 34, 35, 36, 37, 38, 39),
+                     labels = c("33", "34", "35", "36", "37", "38", "39")) +
+  xlab(expression(paste("Longitude (", degree,"W)"))) +
+  ylab(expression(paste("Latitude (", degree,"N)"))) +
   annotation_scale(location = "bl", width_hint = 0.5) +
   annotation_north_arrow(
     location = "bl",
@@ -83,9 +89,7 @@ map <- ggplot(data = states) +
   annotate("text", x = -124.75, y = 37.2, label = "Core", size = 5) + 
   theme_classic() +
   theme(text = element_text(size = 25)) +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        legend.position = c(0.77, 0.6),
+  theme(legend.position = c(0.77, 0.6),
         legend.title = element_blank(),
         legend.background = element_rect(fill = "NA")) + 
   guides(shape = guide_legend(override.aes = list(size = 5)), color = FALSE)
