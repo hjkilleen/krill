@@ -32,6 +32,7 @@ cuti$latitude.round <- as.numeric(str_sub(as.character(cuti$variable), 1, 2))
 cuti <- left_join(cuti, stations)
 cuti.core <- filter(cuti, station %in% coreStations)#create core df
 cuti <- filter(cuti, station %in% sentinels)#full df
+cuti.mean <- mean(cuti$cuti)#get mean value for the whole CCE
 cuti <- dcast(cuti, date ~ station, value.var = "cuti")#reshape to wide-format data table
 cuti.core <- dcast(cuti.core, date ~ station, value.var = "cuti")
 cuti$cuti_mean <- rowMeans(cuti[2:23])#take mean value across all stations
@@ -45,6 +46,8 @@ dat_csv = plyr::ldply(myfiles, read_csv)
 waterTemp <- left_join(dat_csv, urls[,1:4], by = c("lat", "lon"))
 waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, sep = "/"))#add date column
 sst <- filter(waterTemp, station %in% sentinels)#filter to sentinel stations
+sst.mean <- mean(sst$temp_2)#get mean SST for the whole CCE
+sub.mean <- mean(sst$temp_100, na.rm = TRUE)#get mean subsurface temp for the whole CCE
 sst <- dcast(sst, date ~ station, value.var = "temp_2")#reshape to wide-format data table
 sst$sst_mean <- rowMeans(sst[2:23], na.rm = TRUE)
 sub <- filter(waterTemp, station %in% sentinels)#filter to sentinel stations
@@ -62,6 +65,7 @@ moci <- filter(moci, year>=2011, year <=2018)
 moci$moci_mean <- rowMeans(moci[4:6])
 moci.core <- moci[,c(1:3,5)]#just central time series
 colnames(moci.core)[4] <- "moci_mean"
+moci.mean <- mean(moci$moci_mean)#get mean MOCI for whole CCE
 
 #Create Chlorophyll data frame
 mydir = "data/chla/"
@@ -74,6 +78,7 @@ dat_csv$station <- as.numeric(gsub("\\D", "", dat_csv$`myfiles[i]`))#extract sta
 names(dat_csv) <- c("date_str", "latitude", "longitude", "chla", "file", "date", "station")#rename variables
 allChla <- filter(dat_csv, station %in% sentinels)
 allChla$chla <- log(allChla$chla)#log transform
+chla.mean <- mean(allChla$chla, na.rm = TRUE)#get chla values for whole CCE
 allChla <- dcast(allChla, date ~ station, value.var = "chla")#reshape to wide-format data table
 allChla$chla_mean <- rowMeans(allChla[2:23], na.rm = TRUE)
 
@@ -91,13 +96,13 @@ cruises$max.y <- as.numeric(as.character(cruises$max.y))
 #PLOTTING
 #====
 #Full Study Domain
-#CUTI time series
-cf <- ggplot(cuti, aes(x = date, y = cuti_mean)) +
+#CUTI anomaly time series
+cf <- ggplot(cuti, aes(x = date, y = cuti_mean-cuti.mean)) +
   geom_line(color = "grey") + 
-  geom_line(aes(y = rollmean(cuti_mean, 30, na.pad = TRUE)), color = "black") +
+  geom_line(aes(y = rollmean(cuti_mean-cuti.mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(-1, 2.5) +
-  labs(y = "CUTI") +
+  labs(y = "CUTI anomaly") +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         plot.title = element_text(hjust = 0.5))
@@ -114,9 +119,9 @@ cuti.sum <- ggplot(df) +
 ave <- allChla
 cruises$start.x <- as.POSIXct(cruises$start.x)
 cruises$end.x <- as.POSIXct(cruises$end.x)
-ylab <- quote('Chl-a\n[log(mg/'~m^3~')]')
-ave$ave2 <- c(rep(NA, 29), rollapply(allChla$chla_mean, 30, mean, na.rm = TRUE))
-chf <- ggplot(allChla, aes(x = date, y = chla_mean)) + 
+ylab <- quote('Chl-a [log(mg/'~m^3~')] anomaly')
+ave$ave2 <- c(rep(NA, 29), rollapply(allChla$chla_mean-chla.mean, 30, mean, na.rm = TRUE))
+chf <- ggplot(allChla, aes(x = date, y = chla_mean-chla.mean)) + 
   geom_line(color = "grey") + 
   geom_line(data = ave, aes(y = ave2), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
@@ -138,12 +143,11 @@ chla.sum <- ggplot(df) +
   theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
 
 #SST time series
-ylab <- "SST (°C)"
-sstf <- ggplot(sst, aes(x = date, y = sst_mean)) +
+ylab <- "SST anomaly (°C)"
+sstf <- ggplot(sst, aes(x = date, y = sst_mean-sst.mean)) +
   geom_line(color = "grey") + 
-  geom_line(aes(y = rollmean(sst_mean, 30, na.pad = TRUE)), color = "black") +
+  geom_line(aes(y = rollmean(sst_mean-sst.mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
-  ylim(10, 18.5) +
   labs(y = ylab) +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank())
@@ -157,12 +161,11 @@ temp_2.sum <- ggplot(df) +
   theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
 
 #Subsurface time series
-ylab <- "Subsurface\ntemperature (°C)"
-subf <- ggplot(sub, aes(x = date, y = sub_mean)) +
+ylab <- "Subsurface\ntemperature anomaly (°C)"
+subf <- ggplot(sub, aes(x = date, y = sub_mean-sub.mean)) +
   geom_line(color = "grey") + 
-  geom_line(aes(y = rollmean(sub_mean, 30, na.pad = TRUE)), color = "black") +
+  geom_line(aes(y = rollmean(sub_mean-sub.mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
-  ylim(7, 12) +
   labs(y = ylab) +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
