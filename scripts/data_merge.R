@@ -34,7 +34,7 @@ for(i in seq(1:nrow(a))) {
 
 #CHLOROPHYLL
 #====
-#Get chlorophyll variable based on prior 3, 8, 13 days depending on availability
+#Get chlorophyll variable based on prior 27 days depending on availability
 a$chla <- rep(NA, nrow(a))
 for(i in seq(1:nrow(a))){
   if(get.chla(a$station[i], a$year[i], 27) != "NaN"){
