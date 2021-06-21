@@ -30,6 +30,13 @@ for(i in seq(1:nrow(a))){
   a$cuti.sd[i] <- get.cuti.sd(a$station[i], a$year[i], 30)
 }
 
+x <- summarize(group_by_at(env, vars(time64, station)), chla.sd = sd(chlor_a, na.rm = TRUE))#create chla dataframe
+x$year <- as.character(paste("20", stringr::str_sub(x$time64, -2, -1), sep = ""))
+a$chla.sd <- rep(NA, nrow(a))
+for(i in seq(1:nrow(a))){
+  a$chla.sd[i] <- filter(x, station == a$station[i], year == a$year[i])$chla.sd
+}
+
 get.sst.sd <- function(x, y, z) {
   end.date <- filter(allLengthsEnv, station == x, year == y)$date[1]
   start.date <- end.date-z
@@ -53,6 +60,14 @@ ggplot(a, aes(x = cuti.sd, y = sst.sd))+
   labs(x = "CUTI Std. Dev.", y = "SST Std. Dev.", color = "Year") + 
   theme_classic(base_size = 20) +
   ggsave("figures/manuscript/S12_upwellingIntermittence.jpg", dpi = 300)
+
+ggplot(a, aes(x = chla.sd, y = sst.sd))+
+  geom_point(aes(color = year), size = 2, alpha = 0.5) + 
+  geom_smooth(method = 'lm', color = "black") +
+  stat_poly_eq(formula = a$chla.sd ~ a$sst.sd, aes(x = chla.sd, y = sst.sd, label = paste(..eq.label.., ..rr.label.., sep = "~~~")), parse = TRUE) +
+  scale_color_brewer(palette = "Dark2") + 
+  labs(x = "Chl-a Std. Dev.", y = "SST Std. Dev.", color = "Year") + 
+  theme_classic(base_size = 20)
 #====
 
 #MODEL
