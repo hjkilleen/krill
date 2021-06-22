@@ -13,6 +13,7 @@ library(reshape2)
 library(zoo)
 library(lubridate)
 source("scripts/data_load.R")
+source("scripts/functions/length_frequency.R")
 load("data/allLengthsEnv.rda")
 load("data/metadata.rda")
 #====
@@ -48,6 +49,9 @@ waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, 
 sst <- filter(waterTemp, station %in% sentinels)#filter to sentinel stations
 sst.mean <- mean(sst$temp_2)#get mean SST for the whole CCE
 sub.mean <- mean(sst$temp_100, na.rm = TRUE)#get mean subsurface temp for the whole CCE
+# sst$sd <- rep(NA, nrow(sst))#create sst_sd column
+# sst[17:nrow(sst),]$sd <- zoo::rollapply(sst$temp_2, 17, sd)#generate SST_SD values for prior 17 days
+# sst.sd <- dcast(sst, date ~ station, value.var = "sd")#reshape to wide-format data table
 sst <- dcast(sst, date ~ station, value.var = "temp_2")#reshape to wide-format data table
 sst$sst_mean <- rowMeans(sst[2:23], na.rm = TRUE)
 sub <- filter(waterTemp, station %in% sentinels)#filter to sentinel stations
