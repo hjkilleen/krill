@@ -82,15 +82,14 @@ x <- x[!(x$species == "ND" & x$year %in% c("2011", "2012", "2013")),]#filter out
 
 #SUBFIGURE A - INTERANNUAL COEFFICIENTS
 #====
-colnames(icMat.noSex) <- c(expression(italic("E. pacifica")), expression(italic("T. spinifera")), expression(italic("N. difficilis")))
+colnames(icMat.noSex) <- c("E. pacifica", "T. spinifera", "N. difficilis")
 a <- superheat(icMat.noSex, 
-          scale = TRUE,
           heat.pal = c("#b35806", "white", "#542788"), 
           X.text = round(vals, 3), 
           X.text.size = 8,
           heat.na.col = "black",
           #row.title = "Predictor",
-          row.title.size = 20, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 6, legend.text.size = 20)
+          row.title.size = 20, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 6, bottom.label.size = .15, legend.text.size = 15, legend.width = 2.3, heat.lim = c(-1, 1.10))
 
 ggplot(ic.noSex, aes(Var1, Var2)) +
   geom_tile(aes(fill = value)) + 
