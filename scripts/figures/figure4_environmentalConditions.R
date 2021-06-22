@@ -106,7 +106,7 @@ cf <- ggplot(cuti, aes(x = date, y = cuti_mean-cuti.mean)) +
   geom_line(aes(y = rollmean(cuti_mean-cuti.mean, 30, na.pad = TRUE)), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(-1, 2.5) +
-  labs(y = "CUTI anomaly") +
+  labs(y = "CUTI\nanomaly") +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         plot.title = element_text(hjust = 0.5))
@@ -123,7 +123,7 @@ cuti.sum <- ggplot(df) +
 ave <- allChla
 cruises$start.x <- as.POSIXct(cruises$start.x)
 cruises$end.x <- as.POSIXct(cruises$end.x)
-ylab <- quote('Chl-a [log(mg/'~m^3~')] anomaly')
+ylab <- expression(paste("Chl-a\nanomaly log mg ", m^-3))
 ave$ave2 <- c(rep(NA, 29), rollapply(allChla$chla_mean-chla.mean, 30, mean, na.rm = TRUE))
 chf <- ggplot(allChla, aes(x = date, y = chla_mean-chla.mean)) + 
   geom_line(color = "grey") + 
@@ -147,7 +147,7 @@ chla.sum <- ggplot(df) +
   theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
 
 #SST time series
-ylab <- "SST anomaly (°C)"
+ylab <- "SST\nanomaly (°C)"
 sstf <- ggplot(sst, aes(x = date, y = sst_mean-sst.mean)) +
   geom_line(color = "grey") + 
   geom_line(aes(y = rollmean(sst_mean-sst.mean, 30, na.pad = TRUE)), color = "black") +
