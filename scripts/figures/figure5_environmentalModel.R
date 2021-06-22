@@ -40,13 +40,13 @@ superheat(ecMat,
 
 #SAVE 
 #====
-png("figures/manuscript/figure5_environmentalModel.png", height = 2800, width = 3850, res = 400)
+png("figures/manuscript/figure5_environmentalModel.png", height = 2800, width = 4000, res = 400)
 superheat(ecMat, 
           heat.pal = c("#b35806", "white", "#542788"), 
           X.text = round(vals, 3), 
           heat.na.col = "black",
           row.title = "Environmental Predictor",
           X.text.size = 8,
-          row.title.size = 11, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 10, legend.text.size = 20)
+          row.title.size = 11, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 10, legend.text.size = 20, left.label.size = .4)
 dev.off()
 #====
