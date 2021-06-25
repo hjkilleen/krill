@@ -41,7 +41,7 @@ epg2 <- nls(length ~ SSasymp(temp_2, Asym, r0, lrc), data = epg)
 ggplot(augment(ep2))+ 
   geom_line(aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (.fitted*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) + 
   geom_point(data = epg, aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (length*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) +
-  labs(x = "Sea Surface Temperature (C)", 
+  labs(x = "SST (°C)", 
        y = "Length (mm)", 
        title = "E. pacifica asymptotic length model", 
        subtitle = (quote({L[phi]('T') == phi[1] + (phi[2]-phi[1])*~e^{-e^{phi[3]}*~'T'}}))) +
