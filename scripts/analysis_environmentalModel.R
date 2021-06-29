@@ -138,9 +138,9 @@ ndc <- data.frame(predictor = attr(fixef(ndm), "names"),
                   NLCL = ndci[-c(1:2),]$`2.5 %`,
                   NUCL = ndci[-c(1:2),]$`97.5 %`)
 ndc$predictor <- as.character(ndc$predictor)#change predictor to character to allow editing
-ndc$predictor[9] <- "sexM:chla"#rename interaction terms to facilitate binding
-ndc$predictor[10] <- "sexM:cuti"
-ndc$predictor[11] <- "sexM:moci_spring"
+ndc$predictor[6] <- "sexM:chla"#rename interaction terms to facilitate binding
+ndc$predictor[7] <- "sexM:cuti"
+ndc$predictor[8] <- "sexM:moci_spring"
 ndc$predictor <- as.factor(ndc$predictor)#change back to factor
 environmentalCoefficients <- left_join(pmc, epc, by = "predictor")#merge as list
 environmentalCoefficients <- left_join(environmentalCoefficients, tsc, by = "predictor")
