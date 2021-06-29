@@ -49,14 +49,21 @@ waterTemp$date <- as.Date(paste(waterTemp$year, waterTemp$month, waterTemp$day, 
 sst <- filter(waterTemp, station %in% sentinels)#filter to sentinel stations
 sst.mean <- mean(sst$temp_2)#get mean SST for the whole CCE
 sub.mean <- mean(sst$temp_100, na.rm = TRUE)#get mean subsurface temp for the whole CCE
-# sst$sd <- rep(NA, nrow(sst))#create sst_sd column
-# sst[17:nrow(sst),]$sd <- zoo::rollapply(sst$temp_2, 17, sd)#generate SST_SD values for prior 17 days
-# sst.sd <- dcast(sst, date ~ station, value.var = "sd")#reshape to wide-format data table
+sst.sd <- sst[,c(2:8, 11, 13)]#create sst.sd df
+sst.sd$year.station <- paste(sst.sd$year, sst.sd$station, sep = ".")#make year.station ID
+sst.sd.list <- split(sst.sd, f = sst.sd$year.station)#split df into a list by year.station
+for(i in seq(1:length(sst.sd.list))){
+  sst.sd.list[[i]]$sst.sd <- c(rep(NA, 16), rollapply(data = sst.sd.list[[i]]$temp_2, 17, sd))
+}#get sst sd for year station in each year
+sst.sd <- bind_rows(sst.sd.list)#bind back into a single dataframe
+sst.sd.mean <- mean(sst.sd$sst.sd, na.rm = TRUE)# get global sst.sd mean
+sst.sd <- dcast(sst.sd, date ~ station, value.var = "sst.sd")#reshape to wide-format data table
+sst.sd$sst.sd_mean <- rowMeans(sst.sd[2:23], na.rm = TRUE)#get daily means for sst sd
 sst <- dcast(sst, date ~ station, value.var = "temp_2")#reshape to wide-format data table
-sst$sst_mean <- rowMeans(sst[2:23], na.rm = TRUE)
+sst$sst_mean <- rowMeans(sst[2:23], na.rm = TRUE)#get daily means for sst
 sub <- filter(waterTemp, station %in% sentinels)#filter to sentinel stations
 sub <- dcast(sub, date ~ station, value.var = "temp_100")#reshape to wide-format data table
-sub$sub_mean <- rowMeans(sub[2:23], na.rm = TRUE)
+sub$sub_mean <- rowMeans(sub[2:23], na.rm = TRUE)#get daily means for subsurface temp
 waterTemp.core <- filter(waterTemp, station %in% coreStations)#core data
 sst.core <- dcast(waterTemp.core, date ~ station, value.var = "temp_2")#reshape to wide-format data table
 sst.core$sst_mean <- rowMeans(sst.core[2:16], na.rm = TRUE)
@@ -164,6 +171,24 @@ temp_2.sum <- ggplot(df) +
   theme_classic(base_size = 20) + 
   theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
 
+#SST SD time series
+ylab <- "SST SD\nanomaly"
+sst.sdf <- ggplot(sst.sd, aes(x = date, y = sst.sd_mean-sst.sd.mean)) +
+  geom_line(color = "grey") + 
+  geom_line(aes(y = rollmean(sst.sd_mean-sst.sd.mean, 30, na.pad = TRUE)), color = "black") +
+  geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
+  labs(y = ylab) +
+  theme_classic(base_size = 20) +
+  theme(axis.title.x = element_blank())
+
+#SST SD station conditions boxplot
+df <- summarize(group_by_at(allLengthsEnv, vars(year, sites, region)), sst_sd = (mean(sst_sd)*attr(allLengthsEnv$sst_sd, "scaled:scale")+attr(allLengthsEnv$sst_sd, "scaled:center")))
+sst_sd.sum <- ggplot(df) + 
+  geom_boxplot(aes(x = year, y = sst_sd)) +
+  labs(x = "Year") + 
+  theme_classic(base_size = 20) + 
+  theme(axis.title.y = element_blank(), plot.margin=unit(c(1,1,1,-2), "cm"), axis.text.x = element_text(size = 15))
+
 #Subsurface time series
 ylab <- "Subsurface\ntemperature anomaly (°C)"
 subf <- ggplot(sub, aes(x = date, y = sub_mean-sub.mean)) +
@@ -203,7 +228,7 @@ moci.sum <- ggplot(df) +
 
 #MERGE PLOTS
 #====
-jpeg("figures/manuscript/figure4_environmentalConditions.jpeg", units = "in", width = 12, height = 13, res = 400)
-ggarrange(cf, NULL, cuti.sum, sstf, NULL, temp_2.sum, subf, NULL, temp_100.sum, chf, NULL, chla.sum, mocif, NULL, moci.sum, ncol = 3, nrow = 5, align = "hv", labels = c("A", "", "B", "C", "", "D", "E", "", "F", "G", "", "H", "I", "", "J"), font.label = list(size = 20), widths = c(1, -.1, 1))#arrange plots into multipanel grid, vertically and horizontally aligned
+jpeg("figures/manuscript/figure4_environmentalConditions.jpeg", units = "in", width = 12, height = 16, res = 400)
+ggarrange(cf, NULL, cuti.sum, sstf, NULL, temp_2.sum, subf, NULL, temp_100.sum, sst.sdf, NULL, sst_sd.sum, chf, NULL, chla.sum, mocif, NULL, moci.sum, ncol = 3, nrow = 6, align = "hv", labels = c("A", "", "B", "C", "", "D", "E", "", "F", "G", "", "H", "I", "", "J", "K", "", "L"), font.label = list(size = 20), widths = c(1, -.1, 1))#arrange plots into multipanel grid, vertically and horizontally aligned
 dev.off()
 #====
