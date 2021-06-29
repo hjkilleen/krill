@@ -38,9 +38,13 @@ AIC(ep1, ep2)
 #PLOTTING NONLINEAR MODEL
 #====
 epg2 <- nls(length ~ SSasymp(temp_2, Asym, r0, lrc), data = epg)
+lab1 <- expression(~phi[1] == 0.825)#annotation labels
 ggplot(augment(ep2))+ 
   geom_line(aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (.fitted*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) + 
   geom_point(data = epg, aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (length*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) +
+  annotate("text", x = 15, y = 19.5, label = "\u03d5[1] = 0.825***", size = 5, hjust = 0) + 
+  annotate("text", x = 15, y = 19, label = "\u03d5[2] = 0.026*", size = 5, hjust = 0) + 
+  annotate("text", x = 15, y = 18.5, label = "\u03d5[3] = -1.299***", size = 5, hjust = 0) + 
   labs(x = "SST (°C)", 
        y = "Length (mm)", 
        title = "E. pacifica asymptotic length model", 
