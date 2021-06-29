@@ -56,7 +56,7 @@ ts.chla.plot <- ggplot(tssum, aes(x = chla*attr(ts$chla, "scaled:scale") + attr(
   scale_color_manual(values = cols) + 
   labs(x = " ", y = " ") + 
   theme_classic(base_size = 20) + 
-  theme(plot.title = element_text(hjust = 0.5), legend.position = "none")
+  theme(plot.title = element_text(hjust = 0.5))
 
 #Nematoscelis difficilis
 ndsum <- summarize(group_by_at(nd, vars(station, year)), temp_2 = mean(temp_2), chla = mean(chla), cuti = mean(cuti))
