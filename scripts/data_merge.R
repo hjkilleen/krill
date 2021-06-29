@@ -21,8 +21,8 @@ climatology <- summarize(group_by(env, station), chl = mean(chlor_a, na.rm = TRU
 #====
 #Get SST and subsurface temperatures, average across 2 days prior to sample
 for(i in seq(1:nrow(a))) {#get SST and subsurface temperatures for each list element
-  a$temp_2[i] <- get.temp.2(a$station[i], a$year[i], 2)
-  a$temp_100[i] <- get.temp.100(a$station[i], a$year[i], 2)
+  a$temp_2[i] <- get.temp.2(a$station[i], a$year[i], 10)
+  a$temp_100[i] <- get.temp.100(a$station[i], a$year[i], 5)
 }
 
 #Get SST variance variable based on prior two weeks
