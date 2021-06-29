@@ -15,7 +15,7 @@ load("output/environmentalCoefficients.rda")
 #====
 envCoef <- dplyr::select(environmentalCoefficients, "Ecoefficient", "Tcoefficient", "Ncoefficient")
 rownames(envCoef) <- environmentalCoefficients$predictor
-names(envCoef) <- c("E. pacifica", "T. spinifera", "N. difficilis")
+names(envCoef) <- c(" ", "  ", "   ")#EP, TS, ND
 envCoef <- arrange(envCoef, -row_number())#reverse row order
 
 envCoef <- envCoef[-c(12:13),]#remove sex & intercept score
@@ -34,6 +34,7 @@ superheat(ecMat,
           heat.na.col = "black",
           row.title = "Environmental Predictor",
           X.text.size = 8,
+          legend = FALSE, 
           #row.title = "Predictor",
           row.title.size = 11, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 6, legend.text.size = 20)
 #====
@@ -47,6 +48,7 @@ superheat(ecMat,
           heat.na.col = "black",
           row.title = "Environmental Predictor",
           X.text.size = 8,
+          legend = FALSE, 
           row.title.size = 11, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 10, legend.text.size = 20, left.label.size = .4)
 dev.off()
 #====
