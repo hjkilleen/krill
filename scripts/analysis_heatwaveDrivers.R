@@ -114,13 +114,13 @@ ep.sst.plot <- ggplot(filter(epc, year == "2013" | year == "2015" | year == "201
   geom_boxplot(data = ep.dfs[[1]], aes(group=temp_2), color = "#56B4E9", width = 0.05) + 
   geom_boxplot(data = ep.dfs[[2]], aes(group = temp_2), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = ep.dfs[[3]], aes(group = temp_2), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = ep.est.sst$xmin[7], y = ep.est.sst$ymin[7], xend = ep.est.sst$xmax[7], yend = ep.est.sst$ymax[7]), size = 1.5, color = "black") +
-  geom_segment(aes(x = ep.est.sst$xmin[1], y = ep.est.sst$ymin[1], xend = ep.est.sst$xmax[1], yend = ep.est.sst$ymax[1]), size = 1.5, color = "#56B4E9") + #female
-  geom_segment(aes(x = ep.est.sst$xmin[2], y = ep.est.sst$ymin[2], xend = ep.est.sst$xmax[2], yend = ep.est.sst$ymax[2]), size = 1.5, color = "#56B4E9", linetype = "dotted") + #male
-  geom_segment(aes(x = ep.est.sst$xmin[5], y = ep.est.sst$ymin[5], xend = ep.est.sst$xmax[5], yend = ep.est.sst$ymax[5]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = ep.est.sst$xmin[6], y = ep.est.sst$ymin[6], xend = ep.est.sst$xmax[6], yend = ep.est.sst$ymax[6]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = ep.est.sst$xmin[3], y = ep.est.sst$ymin[3], xend = ep.est.sst$xmax[3], yend = ep.est.sst$ymax[3]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = ep.est.sst$xmin[4], y = ep.est.sst$ymin[4], xend = ep.est.sst$xmax[4], yend = ep.est.sst$ymax[4]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.sst$xmin[7], y = ep.est.sst$ymin[7], xend = ep.est.sst$xmax[7], yend = ep.est.sst$ymax[7]), size = 1, color = "black") +
+  geom_segment(aes(x = ep.est.sst$xmin[1], y = ep.est.sst$ymin[1], xend = ep.est.sst$xmax[1], yend = ep.est.sst$ymax[1]), size = 1, color = "#56B4E9") + #female
+  geom_segment(aes(x = ep.est.sst$xmin[2], y = ep.est.sst$ymin[2], xend = ep.est.sst$xmax[2], yend = ep.est.sst$ymax[2]), size = 1, color = "#56B4E9", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.sst$xmin[5], y = ep.est.sst$ymin[5], xend = ep.est.sst$xmax[5], yend = ep.est.sst$ymax[5]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = ep.est.sst$xmin[6], y = ep.est.sst$ymin[6], xend = ep.est.sst$xmax[6], yend = ep.est.sst$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.sst$xmin[3], y = ep.est.sst$ymin[3], xend = ep.est.sst$xmax[3], yend = ep.est.sst$ymax[3]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = ep.est.sst$xmin[4], y = ep.est.sst$ymin[4], xend = ep.est.sst$xmax[4], yend = ep.est.sst$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = "\n\nmean length (mm)", title = "SST (°C)") + 
   ylim(10, 40) +
   scale_x_continuous(breaks = c(10, 14, 18)) + 
@@ -142,13 +142,13 @@ ep.cuti.plot <- ggplot(filter(epc, year == "2013" | year == "2015" | year == "20
   geom_boxplot(data = ep.dfs[[1]], aes(group=cuti), color = "#56B4E9", width = 0.05) + 
   geom_boxplot(data = ep.dfs[[2]], aes(group = cuti), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = ep.dfs[[3]], aes(group = cuti), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = ep.est.cuti$xmin[7], y = ep.est.cuti$ymin[7], xend = ep.est.cuti$xmax[7], yend = ep.est.cuti$ymax[7]), size = 1.5, color = "black") +
-  geom_segment(aes(x = ep.est.cuti$xmin[1], y = ep.est.cuti$ymin[1], xend = ep.est.cuti$xmax[1], yend = ep.est.cuti$ymax[1]), size = 1.5, color = "#56B4E9") + #female
-  geom_segment(aes(x = ep.est.cuti$xmin[2], y = ep.est.cuti$ymin[2], xend = ep.est.cuti$xmax[2], yend = ep.est.cuti$ymax[2]), size = 1.5, color = "#56B4E9", linetype = "dotted") + #male
-  geom_segment(aes(x = ep.est.cuti$xmin[5], y = ep.est.cuti$ymin[5], xend = ep.est.cuti$xmax[5], yend = ep.est.cuti$ymax[5]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = ep.est.cuti$xmin[6], y = ep.est.cuti$ymin[6], xend = ep.est.cuti$xmax[6], yend = ep.est.cuti$ymax[6]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = ep.est.cuti$xmin[3], y = ep.est.cuti$ymin[3], xend = ep.est.cuti$xmax[3], yend = ep.est.cuti$ymax[3]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = ep.est.cuti$xmin[4], y = ep.est.cuti$ymin[4], xend = ep.est.cuti$xmax[4], yend = ep.est.cuti$ymax[4]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.cuti$xmin[7], y = ep.est.cuti$ymin[7], xend = ep.est.cuti$xmax[7], yend = ep.est.cuti$ymax[7]), size = 1, color = "black") +
+  geom_segment(aes(x = ep.est.cuti$xmin[1], y = ep.est.cuti$ymin[1], xend = ep.est.cuti$xmax[1], yend = ep.est.cuti$ymax[1]), size = 1, color = "#56B4E9") + #female
+  geom_segment(aes(x = ep.est.cuti$xmin[2], y = ep.est.cuti$ymin[2], xend = ep.est.cuti$xmax[2], yend = ep.est.cuti$ymax[2]), size = 1, color = "#56B4E9", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.cuti$xmin[5], y = ep.est.cuti$ymin[5], xend = ep.est.cuti$xmax[5], yend = ep.est.cuti$ymax[5]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = ep.est.cuti$xmin[6], y = ep.est.cuti$ymin[6], xend = ep.est.cuti$xmax[6], yend = ep.est.cuti$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.cuti$xmin[3], y = ep.est.cuti$ymin[3], xend = ep.est.cuti$xmax[3], yend = ep.est.cuti$ymax[3]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = ep.est.cuti$xmin[4], y = ep.est.cuti$ymin[4], xend = ep.est.cuti$xmax[4], yend = ep.est.cuti$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = " ", title = "CUTI") + 
   xlim(-.19, 2.51) +
   ylim(10, 35) +
@@ -169,13 +169,13 @@ ep.chla.plot <- ggplot(filter(epc, year == "2013" | year == "2015" | year == "20
   geom_boxplot(data = ep.dfs[[1]], aes(group=chla), color = "#56B4E9", width = 0.05) + 
   geom_boxplot(data = ep.dfs[[2]], aes(group = chla), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = ep.dfs[[3]], aes(group = chla), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = ep.est.chla$xmin[7], y = ep.est.chla$ymin[7], xend = ep.est.chla$xmax[7], yend = ep.est.chla$ymax[7]), size = 1.5, color = "black") +
-  geom_segment(aes(x = ep.est.chla$xmin[1], y = ep.est.chla$ymin[1], xend = ep.est.chla$xmax[1], yend = ep.est.chla$ymax[1]), size = 1.5, color = "#56B4E9") + #female
-  geom_segment(aes(x = ep.est.chla$xmin[2], y = ep.est.chla$ymin[2], xend = ep.est.chla$xmax[2], yend = ep.est.chla$ymax[2]), size = 1.5, color = "#56B4E9", linetype = "dotted") + #male
-  geom_segment(aes(x = ep.est.chla$xmin[5], y = ep.est.chla$ymin[5], xend = ep.est.chla$xmax[5], yend = ep.est.chla$ymax[5]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = ep.est.chla$xmin[6], y = ep.est.chla$ymin[6], xend = ep.est.chla$xmax[6], yend = ep.est.chla$ymax[6]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = ep.est.chla$xmin[3], y = ep.est.chla$ymin[3], xend = ep.est.chla$xmax[3], yend = ep.est.chla$ymax[3]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = ep.est.chla$xmin[4], y = ep.est.chla$ymin[4], xend = ep.est.chla$xmax[4], yend = ep.est.chla$ymax[4]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.chla$xmin[7], y = ep.est.chla$ymin[7], xend = ep.est.chla$xmax[7], yend = ep.est.chla$ymax[7]), size = 1, color = "black") +
+  geom_segment(aes(x = ep.est.chla$xmin[1], y = ep.est.chla$ymin[1], xend = ep.est.chla$xmax[1], yend = ep.est.chla$ymax[1]), size = 1, color = "#56B4E9") + #female
+  geom_segment(aes(x = ep.est.chla$xmin[2], y = ep.est.chla$ymin[2], xend = ep.est.chla$xmax[2], yend = ep.est.chla$ymax[2]), size = 1, color = "#56B4E9", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.chla$xmin[5], y = ep.est.chla$ymin[5], xend = ep.est.chla$xmax[5], yend = ep.est.chla$ymax[5]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = ep.est.chla$xmin[6], y = ep.est.chla$ymin[6], xend = ep.est.chla$xmax[6], yend = ep.est.chla$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = ep.est.chla$xmin[3], y = ep.est.chla$ymin[3], xend = ep.est.chla$xmax[3], yend = ep.est.chla$ymax[3]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = ep.est.chla$xmin[4], y = ep.est.chla$ymin[4], xend = ep.est.chla$xmax[4], yend = ep.est.chla$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = " ", title = expression(paste("Chl-a (log mg ", m^-3, ")"))) + 
   xlim(-1.681, 2.6) +
   ylim(10, 35) +
@@ -199,13 +199,13 @@ ts.sst.plot <- ggplot(filter(tsc, year == "2013" | year == "2015" | year == "201
   geom_boxplot(data = ts.dfs[[1]], aes(group=temp_2), color = "#56B4E9", width = 0.05) + 
   geom_boxplot(data = ts.dfs[[2]], aes(group = temp_2), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = ts.dfs[[3]], aes(group = temp_2), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = ts.est.sst$xmin[7], y = ts.est.sst$ymin[7], xend = ts.est.sst$xmax[7], yend = ts.est.sst$ymax[7]), size = 1.5, color = "black") + 
-  geom_segment(aes(x = ts.est.sst$xmin[1], y = ts.est.sst$ymin[1], xend = ts.est.sst$xmax[1], yend = ts.est.sst$ymax[1]), size = 1.5, color = "#56B4E9") + #female
-  geom_segment(aes(x = ts.est.sst$xmin[2], y = ts.est.sst$ymin[2], xend = ts.est.sst$xmax[2], yend = ts.est.sst$ymax[2]), size = 1.5, color = "#56B4E9", linetype = "dotted") + #male
-  geom_segment(aes(x = ts.est.sst$xmin[5], y = ts.est.sst$ymin[5], xend = ts.est.sst$xmax[5], yend = ts.est.sst$ymax[5]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = ts.est.sst$xmin[6], y = ts.est.sst$ymin[6], xend = ts.est.sst$xmax[6], yend = ts.est.sst$ymax[6]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = ts.est.sst$xmin[3], y = ts.est.sst$ymin[3], xend = ts.est.sst$xmax[3], yend = ts.est.sst$ymax[3]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = ts.est.sst$xmin[4], y = ts.est.sst$ymin[4], xend = ts.est.sst$xmax[4], yend = ts.est.sst$ymax[4]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = ts.est.sst$xmin[7], y = ts.est.sst$ymin[7], xend = ts.est.sst$xmax[7], yend = ts.est.sst$ymax[7]), size = 1, color = "black") + 
+  geom_segment(aes(x = ts.est.sst$xmin[1], y = ts.est.sst$ymin[1], xend = ts.est.sst$xmax[1], yend = ts.est.sst$ymax[1]), size = 1, color = "#56B4E9") + #female
+  geom_segment(aes(x = ts.est.sst$xmin[2], y = ts.est.sst$ymin[2], xend = ts.est.sst$xmax[2], yend = ts.est.sst$ymax[2]), size = 1, color = "#56B4E9", linetype = "dotted") + #male
+  geom_segment(aes(x = ts.est.sst$xmin[5], y = ts.est.sst$ymin[5], xend = ts.est.sst$xmax[5], yend = ts.est.sst$ymax[5]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = ts.est.sst$xmin[6], y = ts.est.sst$ymin[6], xend = ts.est.sst$xmax[6], yend = ts.est.sst$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = ts.est.sst$xmin[3], y = ts.est.sst$ymin[3], xend = ts.est.sst$xmax[3], yend = ts.est.sst$ymax[3]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = ts.est.sst$xmin[4], y = ts.est.sst$ymin[4], xend = ts.est.sst$xmax[4], yend = ts.est.sst$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = "\n\nmean length (mm)") + 
   ylim(10, 40) +
   scale_x_continuous(breaks = c(10, 14, 18)) + 
@@ -226,13 +226,13 @@ ts.cuti.plot <- ggplot(filter(tsc, year == "2013" | year == "2015" | year == "20
   geom_boxplot(data = ts.dfs[[1]], aes(group=cuti), color = "#56B4E9", width = 0.05) + 
   geom_boxplot(data = ts.dfs[[2]], aes(group = cuti), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = ts.dfs[[3]], aes(group = cuti), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = ts.est.cuti$xmin[5], y = ts.est.cuti$ymin[5], xend = ts.est.cuti$xmax[5], yend = ts.est.cuti$ymax[5]), size = 1.5, color = "black") + 
-  geom_segment(aes(x = ts.est.cuti$xmin[1], y = ts.est.cuti$ymin[1], xend = ts.est.cuti$xmax[1], yend = ts.est.cuti$ymax[1]), size = 1.5, color = "#56B4E9") + #female
-  geom_segment(aes(x = ts.est.cuti$xmin[2], y = ts.est.cuti$ymin[2], xend = ts.est.cuti$xmax[2], yend = ts.est.cuti$ymax[2]), size = 1.5, color = "#56B4E9", linetype = "dotted") + #male
-  geom_segment(aes(x = ts.est.cuti$xmin[5], y = ts.est.cuti$ymin[5], xend = ts.est.cuti$xmax[5], yend = ts.est.cuti$ymax[5]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = ts.est.cuti$xmin[6], y = ts.est.cuti$ymin[6], xend = ts.est.cuti$xmax[6], yend = ts.est.cuti$ymax[6]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = ts.est.cuti$xmin[3], y = ts.est.cuti$ymin[3], xend = ts.est.cuti$xmax[3], yend = ts.est.cuti$ymax[3]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = ts.est.cuti$xmin[4], y = ts.est.cuti$ymin[4], xend = ts.est.cuti$xmax[4], yend = ts.est.cuti$ymax[4]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = ts.est.cuti$xmin[5], y = ts.est.cuti$ymin[5], xend = ts.est.cuti$xmax[5], yend = ts.est.cuti$ymax[5]), size = 1, color = "black") + 
+  geom_segment(aes(x = ts.est.cuti$xmin[1], y = ts.est.cuti$ymin[1], xend = ts.est.cuti$xmax[1], yend = ts.est.cuti$ymax[1]), size = 1, color = "#56B4E9") + #female
+  geom_segment(aes(x = ts.est.cuti$xmin[2], y = ts.est.cuti$ymin[2], xend = ts.est.cuti$xmax[2], yend = ts.est.cuti$ymax[2]), size = 1, color = "#56B4E9", linetype = "dotted") + #male
+  geom_segment(aes(x = ts.est.cuti$xmin[5], y = ts.est.cuti$ymin[5], xend = ts.est.cuti$xmax[5], yend = ts.est.cuti$ymax[5]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = ts.est.cuti$xmin[6], y = ts.est.cuti$ymin[6], xend = ts.est.cuti$xmax[6], yend = ts.est.cuti$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = ts.est.cuti$xmin[3], y = ts.est.cuti$ymin[3], xend = ts.est.cuti$xmax[3], yend = ts.est.cuti$ymax[3]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = ts.est.cuti$xmin[4], y = ts.est.cuti$ymin[4], xend = ts.est.cuti$xmax[4], yend = ts.est.cuti$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = " ") + 
   xlim(-.19, 2.51) +
   ylim(10, 35) +
@@ -279,11 +279,11 @@ nd.est.sst$ymax = nd.est.sst$intercept+(nd.est.sst$slope*nd.est.sst$xmax)
 nd.sst.plot <- ggplot(filter(ndc, year == "2015" | year == "2017"), aes(x = temp_2, y = length)) + 
   geom_boxplot(data = nd.dfs[[1]], aes(group = temp_2), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = nd.dfs[[2]], aes(group = temp_2), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = nd.est.sst$xmin[5], y = nd.est.sst$ymin[5], xend = nd.est.sst$xmax[5], yend = nd.est.sst$ymax[5]), size = 1.5, color = "black") +
-  geom_segment(aes(x = nd.est.sst$xmin[3], y = nd.est.sst$ymin[3], xend = nd.est.sst$xmax[3], yend = nd.est.sst$ymax[3]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = nd.est.sst$xmin[4], y = nd.est.sst$ymin[4], xend = nd.est.sst$xmax[4], yend = nd.est.sst$ymax[4]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = nd.est.sst$xmin[1], y = nd.est.sst$ymin[1], xend = nd.est.sst$xmax[1], yend = nd.est.sst$ymax[1]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = nd.est.sst$xmin[2], y = nd.est.sst$ymin[2], xend = nd.est.sst$xmax[2], yend = nd.est.sst$ymax[2]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = nd.est.sst$xmin[5], y = nd.est.sst$ymin[5], xend = nd.est.sst$xmax[5], yend = nd.est.sst$ymax[5]), size = 1, color = "black") +
+  geom_segment(aes(x = nd.est.sst$xmin[3], y = nd.est.sst$ymin[3], xend = nd.est.sst$xmax[3], yend = nd.est.sst$ymax[3]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = nd.est.sst$xmin[4], y = nd.est.sst$ymin[4], xend = nd.est.sst$xmax[4], yend = nd.est.sst$ymax[4]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = nd.est.sst$xmin[1], y = nd.est.sst$ymin[1], xend = nd.est.sst$xmax[1], yend = nd.est.sst$ymax[1]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = nd.est.sst$xmin[2], y = nd.est.sst$ymin[2], xend = nd.est.sst$xmax[2], yend = nd.est.sst$ymax[2]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = "\n\nmean length (mm)", title = " ") + 
   ylim(10, 40) +
   scale_x_continuous(breaks = c(10, 14, 18)) + 
@@ -305,11 +305,11 @@ nd.est.cuti$ymax = nd.est.cuti$intercept+(nd.est.cuti$slope*nd.est.cuti$xmax)
 nd.cuti.plot <- ggplot(filter(ndc, year == "2015" | year == "2017"), aes(x = cuti, y = length)) + 
   geom_boxplot(data = nd.dfs[[1]], aes(group = cuti), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = nd.dfs[[2]], aes(group = cuti), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = nd.est.cuti$xmin[5], y = nd.est.cuti$ymin[5], xend = nd.est.cuti$xmax[5], yend = nd.est.cuti$ymax[5]), size = 1.5, color = "black") +
-  geom_segment(aes(x = nd.est.cuti$xmin[3], y = nd.est.cuti$ymin[3], xend = nd.est.cuti$xmax[3], yend = nd.est.cuti$ymax[3]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = nd.est.cuti$xmin[4], y = nd.est.cuti$ymin[4], xend = nd.est.cuti$xmax[4], yend = nd.est.cuti$ymax[4]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = nd.est.cuti$xmin[1], y = nd.est.cuti$ymin[1], xend = nd.est.cuti$xmax[1], yend = nd.est.cuti$ymax[1]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = nd.est.cuti$xmin[2], y = nd.est.cuti$ymin[2], xend = nd.est.cuti$xmax[2], yend = nd.est.cuti$ymax[2]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = nd.est.cuti$xmin[5], y = nd.est.cuti$ymin[5], xend = nd.est.cuti$xmax[5], yend = nd.est.cuti$ymax[5]), size = 1, color = "black") +
+  geom_segment(aes(x = nd.est.cuti$xmin[3], y = nd.est.cuti$ymin[3], xend = nd.est.cuti$xmax[3], yend = nd.est.cuti$ymax[3]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = nd.est.cuti$xmin[4], y = nd.est.cuti$ymin[4], xend = nd.est.cuti$xmax[4], yend = nd.est.cuti$ymax[4]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = nd.est.cuti$xmin[1], y = nd.est.cuti$ymin[1], xend = nd.est.cuti$xmax[1], yend = nd.est.cuti$ymax[1]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = nd.est.cuti$xmin[2], y = nd.est.cuti$ymin[2], xend = nd.est.cuti$xmax[2], yend = nd.est.cuti$ymax[2]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = " ") + 
   xlim(-.19, 2.51) +
   ylim(10, 35) +
@@ -329,11 +329,11 @@ nd.est.chla$ymax = nd.est.chla$intercept+(nd.est.chla$slope*nd.est.chla$xmax)
 nd.chla.plot <- ggplot(filter(ndc, year == "2015" | year == "2017"), aes(x = chla, y = length)) + 
   geom_boxplot(data = nd.dfs[[1]], aes(group = chla), color = "#D55E00", width = 0.05) +
   geom_boxplot(data = nd.dfs[[2]], aes(group = chla), color = "#0072B2", width = 0.05) +
-  geom_segment(aes(x = nd.est.chla$xmin[5], y = nd.est.chla$ymin[5], xend = nd.est.chla$xmax[5], yend = nd.est.chla$ymax[5]), size = 1.5, color = "black") +
-  geom_segment(aes(x = nd.est.chla$xmin[3], y = nd.est.chla$ymin[3], xend = nd.est.chla$xmax[3], yend = nd.est.chla$ymax[3]), size = 1.5, color = "#0072B2") + #female
-  geom_segment(aes(x = nd.est.chla$xmin[4], y = nd.est.chla$ymin[4], xend = nd.est.chla$xmax[4], yend = nd.est.chla$ymax[4]), size = 1.5, color = "#0072B2", linetype = "dotted") + #male
-  geom_segment(aes(x = nd.est.chla$xmin[1], y = nd.est.chla$ymin[1], xend = nd.est.chla$xmax[1], yend = nd.est.chla$ymax[1]), size = 1.5, color = "#D55E00") + #female
-  geom_segment(aes(x = nd.est.chla$xmin[2], y = nd.est.chla$ymin[2], xend = nd.est.chla$xmax[2], yend = nd.est.chla$ymax[2]), size = 1.5, color = "#D55E00", linetype = "dotted") + #male
+  geom_segment(aes(x = nd.est.chla$xmin[5], y = nd.est.chla$ymin[5], xend = nd.est.chla$xmax[5], yend = nd.est.chla$ymax[5]), size = 1, color = "black") +
+  geom_segment(aes(x = nd.est.chla$xmin[3], y = nd.est.chla$ymin[3], xend = nd.est.chla$xmax[3], yend = nd.est.chla$ymax[3]), size = 1, color = "#0072B2") + #female
+  geom_segment(aes(x = nd.est.chla$xmin[4], y = nd.est.chla$ymin[4], xend = nd.est.chla$xmax[4], yend = nd.est.chla$ymax[4]), size = 1, color = "#0072B2", linetype = "dotted") + #male
+  geom_segment(aes(x = nd.est.chla$xmin[1], y = nd.est.chla$ymin[1], xend = nd.est.chla$xmax[1], yend = nd.est.chla$ymax[1]), size = 1, color = "#D55E00") + #female
+  geom_segment(aes(x = nd.est.chla$xmin[2], y = nd.est.chla$ymin[2], xend = nd.est.chla$xmax[2], yend = nd.est.chla$ymax[2]), size = 1, color = "#D55E00", linetype = "dotted") + #male
   labs(x = " ", y = " ") + 
   xlim(-1.681, 2.6) +
   ylim(10, 35) +
