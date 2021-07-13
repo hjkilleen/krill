@@ -25,14 +25,18 @@ r0 <- 0#respone when scaled temp_2 is 0
 lrc <- -0.5#natural logarithm of the rate constant
 
 epg <- summarize(group_by_at(ep, vars(sites, temp_2)), length = mean(length))#group data by sites and SST value for plot
+epg17 <- summarize(group_by_at(filter(ep, year == "2017"), vars(sites, temp_2)), length = mean(length))#group data by sites and SST value for plot 2017
 #====
 
 #MODELING 
 #====
-#Model testing
+#Model testing full domain
 ep1 <- lm(length~temp_2, ep)#linear
 ep2 <- nls(length ~ SSasymp(temp_2, Asym, r0, lrc), data = ep)#monomolecular growth/von Bertalanffy
 AIC(ep1, ep2)
+
+#Linear model  <14
+ep3 <- lm(length~temp_2, filter(ep, temp_2 < 1.09))#linear
 #====
 
 #PLOTTING NONLINEAR MODEL
@@ -40,11 +44,14 @@ AIC(ep1, ep2)
 epg2 <- nls(length ~ SSasymp(temp_2, Asym, r0, lrc), data = epg)
 lab1 <- expression(~phi[1] == 0.825)#annotation labels
 ggplot(augment(ep2))+ 
-  geom_line(aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (.fitted*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) + 
   geom_point(data = epg, aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (length*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) +
+  geom_point(data = epg17, aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (length*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center"))), color = "red") +
+  geom_line(aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (.fitted*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center")))) + 
+  geom_line(data = augment(ep3), aes(x = (temp_2*attr(ep$temp_2, "scaled:scale")+attr(ep$temp_2, "scaled:center")), y = (.fitted*attr(ep$length, "scaled:scale")+attr(ep$length, "scaled:center"))), color = "blue") + 
+  geom_vline(xintercept = 14, linetype = "dashed") + 
   annotate("text", x = 15, y = 19.5, label = "\u03d5[1] = 0.825***", size = 5, hjust = 0) + 
   annotate("text", x = 15, y = 19, label = "\u03d5[2] = 0.026*", size = 5, hjust = 0) + 
-  annotate("text", x = 15, y = 18.5, label = "\u03d5[3] = -1.299***", size = 5, hjust = 0) + 
+  annotate("text", x = 15, y = 18.5, label = "\u03d5[3] = -1.299***", size = 5, hjust = 0) +
   labs(x = "SST (°C)", 
        y = "Length (mm)", 
        title = "E. pacifica asymptotic length model", 
