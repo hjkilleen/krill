@@ -1,6 +1,6 @@
 #Environmental model
 #Model environmental drivers of krill length
-# Thu Jan 28 15:15:57 2021 ------------------------------
+# Tue Jul 13 14:29:46 2021 ------------------------------
 
 #LIBRARIES & SOURCES
 #====
@@ -147,3 +147,67 @@ environmentalCoefficients <- left_join(environmentalCoefficients, tsc, by = "pre
 environmentalCoefficients <- left_join(environmentalCoefficients, ndc, by = "predictor")
 save(environmentalCoefficients, file = "output/environmentalCoefficients.rda")#save list
 #====
+
+#Random Effects Statistical Testing 
+#====
+#Set up dataframes
+regions <- read_csv("data/regions.csv")
+
+#Ep
+ep.ranef <- ranef(epm)$station
+ep.ranef$station <- as.numeric(rownames(ep.ranef))
+names(ep.ranef) <- c("intercept", "temp_2", "station")
+ep.ranef <- left_join(ep.ranef, regions)
+ep.ranef$region[ep.ranef$region=="north"] <- "core"
+ep.ranef$region[ep.ranef$region=="north_central"] <- "core"
+
+#Ts
+ts.ranef <- ranef(tsm)$station
+ts.ranef$station <- as.numeric(rownames(ts.ranef))
+names(ts.ranef) <- c("intercept", "temp_2", "station")
+ts.ranef <- left_join(ts.ranef, regions)
+ts.ranef$region[ts.ranef$region=="north"] <- "core"
+ts.ranef$region[ts.ranef$region=="north_central"] <- "core"
+
+#Nd
+nd.ranef <- ranef(ndm)$station
+nd.ranef$station <- as.numeric(rownames(nd.ranef))
+names(nd.ranef) <- c("intercept", "station")
+nd.ranef <- left_join(nd.ranef, regions)
+nd.ranef$region[nd.ranef$region=="north"] <- "core"
+nd.ranef$region[nd.ranef$region=="north_central"] <- "core"
+
+#Two-sample wilcoxon test for onshore vs offshore
+#intercepts
+wilcox.test(intercept~shore, ep.ranef, alternative = "two.sided")
+wilcox.test(intercept~shore, ts.ranef, alternative = "two.sided")
+wilcox.test(intercept~shore, nd.ranef, alternative = "two.sided")
+
+#slope
+wilcox.test(temp_2~shore, ep.ranef, alternative = "two.sided")
+wilcox.test(temp_2~shore, ts.ranef, alternative = "two.sided")
+wilcox.test(temp_2~shore, filter(ts.ranef, latitude<38), alternative = "two.sided")
+
+#Kruskal-Wallis test for regional variation
+#intercepts
+#Ep
+kruskal.test(intercept ~ region, data = ep.ranef)
+pairwise.wilcox.test(ep.ranef$intercept, ep.ranef$region, p.adjust.method = "BH")#pairwise wilcoxon test
+ggplot(ep.ranef) + 
+  geom_boxplot(aes(x = region, y = intercept))
+
+#Ts
+kruskal.test(intercept ~ region, data = ts.ranef)
+
+#Nd
+kruskal.test(intercept ~ region, data = nd.ranef)
+
+#slope
+#Ep
+kruskal.test(temp_2 ~ region, data = ep.ranef)
+pairwise.wilcox.test(ep.ranef$temp_2, ep.ranef$region, p.adjust.method = "BH")#pairwise wilcoxon test
+ggplot(ep.ranef) + 
+  geom_boxplot(aes(x = region, y = temp_2))
+
+#Ts
+kruskal.test(temp_2 ~ region, data = ts.ranef)
