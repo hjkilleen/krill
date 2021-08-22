@@ -71,29 +71,29 @@ ndm.17 <- lmer(length~temp_2 + cuti + chla + sex:cuti + sex:temp_2 + sex:chla + 
 #PREPARE DATA FOR PLOTTING
 #====
 #unscale overall and annual dataframes
-ep.dfs <- list(ep.13, ep.15, ep.17, ep)
-for(i in seq(1:4)){
-  ep.dfs[[i]]$length <- ep.dfs[[i]]$length*attr(ep$length, "scaled:scale") + attr(ep$length, "scaled:center")#unscale axes
-  ep.dfs[[i]]$temp_2 <- ep.dfs[[i]]$temp_2*attr(ep$temp_2, "scaled:scale") + attr(ep$temp_2, "scaled:center")
-  ep.dfs[[i]]$cuti <- ep.dfs[[i]]$cuti*attr(ep$cuti, "scaled:scale") + attr(ep$cuti, "scaled:center")
-  ep.dfs[[i]]$chla <- ep.dfs[[i]]$chla*attr(ep$chla, "scaled:scale") + attr(ep$chla, "scaled:center")
-}
-
-ts.dfs <- list(ts.13, ts.15, ts.17, ts)
-for(i in seq(1:4)){
-  ts.dfs[[i]]$length <- ts.dfs[[i]]$length*attr(ts$length, "scaled:scale") + attr(ts$length, "scaled:center")#unscale axes
-  ts.dfs[[i]]$temp_2 <- ts.dfs[[i]]$temp_2*attr(ts$temp_2, "scaled:scale") + attr(ts$temp_2, "scaled:center")
-  ts.dfs[[i]]$cuti <- ts.dfs[[i]]$cuti*attr(ts$cuti, "scaled:scale") + attr(ts$cuti, "scaled:center")
-  ts.dfs[[i]]$chla <- ts.dfs[[i]]$chla*attr(ts$chla, "scaled:scale") + attr(ts$chla, "scaled:center")
-}
-
-nd.dfs <- list(nd.15, nd.17, nd)
-for(i in seq(1:3)){
-  nd.dfs[[i]]$length <- nd.dfs[[i]]$length*attr(nd$length, "scaled:scale") + attr(nd$length, "scaled:center")#unscale axes
-  nd.dfs[[i]]$temp_2 <- nd.dfs[[i]]$temp_2*attr(nd$temp_2, "scaled:scale") + attr(nd$temp_2, "scaled:center")
-  nd.dfs[[i]]$cuti <- nd.dfs[[i]]$cuti*attr(nd$cuti, "scaled:scale") + attr(nd$cuti, "scaled:center")
-  nd.dfs[[i]]$chla <- nd.dfs[[i]]$chla*attr(nd$chla, "scaled:scale") + attr(nd$chla, "scaled:center")
-}
+# ep.dfs <- list(ep.13, ep.15, ep.17, ep)
+# for(i in seq(1:4)){
+#   ep.dfs[[i]]$length <- ep.dfs[[i]]$length*attr(ep$length, "scaled:scale") + attr(ep$length, "scaled:center")#unscale axes
+#   ep.dfs[[i]]$temp_2 <- ep.dfs[[i]]$temp_2*attr(ep$temp_2, "scaled:scale") + attr(ep$temp_2, "scaled:center")
+#   ep.dfs[[i]]$cuti <- ep.dfs[[i]]$cuti*attr(ep$cuti, "scaled:scale") + attr(ep$cuti, "scaled:center")
+#   ep.dfs[[i]]$chla <- ep.dfs[[i]]$chla*attr(ep$chla, "scaled:scale") + attr(ep$chla, "scaled:center")
+# }
+# 
+# ts.dfs <- list(ts.13, ts.15, ts.17, ts)
+# for(i in seq(1:4)){
+#   ts.dfs[[i]]$length <- ts.dfs[[i]]$length*attr(ts$length, "scaled:scale") + attr(ts$length, "scaled:center")#unscale axes
+#   ts.dfs[[i]]$temp_2 <- ts.dfs[[i]]$temp_2*attr(ts$temp_2, "scaled:scale") + attr(ts$temp_2, "scaled:center")
+#   ts.dfs[[i]]$cuti <- ts.dfs[[i]]$cuti*attr(ts$cuti, "scaled:scale") + attr(ts$cuti, "scaled:center")
+#   ts.dfs[[i]]$chla <- ts.dfs[[i]]$chla*attr(ts$chla, "scaled:scale") + attr(ts$chla, "scaled:center")
+# }
+# 
+# nd.dfs <- list(nd.15, nd.17, nd)
+# for(i in seq(1:3)){
+#   nd.dfs[[i]]$length <- nd.dfs[[i]]$length*attr(nd$length, "scaled:scale") + attr(nd$length, "scaled:center")#unscale axes
+#   nd.dfs[[i]]$temp_2 <- nd.dfs[[i]]$temp_2*attr(nd$temp_2, "scaled:scale") + attr(nd$temp_2, "scaled:center")
+#   nd.dfs[[i]]$cuti <- nd.dfs[[i]]$cuti*attr(nd$cuti, "scaled:scale") + attr(nd$cuti, "scaled:center")
+#   nd.dfs[[i]]$chla <- nd.dfs[[i]]$chla*attr(nd$chla, "scaled:scale") + attr(nd$chla, "scaled:center")
+# }
 #====
 
 #PLOTTING
@@ -102,7 +102,7 @@ for(i in seq(1:3)){
 #SST
 #Model estimates for segents
 ep.est.sst <- data.frame(model = c("2013_F", "2013_M", "2015_F", "2015_M", "2017_F", "2017_M", "All"),
-                     intercept = c(coef(summary(epm.13))[1,1]*, coef(summary(epm.13))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm))[1,1]),
+                     intercept = c(coef(summary(epm.13))[1,1], coef(summary(epm.13))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm))[1,1]),
                      slope = c(coef(summary(epm.13))[2,1], coef(summary(epm.13))[2,1]+coef(summary(epm.13))[5,1], coef(summary(epm.15))[2,1], coef(summary(epm.15))[2,1]+coef(summary(epm.15))[5,1], coef(summary(epm.17))[2,1], coef(summary(epm.17))[2,1]+coef(summary(epm.17))[5,1], coef(summary(epm))[2,1]),
                      xmin = c(min(ep.13$temp_2), min(ep.13$temp_2), min(ep.15$temp_2), min(ep.15$temp_2), min(ep.17$temp_2), min(ep.17$temp_2), min(ep$temp_2)),
                      xmax = c(max(ep.13$temp_2), max(ep.13$temp_2), max(ep.15$temp_2), max(ep.15$temp_2), max(ep.17$temp_2), max(ep.17$temp_2), max(ep$temp_2)))
@@ -111,9 +111,9 @@ ep.est.sst$ymax = ep.est.sst$intercept+(ep.est.sst$slope*ep.est.sst$xmax)
 
 #plot
 ep.sst.plot <- ggplot(filter(epc, year == "2013" | year == "2015" | year == "2017"), aes(x = temp_2, y = length)) + 
-  geom_boxplot(data = ep.dfs[[1]], aes(group=temp_2), color = "#56B4E9", width = 0.05, alpha = 0.5) + 
-  geom_boxplot(data = ep.dfs[[2]], aes(group = temp_2), color = "#D55E00", width = 0.05, alpha = 0.5) +
-  geom_boxplot(data = ep.dfs[[3]], aes(group = temp_2), color = "#0072B2", width = 0.05, alpha = 0.5) +
+  geom_boxplot(data = ep.13, aes(group=temp_2), color = "#56B4E9", width = 0.05, alpha = 0.5) + 
+  geom_boxplot(data = ep.15, aes(group = temp_2), color = "#D55E00", width = 0.05, alpha = 0.5) +
+  geom_boxplot(data = ep.17, aes(group = temp_2), color = "#0072B2", width = 0.05, alpha = 0.5) +
   geom_segment(aes(x = ep.est.sst$xmin[7], y = ep.est.sst$ymin[7], xend = ep.est.sst$xmax[7], yend = ep.est.sst$ymax[7]), size = 1, color = "black") +
   geom_segment(aes(x = ep.est.sst$xmin[1], y = ep.est.sst$ymin[1], xend = ep.est.sst$xmax[1], yend = ep.est.sst$ymax[1]), size = 1, color = "#56B4E9") + #female
   geom_segment(aes(x = ep.est.sst$xmin[2], y = ep.est.sst$ymin[2], xend = ep.est.sst$xmax[2], yend = ep.est.sst$ymax[2]), size = 1, color = "#56B4E9", linetype = "dotted") + #male
@@ -121,7 +121,7 @@ ep.sst.plot <- ggplot(filter(epc, year == "2013" | year == "2015" | year == "201
   geom_segment(aes(x = ep.est.sst$xmin[6], y = ep.est.sst$ymin[6], xend = ep.est.sst$xmax[6], yend = ep.est.sst$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
   geom_segment(aes(x = ep.est.sst$xmin[3], y = ep.est.sst$ymin[3], xend = ep.est.sst$xmax[3], yend = ep.est.sst$ymax[3]), size = 1, color = "#D55E00") + #female
   geom_segment(aes(x = ep.est.sst$xmin[4], y = ep.est.sst$ymin[4], xend = ep.est.sst$xmax[4], yend = ep.est.sst$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
-  labs(x = " ", y = "\n\nMean length (mm)", title = "SST (°C)") + 
+  labs(x = " ", y = "\n\nmean length", title = "SST") + 
   theme_classic(base_size = 20) + 
   theme(plot.title = element_text(hjust = 0.5)) + 
   theme(axis.title.y = element_text(size = 16))
@@ -172,7 +172,7 @@ ep.chla.plot <- ggplot(filter(epc, year == "2013" | year == "2015" | year == "20
   geom_segment(aes(x = ep.est.chla$xmin[6], y = ep.est.chla$ymin[6], xend = ep.est.chla$xmax[6], yend = ep.est.chla$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
   geom_segment(aes(x = ep.est.chla$xmin[3], y = ep.est.chla$ymin[3], xend = ep.est.chla$xmax[3], yend = ep.est.chla$ymax[3]), size = 1, color = "#D55E00") + #female
   geom_segment(aes(x = ep.est.chla$xmin[4], y = ep.est.chla$ymin[4], xend = ep.est.chla$xmax[4], yend = ep.est.chla$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
-  labs(x = " ", y = " ", title = expression(paste("Chl-a (log mg ", m^-3, ")"))) + 
+  labs(x = " ", y = " ", title = expression(paste("Chl-a"))) + 
   theme_classic(base_size = 20) + 
   theme(plot.title = element_text(face = "italic")) + 
   theme(plot.title = element_text(hjust = 0.5))
@@ -200,7 +200,7 @@ ts.sst.plot <- ggplot(filter(tsc, year == "2013" | year == "2015" | year == "201
   geom_segment(aes(x = ts.est.sst$xmin[6], y = ts.est.sst$ymin[6], xend = ts.est.sst$xmax[6], yend = ts.est.sst$ymax[6]), size = 1, color = "#0072B2", linetype = "dotted") + #male
   geom_segment(aes(x = ts.est.sst$xmin[3], y = ts.est.sst$ymin[3], xend = ts.est.sst$xmax[3], yend = ts.est.sst$ymax[3]), size = 1, color = "#D55E00") + #female
   geom_segment(aes(x = ts.est.sst$xmin[4], y = ts.est.sst$ymin[4], xend = ts.est.sst$xmax[4], yend = ts.est.sst$ymax[4]), size = 1, color = "#D55E00", linetype = "dotted") + #male
-  labs(x = " ", y = "\n\nMean length (mm)") + 
+  labs(x = " ", y = "\n\nmean length") + 
   theme_classic(base_size = 20)  + 
   theme(axis.title.y = element_text(size = 16))
 
@@ -272,7 +272,7 @@ nd.sst.plot <- ggplot(filter(ndc, year == "2015" | year == "2017"), aes(x = temp
   geom_segment(aes(x = nd.est.sst$xmin[4], y = nd.est.sst$ymin[4], xend = nd.est.sst$xmax[4], yend = nd.est.sst$ymax[4]), size = 1, color = "#0072B2", linetype = "dotted") + #male
   geom_segment(aes(x = nd.est.sst$xmin[1], y = nd.est.sst$ymin[1], xend = nd.est.sst$xmax[1], yend = nd.est.sst$ymax[1]), size = 1, color = "#D55E00") + #female
   geom_segment(aes(x = nd.est.sst$xmin[2], y = nd.est.sst$ymin[2], xend = nd.est.sst$xmax[2], yend = nd.est.sst$ymax[2]), size = 1, color = "#D55E00", linetype = "dotted") + #male
-  labs(x = " ", y = "\n\nMean length (mm)", title = " ") + 
+  labs(x = " ", y = "\n\nmean length", title = " ") + 
   theme_classic(base_size = 20) + 
   theme(plot.title = element_text(face = "italic")) + 
   theme(axis.title.y = element_text(size = 16))
