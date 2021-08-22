@@ -1,6 +1,6 @@
 #Plot models of MHW environmental drivers of krill length
 
-# Sat Aug 21 18:38:05 2021 ------------------------------
+# Sun Aug 22 11:24:06 2021 ------------------------------
 
 #LIBRARIES & SOURCES
 #====
@@ -32,7 +32,7 @@ ndc <- summarize(group_by_at(ndc, vars(station, year)), length = mean(length), t
 
 #LINEAR MODELING
 #====
-#Euphausia pacifica
+#Euphausia pacifica overall and annual models
 epm <- lmer(length~temp_2 + cuti + chla + (1|station), data = ep)
 
 ep.13 <- filter(ep, year == "2013")
@@ -44,7 +44,7 @@ epm.15 <- lmer(length ~ temp_2 + sex:temp_2 + cuti + sex:cuti + chla + sex:chla 
 ep.17 <- filter(ep, year == "2017")
 epm.17 <- lmer(length~temp_2 + cuti + chla + sex:temp_2 + sex:cuti + sex:chla + (1|station), data = ep.17)
 
-#Thysanoessa spinifera
+#Thysanoessa spinifera overall and annual models
 tsm <- lmer(length~temp_2 + cuti + chla + (1|station), data = ts)
 
 ts.13 <- filter(ts, year == "2013")
@@ -57,7 +57,7 @@ ts.17 <- filter(ts, year == "2017")
 tsm.17 <- lmer(length~temp_2 + cuti + chla + sex:cuti + sex:temp_2 + sex:chla + (1|station), data = ts.17)
 #linear model because stations <5
 
-#Nematoscelis difficilis
+#Nematoscelis difficilis overall and annual models
 ndm <- lmer(length~temp_2 + cuti + chla + (1|station), data = nd)
 
 nd.15 <- filter(nd, year == "2015")
@@ -70,6 +70,7 @@ ndm.17 <- lmer(length~temp_2 + cuti + chla + sex:cuti + sex:temp_2 + sex:chla + 
 
 #PREPARE DATA FOR PLOTTING
 #====
+#unscale overall and annual dataframes
 ep.dfs <- list(ep.13, ep.15, ep.17, ep)
 for(i in seq(1:4)){
   ep.dfs[[i]]$length <- ep.dfs[[i]]$length*attr(ep$length, "scaled:scale") + attr(ep$length, "scaled:center")#unscale axes
@@ -101,7 +102,7 @@ for(i in seq(1:3)){
 #SST
 #Model estimates for segents
 ep.est.sst <- data.frame(model = c("2013_F", "2013_M", "2015_F", "2015_M", "2017_F", "2017_M", "All"),
-                     intercept = c(coef(summary(epm.13))[1,1], coef(summary(epm.13))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm))[1,1]),
+                     intercept = c(coef(summary(epm.13))[1,1]*, coef(summary(epm.13))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.15))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm.17))[1,1], coef(summary(epm))[1,1]),
                      slope = c(coef(summary(epm.13))[2,1], coef(summary(epm.13))[2,1]+coef(summary(epm.13))[5,1], coef(summary(epm.15))[2,1], coef(summary(epm.15))[2,1]+coef(summary(epm.15))[5,1], coef(summary(epm.17))[2,1], coef(summary(epm.17))[2,1]+coef(summary(epm.17))[5,1], coef(summary(epm))[2,1]),
                      xmin = c(min(ep.13$temp_2), min(ep.13$temp_2), min(ep.15$temp_2), min(ep.15$temp_2), min(ep.17$temp_2), min(ep.17$temp_2), min(ep$temp_2)),
                      xmax = c(max(ep.13$temp_2), max(ep.13$temp_2), max(ep.15$temp_2), max(ep.15$temp_2), max(ep.17$temp_2), max(ep.17$temp_2), max(ep$temp_2)))
@@ -110,9 +111,9 @@ ep.est.sst$ymax = ep.est.sst$intercept+(ep.est.sst$slope*ep.est.sst$xmax)
 
 #plot
 ep.sst.plot <- ggplot(filter(epc, year == "2013" | year == "2015" | year == "2017"), aes(x = temp_2, y = length)) + 
-  geom_boxplot(data = ep.13, aes(group=temp_2), color = "#56B4E9", width = 0.05, alpha = 0.5) + 
-  geom_boxplot(data = ep.15, aes(group = temp_2), color = "#D55E00", width = 0.05, alpha = 0.5) +
-  geom_boxplot(data = ep.17, aes(group = temp_2), color = "#0072B2", width = 0.05, alpha = 0.5) +
+  geom_boxplot(data = ep.dfs[[1]], aes(group=temp_2), color = "#56B4E9", width = 0.05, alpha = 0.5) + 
+  geom_boxplot(data = ep.dfs[[2]], aes(group = temp_2), color = "#D55E00", width = 0.05, alpha = 0.5) +
+  geom_boxplot(data = ep.dfs[[3]], aes(group = temp_2), color = "#0072B2", width = 0.05, alpha = 0.5) +
   geom_segment(aes(x = ep.est.sst$xmin[7], y = ep.est.sst$ymin[7], xend = ep.est.sst$xmax[7], yend = ep.est.sst$ymax[7]), size = 1, color = "black") +
   geom_segment(aes(x = ep.est.sst$xmin[1], y = ep.est.sst$ymin[1], xend = ep.est.sst$xmax[1], yend = ep.est.sst$ymax[1]), size = 1, color = "#56B4E9") + #female
   geom_segment(aes(x = ep.est.sst$xmin[2], y = ep.est.sst$ymin[2], xend = ep.est.sst$xmax[2], yend = ep.est.sst$ymax[2]), size = 1, color = "#56B4E9", linetype = "dotted") + #male
