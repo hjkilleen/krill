@@ -41,7 +41,7 @@ superheat(ecMat,
 
 #SAVE 
 #====
-png("figures/manuscript/figure5_environmentalModel.png", height = 2800, width = 4000, res = 400)
+png("figures/manuscript/figure6_environmentalModel.png", height = 2800, width = 4000, res = 400)
 superheat(ecMat, 
           heat.pal = c("#b35806", "white", "#542788"), 
           X.text = round(vals, 3), 
