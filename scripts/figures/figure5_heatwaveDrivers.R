@@ -336,30 +336,20 @@ epx <- filter(ep, year == "2013" | year == "2015" | year == "2017" | year == "20
 p1 <- ggplot(epx, aes(x = temp_2, y = length, color = year)) + #plot to establish color legend
   geom_line( size = 2) +
   scale_color_manual(values = cols, guide = "legend", labels = c("2013", "2015", "2017", "All years"), name = "Year") + 
-  theme(legend.text = element_text(size = 15), legend.title = element_text(size = 15), legend.background=element_blank(), legend.key = element_blank())
+  theme(legend.text = element_text(size = 20), legend.title = element_text(size = 20), legend.background=element_blank(), legend.key = element_blank(), legend.box = "horizontal", legend.position = "bottom")
 l1 <- get_legend(p1)#extract color legend
 
 p2 <- ggplot(epx, aes(x = temp_2, y = length, linetype = sex)) + #plot to establish color legend
   geom_line( size = 1) +
   scale_linetype_discrete(guide = guide_legend(override.aes = list(size = 1, color = "#D55E00")), labels = c("Female", "Male"), name = "Sex") + 
-  theme(legend.text = element_text(size = 15), legend.title = element_text(size = 15), legend.background=element_blank(), legend.key = element_blank())
+  theme(legend.text = element_text(size = 20), legend.title = element_text(size = 20), legend.background=element_blank(), legend.key = element_blank(), legend.box = "horizontal", legend.position = "bottom")
 l2 <- get_legend(p2)#extract color legend
 #====
 
 #MERGE & SAVE PLOTS
 #====
-legends <- arrangeGrob(l1, l2)
-grid <- ggarrange(ep.sst.plot, ep.cuti.plot, ep.chla.plot, ts.sst.plot, ts.cuti.plot, ts.chla.plot, nd.sst.plot, nd.cuti.plot, nd.chla.plot, ncol = 3, nrow = 3)
-ggarrange(grid, legends, widths = c(10, 1.5))
+grid <- ggarrange(ep.sst.plot, ep.cuti.plot, ep.chla.plot, ts.sst.plot, ts.cuti.plot, ts.chla.plot, nd.sst.plot, nd.cuti.plot, nd.chla.plot, ncol = 3, nrow = 3, align = "v")
+legends <- ggarrange(l1, l2, nrow = 1, ncol = 2, widths = c(7, 3))
+ggarrange(grid, legends, ncol = 1, nrow = 2, heights = c(10, 1))
 ggsave("figures/manuscript/figure5_heatwaveDrivers.jpg", width = 11, height = 8, dpi = 400)
 #====
-
-#TABLE 
-#=====
-tab <- readxl::read_xlsx("data/heatwaveModelSummary_.xlsx")
-tab$Year <- as.factor(tab$Year)
-tab[,2:11] %>% 
-  kbl() %>% 
-  kable_classic() %>% 
-  pack_rows(index = table(fct_inorder(tab$Year)))
-#=====
