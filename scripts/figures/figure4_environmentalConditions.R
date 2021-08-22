@@ -130,14 +130,13 @@ cuti.sum <- ggplot(df) +
 ave <- allChla
 cruises$start.x <- as.POSIXct(cruises$start.x)
 cruises$end.x <- as.POSIXct(cruises$end.x)
-ylab <- expression(paste("Chl-a\nanomaly log mg ", m^-3))
 ave$ave2 <- c(rep(NA, 29), rollapply(allChla$chla_mean-chla.mean, 30, mean, na.rm = TRUE))
 chf <- ggplot(allChla, aes(x = date, y = chla_mean-chla.mean)) + 
   geom_line(color = "grey") + 
   geom_line(data = ave, aes(y = ave2), color = "black") +
   geom_rect(data = cruises, inherit.aes = FALSE, aes(xmin = start.x, ymin = min.y, xmax = end.x, ymax = max.y), fill = "blue", alpha = 0.3) +
   ylim(-2, 1.5) +
-  labs(y = ylab) +
+  labs(y = " ") +
   theme_classic(base_size = 20) +
   theme(axis.title.x = element_blank(),
         plot.title = element_text(hjust = 0.5),
