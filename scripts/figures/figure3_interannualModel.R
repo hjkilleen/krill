@@ -1,7 +1,7 @@
 #Figure 3
 #Interannual model results
 
-# Wed Jan 27 17:44:51 2021 ------------------------------
+# Sat Aug 21 18:35:33 2021 ------------------------------
 
 #LIBRARIES
 #====
@@ -23,6 +23,9 @@ load("output/ndScale.rda")
 load("output/interannualCoefficients.rda")
 load("output/interannualCoefficients_noSex.rda")
 load("data/allLengthsEnv.rda")
+load("data/allLengthsEnvEP.rda")
+load("data/allLengthsEnvTS.rda")
+load("data/allLengthsEnvND.rda")
 #====
 
 #SETUP
@@ -38,7 +41,7 @@ ic.noSex[2:7,1] <- ic.noSex[2:7,1] + ic.noSex$ep[1]#add or subtract intercept va
 ic.noSex[2:7,2] <- ic.noSex[2:7,2] + ic.noSex$ts[1]
 ic.noSex[5:7,3] <- ic.noSex[5:7,3] + ic.noSex$nd[4]#add or subtract intercept value, so all coefficients are relative to 0 in 2015
 row.names(ic.noSex) <- c("2011", "2012", "2013", "2015", "2016", "2017", "2018")#change column names
-names(ic.noSex) <- c("E. pacifica", "T. spinifera", "N. difficilis")#change row names
+names(ic.noSex) <- c(" ", "  ", "   ")#change row names, finish in pdf editor
 icMat.noSex <- as.matrix(ic.noSex)
 
 vals <- icMat.noSex#copy
@@ -82,7 +85,7 @@ x <- x[!(x$species == "ND" & x$year %in% c("2011", "2012", "2013")),]#filter out
 
 #SUBFIGURE A - INTERANNUAL COEFFICIENTS
 #====
-colnames(icMat.noSex) <- c("E. pacifica", "T. spinifera", "N. difficilis")
+colnames(icMat.noSex) <- c("  ", "   ", "   ")#finalize in pdf editor
 a <- superheat(icMat.noSex, 
           heat.pal = c("#b35806", "white", "#542788"), 
           X.text = round(vals, 3), 
@@ -90,24 +93,19 @@ a <- superheat(icMat.noSex,
           heat.na.col = "black",
           #row.title = "Predictor",
           row.title.size = 20, print.plot = TRUE, left.label.text.size = 6, bottom.label.text.size = 6, bottom.label.size = .15, legend.text.size = 15, legend.width = 2.3, heat.lim = c(-1, 1.10))
-
-ggplot(ic.noSex, aes(Var1, Var2)) +
-  geom_tile(aes(fill = value)) + 
-  geom_text(aes(label = round(value, 1))) +
-  scale_fill_gradient(low = "white", high = "red") 
 #====
 
 #SUBFIGURE B - TIME SERIES PLOT
 #====
 b <- ggplot() + 
   geom_rect(data = epsum, aes(xmin = 2014.5, ymin = -Inf, xmax = 2015.5, ymax = Inf), fill = "red", alpha = 0.01) +
-  # geom_point(data = filter(aleStMeans, species == "EP"), aes(x = as.numeric(as.character(year)), y = (stationMean*attr(aleScale, "scaled:scale") + attr(aleScale, "scaled:center")), group = year), color = "#E69F00", alpha = 1, width = 0.1) +
-  # geom_point(data = filter(aleStMeans, species == "TS"), aes(x = as.numeric(as.character(year)), y = (stationMean*attr(aleScale, "scaled:scale") + attr(aleScale, "scaled:center")), group = year), alpha = 1, color = "#56B4E9", width = 0.1) +
-  # geom_point(data = filter(aleStMeans, species == "ND"), aes(x = as.numeric(as.character(year)), y = (stationMean*attr(aleScale, "scaled:scale") + attr(aleScale, "scaled:center")), group = year), alpha = 1, color = "#009E73", width = 0.1) +
-  geom_line(data = epsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(epScale, "scaled:scale") + attr(epScale, "scaled:center")), color = "#E69F00", linetype = sex), size = 2) +
-  geom_line(data = tssum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(tsScale, "scaled:scale") + attr(tsScale, "scaled:center")), color = "#56B4E9", linetype = sex), size = 2) +
-  geom_line(data = ndsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(ndScale, "scaled:scale") + attr(ndScale, "scaled:center")), color = "#009E73", linetype = sex), size = 2) + 
-  labs(y = "Mean length (mm)", x = "Year", linetype = "Sex") +
+  geom_boxplot(data = ep, aes(x = as.numeric(year), y = length, group=as.numeric(year)), color = "#E69F00", width = 0.1) + 
+  geom_boxplot(data = ts, aes(x = as.numeric(year)+0.2, y = length, group=as.numeric(year)), color = "#56B4E9", width = 0.1) + 
+  geom_boxplot(data = filter(nd, year %in% c("2015", "2016", "2017", "2018")), aes(x = as.numeric(year)-0.2, y = length, group=as.numeric(year)), color = "#009E73", width = 0.1) + 
+  geom_line(data = epsum, aes(x = as.numeric(as.character(year)), y = (sim.mean), color = "#E69F00", linetype = sex), size = 2) +
+  geom_line(data = tssum, aes(x = as.numeric(as.character(year)), y = (sim.mean), color = "#56B4E9", linetype = sex), size = 2) +
+  geom_line(data = ndsum, aes(x = as.numeric(as.character(year)), y = (sim.mean), color = "#009E73", linetype = sex), size = 2) +
+  labs(y = "Scaled\nMean length", x = "Year", linetype = "Sex") +
   geom_rect(aes(xmin = 2013.5, ymin = -Inf, xmax = 2014.5, ymax = Inf), color = "white", fill = "white") +
   #ylim(min = 19, max = 26) + 
   scale_linetype_discrete(guide = guide_legend(override.aes = list(size = 1, color = "black"))) + 
@@ -142,7 +140,7 @@ p1 <- ggplot() + #plot to establish color legend
   geom_line(data = epsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(epScale, "scaled:scale") + attr(epScale, "scaled:center")), color = "#E69F00"), size = 2) +
   geom_line(data = tssum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(tsScale, "scaled:scale") + attr(tsScale, "scaled:center")), color = "#56B4E9"), size = 2) +
   geom_line(data = ndsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(ndScale, "scaled:scale") + attr(ndScale, "scaled:center")), color = "#009E73"), size = 2) +
-  scale_color_identity(guide = "legend", labels = c("N. difficilis", "T. spinifera", "E. pacifica"), name = "Species") + 
+  scale_color_identity(guide = "legend", labels = c(expression(italic("N. difficilis")), expression(italic("T. spinifera")), expression(italic("E. pacifica"))), name = "Species") + #finalize italics in pdf editor
   theme(legend.direction = "horizontal", legend.text = element_text(size = 15), legend.title = element_text(size = 15))
 l1 <- get_legend(p1)#extract color legend
 
@@ -158,10 +156,10 @@ l2 <- get_legend(p2)#extract linetype legend
 
 #MERGE FIGURES
 #====
-b <- b + annotation_custom(grob = l2, xmin = 2010.5, xmax = 2012, ymin = 26, ymax = 28)
+b <- b + annotation_custom(grob = l2, xmin = 2018, xmax = 2018, ymin = 7, ymax = 7)#place sex legend
 b <- arrangeGrob(l1, b, heights = c(1, 10))
 
-ggarrange(a$plot, ggarrange(b, c, nrow = 2, align = "v", labels = c("B", "C"), font.label = list(size = 20)), nrow = 1, labels = "A", font.label = list(size = 20))#arrange subfigures
-ggsave("figures/manuscript/figure3_interannualModel.jpeg", width = 16, height = 8, dpi = 400)
+ggarrange(a$plot, ggarrange(b, c, nrow = 2, align = "v", labels = c("B", "C"), font.label = list(size = 20)), nrow = 2, labels = "A", font.label = list(size = 20))#arrange subfigures
+ggsave("figures/manuscript/figure3_interannualModel.jpeg", width = 8, height = 14, dpi = 400)
 #====
 
