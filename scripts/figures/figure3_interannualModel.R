@@ -99,17 +99,18 @@ a <- superheat(icMat.noSex,
 #====
 b <- ggplot() + 
   geom_rect(data = epsum, aes(xmin = 2014.5, ymin = -Inf, xmax = 2015.5, ymax = Inf), fill = "red", alpha = 0.01) +
-  geom_boxplot(data = ep, aes(x = as.numeric(year), y = length, group=as.numeric(year)), color = "#E69F00", width = 0.1) + 
-  geom_boxplot(data = ts, aes(x = as.numeric(year)+0.2, y = length, group=as.numeric(year)), color = "#56B4E9", width = 0.1) + 
-  geom_boxplot(data = filter(nd, year %in% c("2015", "2016", "2017", "2018")), aes(x = as.numeric(year)-0.2, y = length, group=as.numeric(year)), color = "#009E73", width = 0.1) + 
-  geom_line(data = epsum, aes(x = as.numeric(as.character(year)), y = (sim.mean), color = "#E69F00", linetype = sex), size = 2) +
-  geom_line(data = tssum, aes(x = as.numeric(as.character(year)), y = (sim.mean), color = "#56B4E9", linetype = sex), size = 2) +
-  geom_line(data = ndsum, aes(x = as.numeric(as.character(year)), y = (sim.mean), color = "#009E73", linetype = sex), size = 2) +
-  labs(y = "Scaled\nMean length", x = "Year", linetype = "Sex") +
+  geom_boxplot(data = ep, aes(x = as.numeric(year), y = (length*attr(epScale, "scaled:scale") + attr(epScale, "scaled:center")), group=as.numeric(year)), color = "#E69F00", width = 0.1, alpha = 0.5) + 
+  geom_boxplot(data = ts, aes(x = as.numeric(year)+0.2, y = (length*attr(tsScale, "scaled:scale") + attr(tsScale, "scaled:center")), group=as.numeric(year)), color = "#56B4E9", width = 0.1, alpha = 0.5) + 
+  geom_boxplot(data = filter(nd, year %in% c("2015", "2016", "2017", "2018")), aes(x = as.numeric(year)-0.2, y = (length*attr(ndScale, "scaled:scale") + attr(ndScale, "scaled:center")), group=as.numeric(year)), color = "#009E73", width = 0.1, alpha = 0.5) + 
+  geom_line(data = epsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(epScale, "scaled:scale") + attr(epScale, "scaled:center")), color = "#E69F00", linetype = sex), size = 2) +
+  geom_line(data = tssum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(tsScale, "scaled:scale") + attr(tsScale, "scaled:center")), color = "#56B4E9", linetype = sex), size = 2) +
+  geom_line(data = ndsum, aes(x = as.numeric(as.character(year)), y = (sim.mean*attr(ndScale, "scaled:scale") + attr(ndScale, "scaled:center")), color = "#009E73", linetype = sex), size = 2) +
+  labs(y = "Mean length (mm)", x = "Year", linetype = "Sex") +
   geom_rect(aes(xmin = 2013.5, ymin = -Inf, xmax = 2014.5, ymax = Inf), color = "white", fill = "white") +
   #ylim(min = 19, max = 26) + 
   scale_linetype_discrete(guide = guide_legend(override.aes = list(size = 1, color = "black"))) + 
   scale_color_identity(guide = "legend", labels = c(expression(italic("N. difficilis")), expression(italic("T. spinifera")), expression(italic("E. pacifica"))), name = "Species") +
+  ylim(10, 35) +
   theme_classic(base_size = 20)
 b <- b + theme(legend.position = "none", axis.title.x = element_blank())
 #====
@@ -156,7 +157,7 @@ l2 <- get_legend(p2)#extract linetype legend
 
 #MERGE FIGURES
 #====
-b <- b + annotation_custom(grob = l2, xmin = 2018, xmax = 2018, ymin = 7, ymax = 7)#place sex legend
+b <- b + annotation_custom(grob = l2, xmin = 2018, xmax = 2018, ymin = 40, ymax = 40)#place sex legend
 b <- arrangeGrob(l1, b, heights = c(1, 10))
 
 ggarrange(a$plot, ggarrange(b, c, nrow = 2, align = "v", labels = c("B", "C"), font.label = list(size = 20)), nrow = 2, labels = "A", font.label = list(size = 20))#arrange subfigures
