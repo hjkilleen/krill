@@ -1,6 +1,6 @@
-#Environmental model
-#Model environmental drivers of krill length
-# Fri Jul  2 12:24:33 2021 ------------------------------
+#Plot models of MHW environmental drivers of krill length
+
+# Sat Aug 21 18:38:05 2021 ------------------------------
 
 #LIBRARIES & SOURCES
 #====
